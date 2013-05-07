@@ -1,4 +1,42 @@
 smalltalk.addPackage('Maglev-Vendor', {});
+smalltalk.addClass('MaglevAjax', smalltalk.Object, [], 'Maglev-Vendor');
+
+smalltalk.addMethod(
+unescape('_ajax_data_'),
+smalltalk.method({
+selector: unescape('ajax%3Adata%3A'),
+fn: function (aString, data){
+var self=this;
+ var result = $.parseJSON($.ajax({url: aString, data: $.parseJSON(data._asJSONString()), async: false}).responseText);
+	if (result.success === false) {
+		self.error('Server call failed: ' + result.exception);
+	}
+	else {
+		return result.result;
+	} ;
+return self;}
+}),
+smalltalk.MaglevAjax.klass);
+
+smalltalk.addMethod(
+unescape('_ajax_data_withCallback_'),
+smalltalk.method({
+selector: unescape('ajax%3Adata%3AwithCallback%3A'),
+fn: function (aString, data, aBlock){
+var self=this;
+ $.parseJSON($.ajax({url: aString, data: $.parseJSON(data._asJSONString()), async: true, complete: function(response) {
+		var result = $.parseJSON(response.responseText);
+		if (result.success === false) {
+			self.error('Server call failed: ' + result.exception);
+		} else {
+			aBlock._value_(result.result);
+		}
+	}}).responseText); ;
+return self;}
+}),
+smalltalk.MaglevAjax.klass);
+
+
 smalltalk.addClass('MaglevJsPlumb', smalltalk.Object, [], 'Maglev-Vendor');
 
 smalltalk.MaglevJsPlumb.klass.iVarNames = ['sourceTarget','defaults','referenceConnection','instanceOfConnection','connection'];
@@ -126,7 +164,7 @@ smalltalk.method({
 selector: unescape('initializeJsPlumb'),
 fn: function (){
 var self=this;
-smalltalk.send((typeof jsPlumb == 'undefined' ? nil : jsPlumb), "_bind_a_", ["ready", (function(){smalltalk.send(self, "_initializeChromeFix", []);smalltalk.send((typeof jsPlumb == 'undefined' ? nil : jsPlumb), "_setRenderMode_", [smalltalk.send((typeof jsPlumb == 'undefined' ? nil : jsPlumb), "_SVG", [])]);return smalltalk.send((typeof jsPlumb == 'undefined' ? nil : jsPlumb), "_initializeDefaults_", [self['@defaults']]);})]);
+smalltalk.send((typeof jsPlumb == 'undefined' ? nil : jsPlumb), "_bind_a_", ["ready", (function(){smalltalk.send(self, "_initializeChromeFix", []);smalltalk.send((typeof jsPlumb == 'undefined' ? nil : jsPlumb), "_setRenderMode_", [smalltalk.send((typeof jsPlumb == 'undefined' ? nil : jsPlumb), "_SVG", [])]);return smalltalk.send((typeof jsPlumb == 'undefined' ? nil : jsPlumb), "_importDefaults_", [self['@defaults']]);})]);
 return self;}
 }),
 smalltalk.MaglevJsPlumb.klass);

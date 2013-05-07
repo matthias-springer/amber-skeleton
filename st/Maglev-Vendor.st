@@ -1,4 +1,31 @@
 Smalltalk current createPackage: 'Maglev-Vendor' properties: #{}!
+Object subclass: #MaglevAjax
+	instanceVariableNames: ''
+	package: 'Maglev-Vendor'!
+
+!MaglevAjax class methodsFor: 'not yet classified'!
+
+ajax: aString data: data
+	< var result = $.parseJSON($.ajax({url: aString, data: $.parseJSON(data._asJSONString()), async: false}).responseText);
+	if (result.success === false) {
+		self.error('Server call failed: ' + result.exception);
+	}
+	else {
+		return result.result;
+	} >
+!
+
+ajax: aString data: data withCallback: aBlock
+	< $.parseJSON($.ajax({url: aString, data: $.parseJSON(data._asJSONString()), async: true, complete: function(response) {
+		var result = $.parseJSON(response.responseText);
+		if (result.success === false) {
+			self.error('Server call failed: ' + result.exception);
+		} else {
+			aBlock._value_(result.result);
+		}
+	}}).responseText); >
+! !
+
 Object subclass: #MaglevJsPlumb
 	instanceVariableNames: ''
 	package: 'Maglev-Vendor'!
@@ -83,7 +110,7 @@ initializeJsPlumb
 		a: [
 			self initializeChromeFix.
 			jsPlumb setRenderMode: jsPlumb SVG.
-			jsPlumb initializeDefaults: defaults].
+			jsPlumb importDefaults: defaults].
 ! !
 
 !MaglevJsPlumb class methodsFor: 'interactions'!

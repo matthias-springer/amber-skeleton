@@ -77,7 +77,7 @@ smalltalk.method({
 selector: unescape('renderOn%3A'),
 fn: function (html){
 var self=this;
-(self['@b']=(function($rec){smalltalk.send($rec, "_class_", [smalltalk.send(unescape("icon-"), "__comma", [smalltalk.send(self, "_icon", [])])]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send(html, "_em", [])));
+(self['@b']=(function($rec){smalltalk.send($rec, "_class_", [smalltalk.send(unescape("icon-"), "__comma", [smalltalk.send(self, "_icon", [])])]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send(html, "_b", [])));
 return self;}
 }),
 smalltalk.MaglevIcon);
@@ -128,7 +128,30 @@ return self;}
 smalltalk.MaglevIcon.klass);
 
 
-smalltalk.addClass('MaglevObjectInline', smalltalk.Widget, ['object', 'hasDropDown', 'isDraggable'], 'Maglev-Database-Explorer');
+smalltalk.addClass('MaglevObjectInline', smalltalk.Widget, ['object', 'hasDropDown', 'isDraggable', 'depth', 'isShort'], 'Maglev-Database-Explorer');
+smalltalk.addMethod(
+unescape('_depth'),
+smalltalk.method({
+selector: unescape('depth'),
+fn: function (){
+var self=this;
+(($receiver = self['@depth']) == nil || $receiver == undefined) ? (function(){return (self['@depth']=(1));})() : $receiver;
+return self['@depth'];
+return self;}
+}),
+smalltalk.MaglevObjectInline);
+
+smalltalk.addMethod(
+unescape('_depth_'),
+smalltalk.method({
+selector: unescape('depth%3A'),
+fn: function (anInteger){
+var self=this;
+(self['@depth']=anInteger);
+return self;}
+}),
+smalltalk.MaglevObjectInline);
+
 smalltalk.addMethod(
 unescape('_hasDropDown'),
 smalltalk.method({
@@ -171,6 +194,29 @@ selector: unescape('isDraggable%3A'),
 fn: function (aBoolean){
 var self=this;
 (self['@isDraggable']=aBoolean);
+return self;}
+}),
+smalltalk.MaglevObjectInline);
+
+smalltalk.addMethod(
+unescape('_isShort'),
+smalltalk.method({
+selector: unescape('isShort'),
+fn: function (){
+var self=this;
+(($receiver = self['@isShort']) == nil || $receiver == undefined) ? (function(){return (self['@isShort']=false);})() : $receiver;
+return self['@isShort'];
+return self;}
+}),
+smalltalk.MaglevObjectInline);
+
+smalltalk.addMethod(
+unescape('_isShort_'),
+smalltalk.method({
+selector: unescape('isShort%3A'),
+fn: function (aBoolean){
+var self=this;
+(self['@isShort']=aBoolean);
 return self;}
 }),
 smalltalk.MaglevObjectInline);
@@ -236,7 +282,7 @@ smalltalk.method({
 selector: unescape('renderObjectOn%3A'),
 fn: function (html){
 var self=this;
-smalltalk.send(html, "_with_", [unescape("%28object%29")]);
+smalltalk.send(html, "_with_", [smalltalk.send(self['@object'], "_inspect", [])]);
 return self;}
 }),
 smalltalk.MaglevObjectInline);
@@ -263,6 +309,279 @@ return self;}
 }),
 smalltalk.MaglevObjectInline);
 
+smalltalk.addMethod(
+unescape('_renderText_withDropDownOn_'),
+smalltalk.method({
+selector: unescape('renderText%3AwithDropDownOn%3A'),
+fn: function (text, html){
+var self=this;
+(function($rec){smalltalk.send($rec, "_class_", ["dropdown"]);return smalltalk.send($rec, "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_class_", [unescape("dropdown-toggle%20btn%20object-dropdown-toggle")]);smalltalk.send($rec, "_data_with_", ["toggle", "dropdown"]);return smalltalk.send($rec, "_with_", [(function(){smalltalk.send(html, "_with_", [text]);return smalltalk.send(smalltalk.send(html, "_b", []), "_class_", ["caret"]);})]);})(smalltalk.send(html, "_a", []));})]);})(smalltalk.send(html, "_span", []));
+return self;}
+}),
+smalltalk.MaglevObjectInline);
+
+
+smalltalk.addMethod(
+unescape('_maxDepth'),
+smalltalk.method({
+selector: unescape('maxDepth'),
+fn: function (){
+var self=this;
+return (1);
+return self;}
+}),
+smalltalk.MaglevObjectInline.klass);
+
+smalltalk.addMethod(
+unescape('_newWithDepth_'),
+smalltalk.method({
+selector: unescape('newWithDepth%3A'),
+fn: function (anInteger){
+var self=this;
+return (function($rec){smalltalk.send($rec, "_depth_", [anInteger]);smalltalk.send($rec, "_initialize", []);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send(self, "_basicNew", []));
+return self;}
+}),
+smalltalk.MaglevObjectInline.klass);
+
+
+smalltalk.addClass('MaglevArrayInline', smalltalk.MaglevObjectInline, [], 'Maglev-Database-Explorer');
+smalltalk.addMethod(
+unescape('_renderObjectOn_'),
+smalltalk.method({
+selector: unescape('renderObjectOn%3A'),
+fn: function (html){
+var self=this;
+var showElements=nil;
+var maxElements=nil;
+(maxElements=smalltalk.send(smalltalk.send(self, "_class", []), "_maxElements", []));
+(showElements=smalltalk.send(maxElements, "_min_", [smalltalk.send(smalltalk.send(self, "_object", []), "_size", [])]));
+smalltalk.send(self, "_renderText_withDropDownOn_", [unescape("%5B"), html]);
+((($receiver = smalltalk.send(self, "_isShort", [])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(html, "_with_", ["..."]);})() : (function(){smalltalk.send(smalltalk.send((1), "_to_", [showElements]), "_do_", [(function(idx){smalltalk.send(html, "_with_", [smalltalk.send(smalltalk.send(smalltalk.send(self, "_object", []), "_at_", [idx]), "_inlineViewComponentWithDepth_", [((($receiver = smalltalk.send(self, "_depth", [])).klass === smalltalk.Number) ? $receiver -(1) : smalltalk.send($receiver, "__minus", [(1)]))])]);return ((($receiver = smalltalk.send(((($receiver = idx).klass === smalltalk.Number) ? $receiver <showElements : smalltalk.send($receiver, "__lt", [showElements])), "_or_", [(function(){return ((($receiver = smalltalk.send(smalltalk.send(self, "_object", []), "_size", [])).klass === smalltalk.Number) ? $receiver >maxElements : smalltalk.send($receiver, "__gt", [maxElements]));})])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(html, "_with_", [unescape("%2C%20")]);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(html, "_with_", [unescape("%2C%20")]);})]));})]);return ((($receiver = ((($receiver = smalltalk.send(self, "_size", [])).klass === smalltalk.Number) ? $receiver >maxElements : smalltalk.send($receiver, "__gt", [maxElements]))).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(html, "_with_", ["..."]);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(html, "_with_", ["..."]);})]));})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return smalltalk.send(html, "_with_", ["..."]);}), (function(){smalltalk.send(smalltalk.send((1), "_to_", [showElements]), "_do_", [(function(idx){smalltalk.send(html, "_with_", [smalltalk.send(smalltalk.send(smalltalk.send(self, "_object", []), "_at_", [idx]), "_inlineViewComponentWithDepth_", [((($receiver = smalltalk.send(self, "_depth", [])).klass === smalltalk.Number) ? $receiver -(1) : smalltalk.send($receiver, "__minus", [(1)]))])]);return ((($receiver = smalltalk.send(((($receiver = idx).klass === smalltalk.Number) ? $receiver <showElements : smalltalk.send($receiver, "__lt", [showElements])), "_or_", [(function(){return ((($receiver = smalltalk.send(smalltalk.send(self, "_object", []), "_size", [])).klass === smalltalk.Number) ? $receiver >maxElements : smalltalk.send($receiver, "__gt", [maxElements]));})])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(html, "_with_", [unescape("%2C%20")]);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(html, "_with_", [unescape("%2C%20")]);})]));})]);return ((($receiver = ((($receiver = smalltalk.send(self, "_size", [])).klass === smalltalk.Number) ? $receiver >maxElements : smalltalk.send($receiver, "__gt", [maxElements]))).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(html, "_with_", ["..."]);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(html, "_with_", ["..."]);})]));})]));
+smalltalk.send(self, "_renderText_withDropDownOn_", [unescape("%5D"), html]);
+return self;}
+}),
+smalltalk.MaglevArrayInline);
+
+smalltalk.addMethod(
+unescape('_renderObjectWithDropDownOn_'),
+smalltalk.method({
+selector: unescape('renderObjectWithDropDownOn%3A'),
+fn: function (html){
+var self=this;
+smalltalk.send(self, "_renderObjectOn_", [html]);
+return self;}
+}),
+smalltalk.MaglevArrayInline);
+
+
+smalltalk.addMethod(
+unescape('_maxDepth'),
+smalltalk.method({
+selector: unescape('maxDepth'),
+fn: function (){
+var self=this;
+return (2);
+return self;}
+}),
+smalltalk.MaglevArrayInline.klass);
+
+smalltalk.addMethod(
+unescape('_maxElements'),
+smalltalk.method({
+selector: unescape('maxElements'),
+fn: function (){
+var self=this;
+return (3);
+return self;}
+}),
+smalltalk.MaglevArrayInline.klass);
+
+
+smalltalk.addClass('MaglevHashInline', smalltalk.MaglevObjectInline, [], 'Maglev-Database-Explorer');
+
+smalltalk.addMethod(
+unescape('_maxDepth'),
+smalltalk.method({
+selector: unescape('maxDepth'),
+fn: function (){
+var self=this;
+return (2);
+return self;}
+}),
+smalltalk.MaglevHashInline.klass);
+
+
+smalltalk.addClass('MaglevModuleInline', smalltalk.MaglevObjectInline, [], 'Maglev-Database-Explorer');
+
+smalltalk.addMethod(
+unescape('_maxDepth'),
+smalltalk.method({
+selector: unescape('maxDepth'),
+fn: function (){
+var self=this;
+return (1);
+return self;}
+}),
+smalltalk.MaglevModuleInline.klass);
+
+
+smalltalk.addClass('MaglevClassInline', smalltalk.MaglevModuleInline, [], 'Maglev-Database-Explorer');
+
+smalltalk.addMethod(
+unescape('_maxDepth'),
+smalltalk.method({
+selector: unescape('maxDepth'),
+fn: function (){
+var self=this;
+return (1);
+return self;}
+}),
+smalltalk.MaglevClassInline.klass);
+
+
+smalltalk.addClass('MaglevTable', smalltalk.Widget, ['object', 'rangeFrom', 'rangeTo'], 'Maglev-Database-Explorer');
+smalltalk.addMethod(
+unescape('_object'),
+smalltalk.method({
+selector: unescape('object'),
+fn: function (){
+var self=this;
+return self['@object'];
+return self;}
+}),
+smalltalk.MaglevTable);
+
+smalltalk.addMethod(
+unescape('_object_'),
+smalltalk.method({
+selector: unescape('object%3A'),
+fn: function (anObject){
+var self=this;
+(self['@object']=anObject);
+return self;}
+}),
+smalltalk.MaglevTable);
+
+smalltalk.addMethod(
+unescape('_rangeFrom'),
+smalltalk.method({
+selector: unescape('rangeFrom'),
+fn: function (){
+var self=this;
+(($receiver = self['@rangeFrom']) == nil || $receiver == undefined) ? (function(){return (self['@rangeFrom']=(1));})() : $receiver;
+return self['@rangeFrom'];
+return self;}
+}),
+smalltalk.MaglevTable);
+
+smalltalk.addMethod(
+unescape('_rangeFrom_'),
+smalltalk.method({
+selector: unescape('rangeFrom%3A'),
+fn: function (anInteger){
+var self=this;
+(self['@rangeFrom']=anInteger);
+return self;}
+}),
+smalltalk.MaglevTable);
+
+smalltalk.addMethod(
+unescape('_rangeTo'),
+smalltalk.method({
+selector: unescape('rangeTo'),
+fn: function (){
+var self=this;
+(($receiver = self['@rangeTo']) == nil || $receiver == undefined) ? (function(){return (self['@rangeTo']=smalltalk.send((10), "_min_", [smalltalk.send(smalltalk.send(self, "_object", []), "_size", [])]));})() : $receiver;
+return self['@rangeTo'];
+return self;}
+}),
+smalltalk.MaglevTable);
+
+smalltalk.addMethod(
+unescape('_rangeTo_'),
+smalltalk.method({
+selector: unescape('rangeTo%3A'),
+fn: function (anInteger){
+var self=this;
+(self['@rangeTo']=anInteger);
+return self;}
+}),
+smalltalk.MaglevTable);
+
+smalltalk.addMethod(
+unescape('_renderArrayBodyOn_'),
+smalltalk.method({
+selector: unescape('renderArrayBodyOn%3A'),
+fn: function (html){
+var self=this;
+smalltalk.send(smalltalk.send(smalltalk.send(self, "_rangeFrom", []), "_to_", [smalltalk.send(self, "_rangeTo", [])]), "_do_", [(function(idx){var obj=nil;
+(obj=smalltalk.send(self['@object'], "_at_", [idx]));return smalltalk.send(smalltalk.send(html, "_tr", []), "_with_", [(function(){smalltalk.send(smalltalk.send(html, "_td", []), "_with_", [smalltalk.send(idx, "_inlineViewComponent", [])]);return smalltalk.send(smalltalk.send(html, "_td", []), "_with_", [smalltalk.send(obj, "_inlineViewComponent", [])]);})]);})]);
+return self;}
+}),
+smalltalk.MaglevTable);
+
+smalltalk.addMethod(
+unescape('_renderDictionaryBodyOn_'),
+smalltalk.method({
+selector: unescape('renderDictionaryBodyOn%3A'),
+fn: function (html){
+var self=this;
+try{var counter=nil;
+(counter=(1));
+smalltalk.send(smalltalk.send(self, "_object", []), "_keysAndValuesDo_", [(function(key, value){((($receiver = ((($receiver = counter).klass === smalltalk.Number) ? $receiver >=smalltalk.send(self, "_rangeFrom", []) : smalltalk.send($receiver, "__gt_eq", [smalltalk.send(self, "_rangeFrom", [])]))).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(smalltalk.send(html, "_tr", []), "_with_", [(function(){smalltalk.send(smalltalk.send(html, "_td", []), "_with_", [smalltalk.send(key, "_inlineViewComponent", [])]);return smalltalk.send(smalltalk.send(html, "_td", []), "_with_", [smalltalk.send(value, "_inlineViewComponent", [])]);})]);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(smalltalk.send(html, "_tr", []), "_with_", [(function(){smalltalk.send(smalltalk.send(html, "_td", []), "_with_", [smalltalk.send(key, "_inlineViewComponent", [])]);return smalltalk.send(smalltalk.send(html, "_td", []), "_with_", [smalltalk.send(value, "_inlineViewComponent", [])]);})]);})]));(counter=((($receiver = counter).klass === smalltalk.Number) ? $receiver +(1) : smalltalk.send($receiver, "__plus", [(1)])));return ((($receiver = ((($receiver = counter).klass === smalltalk.Number) ? $receiver >smalltalk.send(self, "_rangeTo", []) : smalltalk.send($receiver, "__gt", [smalltalk.send(self, "_rangeTo", [])]))).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (function(){throw({name: 'stReturn', selector: '_renderDictionaryBodyOn_', fn: function(){return self}})})();})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return (function(){throw({name: 'stReturn', selector: '_renderDictionaryBodyOn_', fn: function(){return self}})})();})]));})]);
+return self;
+} catch(e) {if(e.name === 'stReturn' && e.selector === '_renderDictionaryBodyOn_'){return e.fn()} throw(e)}}
+}),
+smalltalk.MaglevTable);
+
+smalltalk.addMethod(
+unescape('_renderOn_'),
+smalltalk.method({
+selector: unescape('renderOn%3A'),
+fn: function (html){
+var self=this;
+(function($rec){smalltalk.send($rec, "_class_", [unescape("table%20table-bordered")]);smalltalk.send($rec, "_style_", [unescape("margin-bottom%3A%200px%3B")]);return smalltalk.send($rec, "_with_", [(function(){return smalltalk.send(smalltalk.send(html, "_tbody", []), "_with_", [(function(){return smalltalk.send(self, "_renderTableBodyOn_", [html]);})]);})]);})(smalltalk.send(html, "_table", []));
+smalltalk.send(self, "_renderPaginationOn_", [html]);
+return self;}
+}),
+smalltalk.MaglevTable);
+
+smalltalk.addMethod(
+unescape('_renderPaginationOn_'),
+smalltalk.method({
+selector: unescape('renderPaginationOn%3A'),
+fn: function (html){
+var self=this;
+
+return self;}
+}),
+smalltalk.MaglevTable);
+
+smalltalk.addMethod(
+unescape('_renderTableBodyOn_'),
+smalltalk.method({
+selector: unescape('renderTableBodyOn%3A'),
+fn: function (html){
+var self=this;
+try{((($receiver = smalltalk.send(smalltalk.send(self, "_object", []), "_isKindOf_", [(smalltalk.Array || Array)])).klass === smalltalk.Boolean) ? ($receiver ? (function(){smalltalk.send(self, "_renderArrayBodyOn_", [html]);return (function(){throw({name: 'stReturn', selector: '_renderTableBodyOn_', fn: function(){return self}})})();})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){smalltalk.send(self, "_renderArrayBodyOn_", [html]);return (function(){throw({name: 'stReturn', selector: '_renderTableBodyOn_', fn: function(){return self}})})();})]));
+((($receiver = smalltalk.send(smalltalk.send(self, "_object", []), "_isKindOf_", [(smalltalk.Dictionary || Dictionary)])).klass === smalltalk.Boolean) ? ($receiver ? (function(){smalltalk.send(self, "_renderDictionaryBodyOn_", [html]);return (function(){throw({name: 'stReturn', selector: '_renderTableBodyOn_', fn: function(){return self}})})();})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){smalltalk.send(self, "_renderDictionaryBodyOn_", [html]);return (function(){throw({name: 'stReturn', selector: '_renderTableBodyOn_', fn: function(){return self}})})();})]));
+smalltalk.send(self, "_error_", [smalltalk.send("MaglevTable cannot render ", "__comma", [smalltalk.send(smalltalk.send(self, "_object", []), "_class", [])])]);
+return self;
+} catch(e) {if(e.name === 'stReturn' && e.selector === '_renderTableBodyOn_'){return e.fn()} throw(e)}}
+}),
+smalltalk.MaglevTable);
+
+
+smalltalk.addMethod(
+unescape('_newFor_'),
+smalltalk.method({
+selector: unescape('newFor%3A'),
+fn: function (anObject){
+var self=this;
+return (function($rec){smalltalk.send($rec, "_object_", [anObject]);smalltalk.send($rec, "_initialize", []);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send(self, "_basicNew", []));
+return self;}
+}),
+smalltalk.MaglevTable.klass);
 
 
 smalltalk.addClass('MaglevWindow', smalltalk.Widget, ['container'], 'Maglev-Database-Explorer');
@@ -306,6 +625,17 @@ selector: unescape('renderHeightPlaceholderOn%3A'),
 fn: function (html){
 var self=this;
 (function($rec){smalltalk.send($rec, "_style_", [unescape("visibility%3A%20hidden%3B")]);return smalltalk.send($rec, "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_class_", ["btn"]);return smalltalk.send($rec, "_with_", ["a"]);})(smalltalk.send(html, "_a", []));})]);})(smalltalk.send(html, "_span", []));
+return self;}
+}),
+smalltalk.MaglevWindow);
+
+smalltalk.addMethod(
+unescape('_renderHorziontalLineOn_'),
+smalltalk.method({
+selector: unescape('renderHorziontalLineOn%3A'),
+fn: function (html){
+var self=this;
+smalltalk.send(smalltalk.send(html, "_hr", []), "_style_", [unescape("margin%3A%2010px%3B")]);
 return self;}
 }),
 smalltalk.MaglevWindow);
@@ -361,15 +691,91 @@ smalltalk.MaglevWindow);
 
 smalltalk.addClass('MaglevObjectWindow', smalltalk.MaglevWindow, ['container', 'object', 'classObject'], 'Maglev-Database-Explorer');
 smalltalk.addMethod(
+unescape('_object'),
+smalltalk.method({
+selector: unescape('object'),
+fn: function (){
+var self=this;
+return self['@object'];
+return self;}
+}),
+smalltalk.MaglevObjectWindow);
+
+smalltalk.addMethod(
+unescape('_object_'),
+smalltalk.method({
+selector: unescape('object%3A'),
+fn: function (anObject){
+var self=this;
+(self['@object']=anObject);
+(self['@classObject']=smalltalk.send(anObject, "_classObject", []));
+return self;}
+}),
+smalltalk.MaglevObjectWindow);
+
+smalltalk.addMethod(
+unescape('_renderWindowContentOn_'),
+smalltalk.method({
+selector: unescape('renderWindowContentOn%3A'),
+fn: function (html){
+var self=this;
+smalltalk.send(self, "_renderHorziontalLineOn_", [html]);
+smalltalk.send(html, "_with_", [smalltalk.send((smalltalk.MaglevTable || MaglevTable), "_newFor_", [smalltalk.send(smalltalk.send(self, "_object", []), "_instVars", [])])]);
+return self;}
+}),
+smalltalk.MaglevObjectWindow);
+
+smalltalk.addMethod(
 unescape('_renderWindowTitleContentOn_'),
 smalltalk.method({
 selector: unescape('renderWindowTitleContentOn%3A'),
 fn: function (html){
 var self=this;
-
+(function($rec){smalltalk.send($rec, "_with_", [smalltalk.send(self['@object'], "_inlineViewComponentShort", [])]);return smalltalk.send($rec, "_with_", [":"]);})(html);
+smalltalk.send(self, "_renderHeightPlaceholderOn_", [html]);
+(function($rec){smalltalk.send($rec, "_class_", [unescape("right-inline-block")]);return smalltalk.send($rec, "_with_", [smalltalk.send(self['@classObject'], "_inlineViewComponent", [])]);})(smalltalk.send(html, "_div", []));
+smalltalk.send(self, "_renderCloseButtonOn_", [html]);
 return self;}
 }),
 smalltalk.MaglevObjectWindow);
 
+
+
+smalltalk.addClass('MaglevArrayWindow', smalltalk.MaglevObjectWindow, [], 'Maglev-Database-Explorer');
+smalltalk.addMethod(
+unescape('_renderWindowContentOn_'),
+smalltalk.method({
+selector: unescape('renderWindowContentOn%3A'),
+fn: function (html){
+var self=this;
+smalltalk.send(self, "_renderWindowContentOn_", [html], smalltalk.MaglevObjectWindow);
+smalltalk.send(self, "_renderHorziontalLineOn_", [html]);
+smalltalk.send(html, "_with_", [smalltalk.send((smalltalk.MaglevTable || MaglevTable), "_newFor_", [smalltalk.send(smalltalk.send(self, "_object", []), "_elements", [])])]);
+return self;}
+}),
+smalltalk.MaglevArrayWindow);
+
+
+
+smalltalk.addClass('MaglevHashWindow', smalltalk.MaglevObjectWindow, [], 'Maglev-Database-Explorer');
+smalltalk.addMethod(
+unescape('_renderWindowContentOn_'),
+smalltalk.method({
+selector: unescape('renderWindowContentOn%3A'),
+fn: function (html){
+var self=this;
+smalltalk.send(self, "_renderWindowContentOn_", [html], smalltalk.MaglevObjectWindow);
+smalltalk.send(self, "_renderHorziontalLineOn_", [html]);
+smalltalk.send(html, "_with_", [smalltalk.send((smalltalk.MaglevTable || MaglevTable), "_newFor_", [smalltalk.send(smalltalk.send(self, "_object", []), "_elements", [])])]);
+return self;}
+}),
+smalltalk.MaglevHashWindow);
+
+
+
+smalltalk.addClass('MaglevModuleWindow', smalltalk.MaglevObjectWindow, [], 'Maglev-Database-Explorer');
+
+
+smalltalk.addClass('MaglevClassWindow', smalltalk.MaglevModuleWindow, [], 'Maglev-Database-Explorer');
 
 

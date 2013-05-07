@@ -60,6 +60,10 @@ audio
     ^self tag: 'audio'
 !
 
+b
+    ^self tag: 'b'
+!
+
 base
 	^self tag: 'base'
 !

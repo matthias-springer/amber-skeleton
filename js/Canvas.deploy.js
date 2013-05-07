@@ -78,6 +78,17 @@ return self;}
 smalltalk.HTMLCanvas);
 
 smalltalk.addMethod(
+unescape('_b'),
+smalltalk.method({
+selector: unescape('b'),
+fn: function (){
+var self=this;
+return smalltalk.send(self, "_tag_", ["b"]);
+return self;}
+}),
+smalltalk.HTMLCanvas);
+
+smalltalk.addMethod(
 unescape('_base'),
 smalltalk.method({
 selector: unescape('base'),

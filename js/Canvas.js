@@ -113,6 +113,22 @@ referencedClasses: []
 smalltalk.HTMLCanvas);
 
 smalltalk.addMethod(
+unescape('_b'),
+smalltalk.method({
+selector: unescape('b'),
+category: 'tags',
+fn: function (){
+var self=this;
+return smalltalk.send(self, "_tag_", ["b"]);
+return self;},
+args: [],
+source: unescape('b%0A%20%20%20%20%5Eself%20tag%3A%20%27b%27'),
+messageSends: ["tag:"],
+referencedClasses: []
+}),
+smalltalk.HTMLCanvas);
+
+smalltalk.addMethod(
 unescape('_base'),
 smalltalk.method({
 selector: unescape('base'),

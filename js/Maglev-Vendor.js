@@ -1,4 +1,52 @@
 smalltalk.addPackage('Maglev-Vendor', {});
+smalltalk.addClass('MaglevAjax', smalltalk.Object, [], 'Maglev-Vendor');
+
+smalltalk.addMethod(
+unescape('_ajax_data_'),
+smalltalk.method({
+selector: unescape('ajax%3Adata%3A'),
+category: 'not yet classified',
+fn: function (aString, data){
+var self=this;
+ var result = $.parseJSON($.ajax({url: aString, data: $.parseJSON(data._asJSONString()), async: false}).responseText);
+	if (result.success === false) {
+		self.error('Server call failed: ' + result.exception);
+	}
+	else {
+		return result.result;
+	} ;
+return self;},
+args: ["aString", "data"],
+source: unescape('ajax%3A%20aString%20data%3A%20data%0A%09%3C%20var%20result%20%3D%20%24.parseJSON%28%24.ajax%28%7Burl%3A%20aString%2C%20data%3A%20%24.parseJSON%28data._asJSONString%28%29%29%2C%20async%3A%20false%7D%29.responseText%29%3B%0A%09if%20%28result.success%20%3D%3D%3D%20false%29%20%7B%0A%09%09self.error%28%27Server%20call%20failed%3A%20%27%20+%20result.exception%29%3B%0A%09%7D%0A%09else%20%7B%0A%09%09return%20result.result%3B%0A%09%7D%20%3E'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.MaglevAjax.klass);
+
+smalltalk.addMethod(
+unescape('_ajax_data_withCallback_'),
+smalltalk.method({
+selector: unescape('ajax%3Adata%3AwithCallback%3A'),
+category: 'not yet classified',
+fn: function (aString, data, aBlock){
+var self=this;
+ $.parseJSON($.ajax({url: aString, data: $.parseJSON(data._asJSONString()), async: true, complete: function(response) {
+		var result = $.parseJSON(response.responseText);
+		if (result.success === false) {
+			self.error('Server call failed: ' + result.exception);
+		} else {
+			aBlock._value_(result.result);
+		}
+	}}).responseText); ;
+return self;},
+args: ["aString", "data", "aBlock"],
+source: unescape('ajax%3A%20aString%20data%3A%20data%20withCallback%3A%20aBlock%0A%09%3C%20%24.parseJSON%28%24.ajax%28%7Burl%3A%20aString%2C%20data%3A%20%24.parseJSON%28data._asJSONString%28%29%29%2C%20async%3A%20true%2C%20complete%3A%20function%28response%29%20%7B%0A%09%09var%20result%20%3D%20%24.parseJSON%28response.responseText%29%3B%0A%09%09if%20%28result.success%20%3D%3D%3D%20false%29%20%7B%0A%09%09%09self.error%28%27Server%20call%20failed%3A%20%27%20+%20result.exception%29%3B%0A%09%09%7D%20else%20%7B%0A%09%09%09aBlock._value_%28result.result%29%3B%0A%09%09%7D%0A%09%7D%7D%29.responseText%29%3B%20%3E'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.MaglevAjax.klass);
+
+
 smalltalk.addClass('MaglevJsPlumb', smalltalk.Object, [], 'Maglev-Vendor');
 
 smalltalk.MaglevJsPlumb.klass.iVarNames = ['sourceTarget','defaults','referenceConnection','instanceOfConnection','connection'];
@@ -167,11 +215,11 @@ selector: unescape('initializeJsPlumb'),
 category: 'initializing',
 fn: function (){
 var self=this;
-smalltalk.send((typeof jsPlumb == 'undefined' ? nil : jsPlumb), "_bind_a_", ["ready", (function(){smalltalk.send(self, "_initializeChromeFix", []);smalltalk.send((typeof jsPlumb == 'undefined' ? nil : jsPlumb), "_setRenderMode_", [smalltalk.send((typeof jsPlumb == 'undefined' ? nil : jsPlumb), "_SVG", [])]);return smalltalk.send((typeof jsPlumb == 'undefined' ? nil : jsPlumb), "_initializeDefaults_", [self['@defaults']]);})]);
+smalltalk.send((typeof jsPlumb == 'undefined' ? nil : jsPlumb), "_bind_a_", ["ready", (function(){smalltalk.send(self, "_initializeChromeFix", []);smalltalk.send((typeof jsPlumb == 'undefined' ? nil : jsPlumb), "_setRenderMode_", [smalltalk.send((typeof jsPlumb == 'undefined' ? nil : jsPlumb), "_SVG", [])]);return smalltalk.send((typeof jsPlumb == 'undefined' ? nil : jsPlumb), "_importDefaults_", [self['@defaults']]);})]);
 return self;},
 args: [],
-source: unescape('initializeJsPlumb%0A%09jsPlumb%0A%09%09bind%3A%20%27ready%27%0A%09%09a%3A%20%5B%0A%09%09%09self%20initializeChromeFix.%0A%09%09%09jsPlumb%20setRenderMode%3A%20jsPlumb%20SVG.%0A%09%09%09jsPlumb%20initializeDefaults%3A%20defaults%5D.'),
-messageSends: ["bind:a:", "initializeChromeFix", "setRenderMode:", "SVG", "initializeDefaults:"],
+source: unescape('initializeJsPlumb%0A%09jsPlumb%0A%09%09bind%3A%20%27ready%27%0A%09%09a%3A%20%5B%0A%09%09%09self%20initializeChromeFix.%0A%09%09%09jsPlumb%20setRenderMode%3A%20jsPlumb%20SVG.%0A%09%09%09jsPlumb%20importDefaults%3A%20defaults%5D.'),
+messageSends: ["bind:a:", "initializeChromeFix", "setRenderMode:", "SVG", "importDefaults:"],
 referencedClasses: []
 }),
 smalltalk.MaglevJsPlumb.klass);
