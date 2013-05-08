@@ -576,6 +576,10 @@ action: aString
 	self at: 'action' put: aString
 !
 
+addClass: aString
+	self asJQuery addClass: aString.
+!
+
 align: aString
 	self at: 'align' put: aString
 !
@@ -616,6 +620,10 @@ for: aString
 	self at: 'for' put: aString
 !
 
+height
+	^ self asJQuery height
+!
+
 height: aString
     self  at: 'height' put: aString
 !
@@ -624,12 +632,20 @@ hidden
 	self at: 'hidden' put: 'hidden'
 !
 
+hide
+	self asJQuery hide.
+!
+
 href: aString
     self at: 'href' put: aString
 !
 
 id: aString
     self at: 'id' put: aString
+!
+
+left: aValue
+	self asJQuery css: 'left' a: aValue.
 !
 
 media: aString
@@ -656,8 +672,16 @@ removeAt: aString
     <self['@element'].removeAttribute(aString)>
 !
 
+removeClass: aString
+	self asJQuery removeClass: aString.
+!
+
 rows: aString
 	self at: 'rows' put: aString
+!
+
+show
+	self asJQuery show.
 !
 
 src: aString
@@ -680,6 +704,10 @@ title: aString
     self at: 'title' put: aString
 !
 
+top: aValue
+	self asJQuery css: 'top' a: aValue.
+!
+
 type: aString
     self at: 'type' put: aString
 !
@@ -690,6 +718,10 @@ valign: aString
 
 value: aString
     self  at: 'value' put: aString
+!
+
+width
+	^ self asJQuery width
 !
 
 width: aString

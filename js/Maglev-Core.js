@@ -50,9 +50,10 @@ var window=nil;
 smalltalk.send(window, "_appendToWorkspace", []);
 smalltalk.send(smalltalk.send(self, "_objectSpace", []), "_reloadObject_withCallback_", [oop, (function(object){var objWindow=nil;
 (objWindow=smalltalk.send(object, "_windowViewComponentReplace_", [window]));return smalltalk.send(objWindow, "_renderReplace", []);})]);
+return window;
 return self;},
 args: ["oop"],
-source: unescape('showReloadObjectWindow%3A%20oop%0A%09%7Cwindow%7C%0A%09window%20%3A%3D%20MaglevWaitingWindow%20new.%0A%09window%20appendToWorkspace.%0A%09self%20objectSpace%0A%09%09reloadObject%3A%20oop%0A%09%09withCallback%3A%20%5B%3Aobject%20%7C%20%7CobjWindow%7C%0A%09%09%09objWindow%20%3A%3D%20object%20windowViewComponentReplace%3A%20window.%0A%09%09%09objWindow%20renderReplace%5D.'),
+source: unescape('showReloadObjectWindow%3A%20oop%0A%09%7Cwindow%7C%0A%09window%20%3A%3D%20MaglevWaitingWindow%20new.%0A%09window%20appendToWorkspace.%0A%09self%20objectSpace%0A%09%09reloadObject%3A%20oop%0A%09%09withCallback%3A%20%5B%3Aobject%20%7C%20%7CobjWindow%7C%0A%09%09%09objWindow%20%3A%3D%20object%20windowViewComponentReplace%3A%20window.%0A%09%09%09objWindow%20renderReplace%5D.%0A%09%5E%20window'),
 messageSends: ["new", "appendToWorkspace", "reloadObject:withCallback:", "objectSpace", "windowViewComponentReplace:", "renderReplace"],
 referencedClasses: ["MaglevWaitingWindow"]
 }),
@@ -78,7 +79,24 @@ referencedClasses: ["Maglev"]
 smalltalk.Maglev.klass);
 
 
-smalltalk.addClass('MaglevObject', smalltalk.Object, ['oop', 'instVars', 'classObject', 'inspection'], 'Maglev-Core');
+smalltalk.addClass('MaglevObject', smalltalk.Object, ['oop', 'instVars', 'classObject', 'inspection', 'isLoaded', 'windows'], 'Maglev-Core');
+smalltalk.addMethod(
+unescape('_addWindow_'),
+smalltalk.method({
+selector: unescape('addWindow%3A'),
+category: 'interactions',
+fn: function (aWindow){
+var self=this;
+smalltalk.send(smalltalk.send(self, "_windows", []), "_add_", [aWindow]);
+return aWindow;
+return self;},
+args: ["aWindow"],
+source: unescape('addWindow%3A%20aWindow%0A%09self%20windows%20add%3A%20aWindow.%0A%09%5E%20aWindow'),
+messageSends: ["add:", "windows"],
+referencedClasses: []
+}),
+smalltalk.MaglevObject);
+
 smalltalk.addMethod(
 unescape('_classObject'),
 smalltalk.method({
@@ -182,10 +200,10 @@ selector: unescape('isLoaded'),
 category: 'testing',
 fn: function (){
 var self=this;
-return true;
+return self['@isLoaded'];
 return self;},
 args: [],
-source: unescape('isLoaded%0A%09%5E%20true'),
+source: unescape('isLoaded%0A%09%5E%20isLoaded'),
 messageSends: [],
 referencedClasses: []
 }),
@@ -214,6 +232,7 @@ selector: unescape('parseJSON%3A'),
 category: 'instance creation',
 fn: function (obj){
 var self=this;
+(self['@isLoaded']=true);
 (self['@oop']=smalltalk.send(obj, "_oop", []));
 (self['@classObject']=smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObject_", [smalltalk.send(obj, "_classObject", [])]));
 (self['@inspection']=smalltalk.send(obj, "_inspection", []));
@@ -221,9 +240,44 @@ var self=this;
 smalltalk.send(smalltalk.send(obj, "_instVars", []), "_keysAndValuesDo_", [(function(ivName, ivValue){return smalltalk.send(self['@instVars'], "_at_put_", [ivName, smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObject_", [ivValue])]);})]);
 return self;},
 args: ["obj"],
-source: unescape('parseJSON%3A%20obj%0A%09oop%20%3A%3D%20obj%20oop.%0A%09classObject%20%3A%3D%20MaglevObject%20newObject%3A%20obj%20classObject.%0A%09inspection%20%3A%3D%20obj%20inspection.%0A%09instVars%20%3A%3D%20Dictionary%20new.%0A%09obj%20instVars%20keysAndValuesDo%3A%20%5B%3AivName%20%3AivValue%20%7C%0A%09%09instVars%20at%3A%20ivName%20put%3A%20%28MaglevObject%20newObject%3A%20ivValue%29%5D.%0A%09'),
+source: unescape('parseJSON%3A%20obj%0A%09isLoaded%20%3A%3D%20true.%0A%09oop%20%3A%3D%20obj%20oop.%0A%09classObject%20%3A%3D%20MaglevObject%20newObject%3A%20obj%20classObject.%0A%09inspection%20%3A%3D%20obj%20inspection.%0A%09instVars%20%3A%3D%20Dictionary%20new.%0A%09obj%20instVars%20keysAndValuesDo%3A%20%5B%3AivName%20%3AivValue%20%7C%0A%09%09instVars%20at%3A%20ivName%20put%3A%20%28MaglevObject%20newObject%3A%20ivValue%29%5D.%0A%09'),
 messageSends: ["oop", "newObject:", "classObject", "inspection", "new", "keysAndValuesDo:", "instVars", "at:put:"],
 referencedClasses: ["MaglevObject", "Dictionary"]
+}),
+smalltalk.MaglevObject);
+
+smalltalk.addMethod(
+unescape('_parseJSONNotLoaded_'),
+smalltalk.method({
+selector: unescape('parseJSONNotLoaded%3A'),
+category: 'instance creation',
+fn: function (obj){
+var self=this;
+(self['@isLoaded']=false);
+(self['@oop']=smalltalk.send(obj, "_oop", []));
+(self['@inspection']=smalltalk.send(obj, "_inspection", []));
+return self;},
+args: ["obj"],
+source: unescape('parseJSONNotLoaded%3A%20obj%0A%09isLoaded%20%3A%3D%20false.%0A%09oop%20%3A%3D%20obj%20oop.%0A%09inspection%20%3A%3D%20obj%20inspection.'),
+messageSends: ["oop", "inspection"],
+referencedClasses: []
+}),
+smalltalk.MaglevObject);
+
+smalltalk.addMethod(
+unescape('_removeWindow_'),
+smalltalk.method({
+selector: unescape('removeWindow%3A'),
+category: 'interactions',
+fn: function (aWindow){
+var self=this;
+smalltalk.send(smalltalk.send(self, "_windows", []), "_remove_", [aWindow]);
+return aWindow;
+return self;},
+args: ["aWindow"],
+source: unescape('removeWindow%3A%20aWindow%0A%09self%20windows%20remove%3A%20aWindow.%0A%09%5E%20aWindow'),
+messageSends: ["remove:", "windows"],
+referencedClasses: []
 }),
 smalltalk.MaglevObject);
 
@@ -259,6 +313,23 @@ args: ["aWindow"],
 source: unescape('windowViewComponentReplace%3A%20aWindow%0A%09%7Cwindow%7C%0A%09window%20%3A%3D%20self%20class%20windowViewClass%20newReplace%3A%20aWindow.%0A%09window%20object%3A%20self.%0A%09%5E%20window'),
 messageSends: ["newReplace:", "windowViewClass", "class", "object:"],
 referencedClasses: []
+}),
+smalltalk.MaglevObject);
+
+smalltalk.addMethod(
+unescape('_windows'),
+smalltalk.method({
+selector: unescape('windows'),
+category: 'accessing',
+fn: function (){
+var self=this;
+(($receiver = self['@windows']) == nil || $receiver == undefined) ? (function(){return (self['@windows']=smalltalk.send((smalltalk.OrderedCollection || OrderedCollection), "_new", []));})() : $receiver;
+return self['@windows'];
+return self;},
+args: [],
+source: unescape('windows%0A%09windows%20ifNil%3A%20%5Bwindows%20%3A%3D%20OrderedCollection%20new%5D.%0A%09%5E%20windows'),
+messageSends: ["ifNil:", "new"],
+referencedClasses: ["OrderedCollection"]
 }),
 smalltalk.MaglevObject);
 
@@ -389,14 +460,15 @@ selector: unescape('parseJSON%3A'),
 category: 'instance creation',
 fn: function (obj){
 var self=this;
-var object=nil;
-((($receiver = smalltalk.send(obj, "_loaded", [])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (object=smalltalk.send(self, "_newFor_", [smalltalk.send(obj, "_basetype", [])]));})() : (function(){return (object=smalltalk.send((smalltalk.MaglevNotYetLoaded || MaglevNotYetLoaded), "_new", []));})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return (object=smalltalk.send(self, "_newFor_", [smalltalk.send(obj, "_basetype", [])]));}), (function(){return (object=smalltalk.send((smalltalk.MaglevNotYetLoaded || MaglevNotYetLoaded), "_new", []));})]));
-return (function($rec){smalltalk.send($rec, "_parseJSON_", [obj]);return smalltalk.send($rec, "_yourself", []);})(object);
-return self;},
+try{var object=nil;
+(object=smalltalk.send(self, "_newFor_", [smalltalk.send(obj, "_basetype", [])]));
+((($receiver = smalltalk.send(obj, "_loaded", [])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (function(){throw({name: 'stReturn', selector: '_parseJSON_', fn: function(){return (function($rec){smalltalk.send($rec, "_parseJSON_", [obj]);return smalltalk.send($rec, "_yourself", []);})(object)}})})();})() : (function(){return (function(){throw({name: 'stReturn', selector: '_parseJSON_', fn: function(){return (function($rec){smalltalk.send($rec, "_parseJSONNotLoaded_", [obj]);return smalltalk.send($rec, "_yourself", []);})(object)}})})();})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return (function(){throw({name: 'stReturn', selector: '_parseJSON_', fn: function(){return (function($rec){smalltalk.send($rec, "_parseJSON_", [obj]);return smalltalk.send($rec, "_yourself", []);})(object)}})})();}), (function(){return (function(){throw({name: 'stReturn', selector: '_parseJSON_', fn: function(){return (function($rec){smalltalk.send($rec, "_parseJSONNotLoaded_", [obj]);return smalltalk.send($rec, "_yourself", []);})(object)}})})();})]));
+return self;
+} catch(e) {if(e.name === 'stReturn' && e.selector === '_parseJSON_'){return e.fn()} throw(e)}},
 args: ["obj"],
-source: unescape('parseJSON%3A%20obj%0A%09%7Cobject%7C%0A%09obj%20loaded%20%0A%09%09ifTrue%3A%20%5Bobject%20%3A%3D%20self%20newFor%3A%20obj%20basetype%5D%0A%09%09ifFalse%3A%20%5Bobject%20%3A%3D%20MaglevNotYetLoaded%20new%5D.%0A%09%5E%20object%0A%09%09parseJSON%3A%20obj%3B%0A%09%09yourself'),
-messageSends: ["ifTrue:ifFalse:", "loaded", "newFor:", "basetype", "new", "parseJSON:", "yourself"],
-referencedClasses: ["MaglevNotYetLoaded"]
+source: unescape('parseJSON%3A%20obj%0A%09%7Cobject%7C%0A%09object%20%3A%3D%20self%20newFor%3A%20obj%20basetype.%0A%09obj%20loaded%0A%09%09ifTrue%3A%20%5B%5E%20object%20parseJSON%3A%20obj%3B%20yourself%5D%0A%09%09ifFalse%3A%20%5B%5E%20object%20parseJSONNotLoaded%3A%20obj%3B%20yourself%5D.'),
+messageSends: ["newFor:", "basetype", "ifTrue:ifFalse:", "loaded", "parseJSON:", "yourself", "parseJSONNotLoaded:"],
+referencedClasses: []
 }),
 smalltalk.MaglevObject.klass);
 
@@ -689,6 +761,22 @@ referencedClasses: []
 smalltalk.MaglevHash);
 
 smalltalk.addMethod(
+unescape('_keysAndValuesDo_'),
+smalltalk.method({
+selector: unescape('keysAndValuesDo%3A'),
+category: 'accessing',
+fn: function (aBlock){
+var self=this;
+smalltalk.send(self['@elements'], "_keysAndValuesDo_", [aBlock]);
+return self;},
+args: ["aBlock"],
+source: unescape('keysAndValuesDo%3A%20aBlock%0A%09elements%20keysAndValuesDo%3A%20aBlock.'),
+messageSends: ["keysAndValuesDo:"],
+referencedClasses: []
+}),
+smalltalk.MaglevHash);
+
+smalltalk.addMethod(
 unescape('_parseJSON_'),
 smalltalk.method({
 selector: unescape('parseJSON%3A'),
@@ -719,11 +807,13 @@ selector: unescape('size'),
 category: 'accessing',
 fn: function (){
 var self=this;
-return self['@size'];
-return self;},
+try{(($receiver = self['@size']) == nil || $receiver == undefined) ? (function(){return (function(){throw({name: 'stReturn', selector: '_size', fn: function(){return smalltalk.send(self['@elements'], "_size", [])}})})();})() : $receiver;
+(function(){throw({name: 'stReturn', selector: '_size', fn: function(){return self['@size']}})})();
+return self;
+} catch(e) {if(e.name === 'stReturn' && e.selector === '_size'){return e.fn()} throw(e)}},
 args: [],
-source: unescape('size%0A%09%5E%20size'),
-messageSends: [],
+source: unescape('size%0A%09size%20ifNil%3A%20%5B%5E%20elements%20size%5D.%0A%09%5E%20size'),
+messageSends: ["ifNil:", "size"],
 referencedClasses: []
 }),
 smalltalk.MaglevHash);
@@ -966,58 +1056,6 @@ referencedClasses: ["MaglevNilClassWindow"]
 smalltalk.MaglevNilClass.klass);
 
 
-smalltalk.addClass('MaglevNotYetLoaded', smalltalk.MaglevObject, [], 'Maglev-Core');
-smalltalk.addMethod(
-unescape('_isLoaded'),
-smalltalk.method({
-selector: unescape('isLoaded'),
-category: 'testing',
-fn: function (){
-var self=this;
-return false;
-return self;},
-args: [],
-source: unescape('isLoaded%0A%09%5E%20false'),
-messageSends: [],
-referencedClasses: []
-}),
-smalltalk.MaglevNotYetLoaded);
-
-smalltalk.addMethod(
-unescape('_parseJSON_'),
-smalltalk.method({
-selector: unescape('parseJSON%3A'),
-category: 'instance creation',
-fn: function (obj){
-var self=this;
-(self['@oop']=smalltalk.send(obj, "_oop", []));
-(self['@inspection']=smalltalk.send(obj, "_inspection", []));
-return self;},
-args: ["obj"],
-source: unescape('parseJSON%3A%20obj%0A%09oop%20%3A%3D%20obj%20oop.%0A%09inspection%20%3A%3D%20obj%20inspection.'),
-messageSends: ["oop", "inspection"],
-referencedClasses: []
-}),
-smalltalk.MaglevNotYetLoaded);
-
-
-smalltalk.addMethod(
-unescape('_basetype'),
-smalltalk.method({
-selector: unescape('basetype'),
-category: 'constants',
-fn: function (){
-var self=this;
-return nil;
-return self;},
-args: [],
-source: unescape('basetype%0A%09%5E%20nil'),
-messageSends: [],
-referencedClasses: []
-}),
-smalltalk.MaglevNotYetLoaded.klass);
-
-
 smalltalk.addClass('MaglevString', smalltalk.MaglevObject, [], 'Maglev-Core');
 
 smalltalk.addMethod(
@@ -1202,6 +1240,22 @@ referencedClasses: ["Dictionary"]
 smalltalk.MaglevObjectSpace);
 
 smalltalk.addMethod(
+unescape('_registerWindow_'),
+smalltalk.method({
+selector: unescape('registerWindow%3A'),
+category: 'interactions',
+fn: function (aWindow){
+var self=this;
+smalltalk.send(smalltalk.send(smalltalk.send(self, "_objects", []), "_at_", [smalltalk.send(smalltalk.send(aWindow, "_object", []), "_oop", [])]), "_addWindow_", [aWindow]);
+return self;},
+args: ["aWindow"],
+source: unescape('registerWindow%3A%20aWindow%0A%09%28self%20objects%20at%3A%20aWindow%20object%20oop%29%0A%09%09addWindow%3A%20aWindow.'),
+messageSends: ["addWindow:", "at:", "objects", "oop", "object"],
+referencedClasses: []
+}),
+smalltalk.MaglevObjectSpace);
+
+smalltalk.addMethod(
 unescape('_reloadObject_'),
 smalltalk.method({
 selector: unescape('reloadObject%3A'),
@@ -1232,6 +1286,22 @@ args: ["anOop", "aBlock"],
 source: unescape('reloadObject%3A%20anOop%20withCallback%3A%20aBlock%0A%09MaglevAjax%20%0A%09%09ajax%3A%20%27/object/index/%27%2C%20anOop%20asString%0A%09%09data%3A%20Dictionary%20new%0A%09%09withCallback%3A%20%5B%3Aobj%20%7C%20%0A%09%09%09aBlock%20value%3A%20%28MaglevObject%20newObject%3A%20obj%29%5D.'),
 messageSends: ["ajax:data:withCallback:", unescape("%2C"), "asString", "new", "value:", "newObject:"],
 referencedClasses: ["MaglevAjax", "Dictionary", "MaglevObject"]
+}),
+smalltalk.MaglevObjectSpace);
+
+smalltalk.addMethod(
+unescape('_unregisterWindow_'),
+smalltalk.method({
+selector: unescape('unregisterWindow%3A'),
+category: 'interactions',
+fn: function (aWindow){
+var self=this;
+smalltalk.send(smalltalk.send(smalltalk.send(self, "_objects", []), "_at_", [smalltalk.send(smalltalk.send(aWindow, "_object", []), "_oop", [])]), "_removeWindow_", [aWindow]);
+return self;},
+args: ["aWindow"],
+source: unescape('unregisterWindow%3A%20aWindow%0A%09%28self%20objects%20at%3A%20aWindow%20object%20oop%29%0A%09%09removeWindow%3A%20aWindow.'),
+messageSends: ["removeWindow:", "at:", "objects", "oop", "object"],
+referencedClasses: []
 }),
 smalltalk.MaglevObjectSpace);
 

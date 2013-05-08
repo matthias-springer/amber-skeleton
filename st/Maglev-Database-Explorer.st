@@ -79,6 +79,12 @@ renderOn: html
 
 !MaglevIcon class methodsFor: 'instance creation'!
 
+move
+	^ self new
+		icon: 'move';
+		yourself
+!
+
 pencil
 	^ self new
 		icon: 'pencil';
@@ -111,7 +117,7 @@ wait
 ! !
 
 Widget subclass: #MaglevObjectInline
-	instanceVariableNames: 'object hasDropDown isDraggable depth isShort'
+	instanceVariableNames: 'object hasDropDown isDraggable depth isShort dragContent dragDummy dragObject'
 	package: 'Maglev-Database-Explorer'!
 
 !MaglevObjectInline methodsFor: 'accessing'!
@@ -135,7 +141,7 @@ hasDropDown: aBoolean
 !
 
 isDraggable
-	isDraggable ifNil: [isDraggable := false].
+	isDraggable ifNil: [isDraggable := self isDraggableDefault].
 	^ isDraggable
 !
 
@@ -166,6 +172,10 @@ hasDropDownDefault
 	^ true
 !
 
+isDraggableDefault
+	^ true
+!
+
 maxDepth
 	^ 1
 !
@@ -174,23 +184,66 @@ maxInspection
 	^ 15
 ! !
 
+!MaglevObjectInline methodsFor: 'interactions'!
+
+bindDraggable
+	|options cursorPos|
+	cursorPos := Object new
+		basicAt: 'left' put: 0;
+		basicAt: 'top' put: 0;
+		yourself.
+	options := Object new
+		basicAt: 'create' put: [:event :ui | ];
+		basicAt: 'cursorPos' put: cursorPos;
+		basicAt: 'start' put: [:event :ui | self dragStart: event a: ui];
+		basicAt: 'stop' put: [:event :ui | self dragStop: event a: ui];
+		yourself.
+	dragObject asJQuery draggable: options.
+!
+
+dragStart: event a: ui
+	dragContent hide.
+	dragDummy show.
+!
+
+dragStop: event a: ui
+	|position window|
+	position := dragObject asJQuery offset.
+	window := Maglev instance showReloadObjectWindow: object oop.
+	window left: position left - (dragObject width / 2).
+	window top: position top - (dragObject height / 2).
+	dragObject left: 0.
+	dragObject top: 0.
+	dragDummy hide.
+	dragContent show.
+! !
+
 !MaglevObjectInline methodsFor: 'rendering'!
 
 renderDraggableObjectOn: html
 	html div
-		class: 'draggable-new-object-container'
+		class: 'draggable-new-object-container';
 		with: [
-			html div
+			dragObject := html div
 				class: 'ui-widget-content ui-draggable draggable-new-object';
 				with: [
-					html div
+					dragDummy := html div
 						class: 'object-drag-dummy';
 						style: 'display: none;';
 						with: MaglevIcon move;
 						with: [self renderObjectContainerOn: html].
-					html div
+					dragContent := html div
 						class: 'object-iv-name';
 						with: [self renderObjectContainerOn: html]]].
+	self bindDraggable.
+!
+
+renderLoadedObjectOn: html
+	|text|
+	text := object inspection copyFrom: 1 to: self maxInspection.
+	text size < object inspection size 
+		ifTrue: [text := text, '...'].
+	html with: text.
 !
 
 renderObjectActionsOn: html
@@ -213,11 +266,9 @@ renderObjectContainerOn: html
 !
 
 renderObjectOn: html
-	|text|
-	text := object inspection copyFrom: 1 to: self maxInspection.
-	text size < object inspection size 
-		ifTrue: [text := text, '...'].
-	html with: text.
+	object isLoaded
+		ifTrue: [self renderLoadedObjectOn: html]
+		ifFalse: [self renderUnloadedObjectOn: html].
 !
 
 renderObjectWithDropDownOn: html
@@ -248,6 +299,14 @@ renderText: text withDropDownOn: html
 				with: [
 					html with: text.
 					html b class: 'caret']].
+!
+
+renderUnloadedObjectOn: html
+	|text|
+	text := object inspection copyFrom: 1 to: self maxInspection.
+	text size < object inspection size 
+		ifTrue: [text := text, '...'].
+	html with: text.
 ! !
 
 !MaglevObjectInline class methodsFor: 'instance creation'!
@@ -275,7 +334,7 @@ maxElements
 
 !MaglevArrayInline methodsFor: 'rendering'!
 
-renderObjectOn: html
+renderLoadedObjectOn: html
 	|showElements maxElements|
 	maxElements := self maxElements.
 	showElements := maxElements min: self object size.
@@ -295,6 +354,12 @@ renderObjectOn: html
 renderObjectWithDropDownOn: html
 	"Do not render a drop down menu around the whole object."
 	self renderObjectOn: html.
+!
+
+renderUnloadedObjectOn: html
+	self renderText: '[' withDropDownOn: html.
+	html with: '...'.
+	self renderText: ']' withDropDownOn: html.
 ! !
 
 MaglevObjectInline subclass: #MaglevFixnumInline
@@ -305,6 +370,10 @@ MaglevObjectInline subclass: #MaglevFixnumInline
 
 hasDropDownDefault
 	^ false
+!
+
+isDraggableDefault
+	^ false
 ! !
 
 MaglevObjectInline subclass: #MaglevFloatInline
@@ -314,6 +383,10 @@ MaglevObjectInline subclass: #MaglevFloatInline
 !MaglevFloatInline methodsFor: 'constants'!
 
 hasDropDownDefault
+	^ false
+!
+
+isDraggableDefault
 	^ false
 ! !
 
@@ -333,7 +406,11 @@ maxElements
 
 !MaglevHashInline methodsFor: 'rendering'!
 
-renderObjectOn: html
+isDraggableDefault
+	^ false
+!
+
+renderLoadedObjectOn: html
 	|showElements maxElements|
 	maxElements := self maxElements.
 	showElements := maxElements min: self object size.
@@ -360,6 +437,12 @@ renderObjectOn: html
 renderObjectWithDropDownOn: html
 	"Do not render a drop down menu around the whole object."
 	self renderObjectOn: html.
+!
+
+renderUnloadedObjectOn: html
+	self renderText: '{' withDropDownOn: html.
+	html with: '...'.
+	self renderText: '}' withDropDownOn: html.
 ! !
 
 MaglevObjectInline subclass: #MaglevModuleInline
@@ -390,6 +473,10 @@ MaglevObjectInline subclass: #MaglevNilClassInline
 
 hasDropDownDefault
 	^ false
+!
+
+isDraggableDefault
+	^ false
 ! !
 
 MaglevObjectInline subclass: #MaglevStringInline
@@ -400,6 +487,10 @@ MaglevObjectInline subclass: #MaglevStringInline
 
 hasDropDownDefault
 	^ false
+!
+
+isDraggableDefault
+	^ false
 ! !
 
 MaglevObjectInline subclass: #MaglevSymbolInline
@@ -409,6 +500,10 @@ MaglevObjectInline subclass: #MaglevSymbolInline
 !MaglevSymbolInline methodsFor: 'constants'!
 
 hasDropDownDefault
+	^ false
+!
+
+isDraggableDefault
 	^ false
 ! !
 
@@ -504,14 +599,31 @@ container
 	^ container
 ! !
 
+!MaglevWindow methodsFor: 'attributes'!
+
+left: aValue
+	container left: aValue.
+!
+
+top: aValue
+	container top: aValue.
+! !
+
 !MaglevWindow methodsFor: 'interactions'!
 
 clear
 	container asJQuery empty.
 !
 
+connectTo: aWindow with: parameters
+	MaglevJsPlumb connectWindow: self to: aWindow with: parameters.
+!
+
 prepareWindow
 	MaglevJsPlumb prepareObject: (container asJQuery).
+	container
+		onMouseEnter: [container removeClass: 'window-mouse-out'];
+		onMouseLeave: [container addClass: 'window-mouse-out'].
 !
 
 replace: aWindow
@@ -548,7 +660,9 @@ renderHorziontalLineOn: html
 !
 
 renderOn: html
-	container ifNil: [container := html div].
+	container ifNil: [
+		container := html div.
+		self prepareWindow].
 	container
 		class: 'component window';
 		with: [
@@ -557,7 +671,6 @@ renderOn: html
 				with: [
 					self renderWindowTitleOn: html.
 					self renderWindowContentOn: html]].
-	self prepareWindow.
 !
 
 renderReplace
@@ -595,6 +708,10 @@ MaglevWindow subclass: #MaglevObjectWindow
 
 !MaglevObjectWindow methodsFor: 'accessing'!
 
+container
+	^ container
+!
+
 object
 	^ object
 !
@@ -602,6 +719,19 @@ object
 object: anObject
 	object := anObject.
 	classObject := anObject classObject.
+! !
+
+!MaglevObjectWindow methodsFor: 'interactions'!
+
+prepareWindow
+	super prepareWindow
+	MaglevObjectSpace registerWindow: self.
+!
+
+replace: aWindow
+	super replace: aWindow
+	MaglevObjectSpace unregisterWindow: aWindow.
+	MaglevObjectSpace registerWindow: self.
 ! !
 
 !MaglevObjectWindow methodsFor: 'rendering'!

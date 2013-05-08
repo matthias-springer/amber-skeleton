@@ -16,14 +16,14 @@ ajax: aString data: data
 !
 
 ajax: aString data: data withCallback: aBlock
-	< $.parseJSON($.ajax({url: aString, data: $.parseJSON(data._asJSONString()), async: true, complete: function(response) {
+	< $.ajax({url: aString, data: $.parseJSON(data._asJSONString()), async: true, complete: function(response) {
 		var result = $.parseJSON(response.responseText);
 		if (result.success === false) {
 			self.error('Server call failed: ' + result.exception);
 		} else {
 			aBlock._value_(result.result);
 		}
-	}}).responseText); >
+	}}); >
 ! !
 
 Object subclass: #MaglevJsPlumb
@@ -31,6 +31,28 @@ Object subclass: #MaglevJsPlumb
 	package: 'Maglev-Vendor'!
 
 MaglevJsPlumb class instanceVariableNames: 'sourceTarget defaults referenceConnection instanceOfConnection connection'!
+
+!MaglevJsPlumb class methodsFor: 'accessing'!
+
+connection
+	^ connection
+!
+
+defaults
+	^ defaults
+!
+
+instanceOfConnection
+	^ instanceOfConnection
+!
+
+referenceConnection
+	^ referenceConnection
+!
+
+sourceTarget
+	^ sourceTarget
+! !
 
 !MaglevJsPlumb class methodsFor: 'constants'!
 
@@ -114,6 +136,17 @@ initializeJsPlumb
 ! !
 
 !MaglevJsPlumb class methodsFor: 'interactions'!
+
+connectWindow: sourceWindow to: targetWindow with: parameters
+	|params type defParams|
+	type := self connection at: (parameters at: #type).
+	< params = $.extend(true, {}, defParams); >.
+	params
+		basicAt: 'source' put: sourceWindow container;
+		basicAt: 'target' put: targetWindow container.
+
+	jsPlumb connect: params.
+!
 
 prepareObject: anObject
 	jsPlumb draggable: anObject.

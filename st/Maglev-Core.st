@@ -30,6 +30,7 @@ showReloadObjectWindow: oop
 		withCallback: [:object | |objWindow|
 			objWindow := object windowViewComponentReplace: window.
 			objWindow renderReplace].
+	^ window
 ! !
 
 Maglev class instanceVariableNames: 'instance'!
@@ -42,7 +43,7 @@ instance
 ! !
 
 Object subclass: #MaglevObject
-	instanceVariableNames: 'oop instVars classObject inspection'
+	instanceVariableNames: 'oop instVars classObject inspection isLoaded windows'
 	package: 'Maglev-Core'!
 
 !MaglevObject methodsFor: 'accessing'!
@@ -61,17 +62,41 @@ instVars
 
 oop
 	^ oop
+!
+
+windows
+	windows ifNil: [windows := OrderedCollection new].
+	^ windows
 ! !
 
 !MaglevObject methodsFor: 'instance creation'!
 
 parseJSON: obj
+	isLoaded := true.
 	oop := obj oop.
 	classObject := MaglevObject newObject: obj classObject.
 	inspection := obj inspection.
 	instVars := Dictionary new.
 	obj instVars keysAndValuesDo: [:ivName :ivValue |
 		instVars at: ivName put: (MaglevObject newObject: ivValue)].
+!
+
+parseJSONNotLoaded: obj
+	isLoaded := false.
+	oop := obj oop.
+	inspection := obj inspection.
+! !
+
+!MaglevObject methodsFor: 'interactions'!
+
+addWindow: aWindow
+	self windows add: aWindow.
+	^ aWindow
+!
+
+removeWindow: aWindow
+	self windows remove: aWindow.
+	^ aWindow
 ! !
 
 !MaglevObject methodsFor: 'rendering'!
@@ -113,7 +138,7 @@ windowViewComponentReplace: aWindow
 !MaglevObject methodsFor: 'testing'!
 
 isLoaded
-	^ true
+	^ isLoaded
 ! !
 
 MaglevObject class instanceVariableNames: 'basetypes'!
@@ -171,12 +196,10 @@ newObject: obj
 
 parseJSON: obj
 	|object|
-	obj loaded 
-		ifTrue: [object := self newFor: obj basetype]
-		ifFalse: [object := MaglevNotYetLoaded new].
-	^ object
-		parseJSON: obj;
-		yourself
+	object := self newFor: obj basetype.
+	obj loaded
+		ifTrue: [^ object parseJSON: obj; yourself]
+		ifFalse: [^ object parseJSONNotLoaded: obj; yourself].
 ! !
 
 MaglevObject subclass: #MaglevArray
@@ -274,7 +297,12 @@ elements
 	^ elements
 !
 
+keysAndValuesDo: aBlock
+	elements keysAndValuesDo: aBlock.
+!
+
 size
+	size ifNil: [^ elements size].
 	^ size
 ! !
 
@@ -382,29 +410,6 @@ windowViewClass
 	^ MaglevNilClassWindow
 ! !
 
-MaglevObject subclass: #MaglevNotYetLoaded
-	instanceVariableNames: ''
-	package: 'Maglev-Core'!
-
-!MaglevNotYetLoaded methodsFor: 'instance creation'!
-
-parseJSON: obj
-	oop := obj oop.
-	inspection := obj inspection.
-! !
-
-!MaglevNotYetLoaded methodsFor: 'testing'!
-
-isLoaded
-	^ false
-! !
-
-!MaglevNotYetLoaded class methodsFor: 'constants'!
-
-basetype
-	^ nil
-! !
-
 MaglevObject subclass: #MaglevString
 	instanceVariableNames: ''
 	package: 'Maglev-Core'!
@@ -449,6 +454,18 @@ Object subclass: #MaglevObjectSpace
 
 initialize
 	objects := Dictionary new.
+! !
+
+!MaglevObjectSpace methodsFor: 'interactions'!
+
+registerWindow: aWindow
+	(self objects at: aWindow object oop)
+		addWindow: aWindow.
+!
+
+unregisterWindow: aWindow
+	(self objects at: aWindow object oop)
+		removeWindow: aWindow.
 ! !
 
 !MaglevObjectSpace methodsFor: 'objects'!

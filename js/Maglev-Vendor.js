@@ -30,17 +30,17 @@ selector: unescape('ajax%3Adata%3AwithCallback%3A'),
 category: 'not yet classified',
 fn: function (aString, data, aBlock){
 var self=this;
- $.parseJSON($.ajax({url: aString, data: $.parseJSON(data._asJSONString()), async: true, complete: function(response) {
+ $.ajax({url: aString, data: $.parseJSON(data._asJSONString()), async: true, complete: function(response) {
 		var result = $.parseJSON(response.responseText);
 		if (result.success === false) {
 			self.error('Server call failed: ' + result.exception);
 		} else {
 			aBlock._value_(result.result);
 		}
-	}}).responseText); ;
+	}}); ;
 return self;},
 args: ["aString", "data", "aBlock"],
-source: unescape('ajax%3A%20aString%20data%3A%20data%20withCallback%3A%20aBlock%0A%09%3C%20%24.parseJSON%28%24.ajax%28%7Burl%3A%20aString%2C%20data%3A%20%24.parseJSON%28data._asJSONString%28%29%29%2C%20async%3A%20true%2C%20complete%3A%20function%28response%29%20%7B%0A%09%09var%20result%20%3D%20%24.parseJSON%28response.responseText%29%3B%0A%09%09if%20%28result.success%20%3D%3D%3D%20false%29%20%7B%0A%09%09%09self.error%28%27Server%20call%20failed%3A%20%27%20+%20result.exception%29%3B%0A%09%09%7D%20else%20%7B%0A%09%09%09aBlock._value_%28result.result%29%3B%0A%09%09%7D%0A%09%7D%7D%29.responseText%29%3B%20%3E'),
+source: unescape('ajax%3A%20aString%20data%3A%20data%20withCallback%3A%20aBlock%0A%09%3C%20%24.ajax%28%7Burl%3A%20aString%2C%20data%3A%20%24.parseJSON%28data._asJSONString%28%29%29%2C%20async%3A%20true%2C%20complete%3A%20function%28response%29%20%7B%0A%09%09var%20result%20%3D%20%24.parseJSON%28response.responseText%29%3B%0A%09%09if%20%28result.success%20%3D%3D%3D%20false%29%20%7B%0A%09%09%09self.error%28%27Server%20call%20failed%3A%20%27%20+%20result.exception%29%3B%0A%09%09%7D%20else%20%7B%0A%09%09%09aBlock._value_%28result.result%29%3B%0A%09%09%7D%0A%09%7D%7D%29%3B%20%3E'),
 messageSends: [],
 referencedClasses: []
 }),
@@ -50,6 +50,44 @@ smalltalk.MaglevAjax.klass);
 smalltalk.addClass('MaglevJsPlumb', smalltalk.Object, [], 'Maglev-Vendor');
 
 smalltalk.MaglevJsPlumb.klass.iVarNames = ['sourceTarget','defaults','referenceConnection','instanceOfConnection','connection'];
+smalltalk.addMethod(
+unescape('_connectWindow_to_with_'),
+smalltalk.method({
+selector: unescape('connectWindow%3Ato%3Awith%3A'),
+category: 'interactions',
+fn: function (sourceWindow, targetWindow, parameters){
+var self=this;
+var params=nil;
+var type=nil;
+var defParams=nil;
+(type=smalltalk.send(smalltalk.send(self, "_connection", []), "_at_", [smalltalk.send(parameters, "_at_", [smalltalk.symbolFor("type")])]));
+ params = $.extend(true, {}, defParams); ;
+(function($rec){smalltalk.send($rec, "_basicAt_put_", ["source", smalltalk.send(sourceWindow, "_container", [])]);return smalltalk.send($rec, "_basicAt_put_", ["target", smalltalk.send(targetWindow, "_container", [])]);})(params);
+smalltalk.send((typeof jsPlumb == 'undefined' ? nil : jsPlumb), "_connect_", [params]);
+return self;},
+args: ["sourceWindow", "targetWindow", "parameters"],
+source: unescape('connectWindow%3A%20sourceWindow%20to%3A%20targetWindow%20with%3A%20parameters%0A%09%7Cparams%20type%20defParams%7C%0A%09type%20%3A%3D%20self%20connection%20at%3A%20%28parameters%20at%3A%20%23type%29.%0A%09%3C%20params%20%3D%20%24.extend%28true%2C%20%7B%7D%2C%20defParams%29%3B%20%3E.%0A%09params%0A%09%09basicAt%3A%20%27source%27%20put%3A%20sourceWindow%20container%3B%0A%09%09basicAt%3A%20%27target%27%20put%3A%20targetWindow%20container.%0A%0A%09jsPlumb%20connect%3A%20params.'),
+messageSends: ["at:", "connection", "basicAt:put:", "container", "connect:"],
+referencedClasses: []
+}),
+smalltalk.MaglevJsPlumb.klass);
+
+smalltalk.addMethod(
+unescape('_connection'),
+smalltalk.method({
+selector: unescape('connection'),
+category: 'accessing',
+fn: function (){
+var self=this;
+return self['@connection'];
+return self;},
+args: [],
+source: unescape('connection%0A%09%5E%20connection'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.MaglevJsPlumb.klass);
+
 smalltalk.addMethod(
 unescape('_constConnection'),
 smalltalk.method({
@@ -154,6 +192,22 @@ referencedClasses: []
 smalltalk.MaglevJsPlumb.klass);
 
 smalltalk.addMethod(
+unescape('_defaults'),
+smalltalk.method({
+selector: unescape('defaults'),
+category: 'accessing',
+fn: function (){
+var self=this;
+return self['@defaults'];
+return self;},
+args: [],
+source: unescape('defaults%0A%09%5E%20defaults'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.MaglevJsPlumb.klass);
+
+smalltalk.addMethod(
 unescape('_initialize'),
 smalltalk.method({
 selector: unescape('initialize'),
@@ -225,6 +279,22 @@ referencedClasses: []
 smalltalk.MaglevJsPlumb.klass);
 
 smalltalk.addMethod(
+unescape('_instanceOfConnection'),
+smalltalk.method({
+selector: unescape('instanceOfConnection'),
+category: 'accessing',
+fn: function (){
+var self=this;
+return self['@instanceOfConnection'];
+return self;},
+args: [],
+source: unescape('instanceOfConnection%0A%09%5E%20instanceOfConnection'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.MaglevJsPlumb.klass);
+
+smalltalk.addMethod(
 unescape('_prepareObject_'),
 smalltalk.method({
 selector: unescape('prepareObject%3A'),
@@ -238,6 +308,38 @@ return self;},
 args: ["anObject"],
 source: unescape('prepareObject%3A%20anObject%0A%09jsPlumb%20draggable%3A%20anObject.%0A%09jsPlumb%20makeSource%3A%20anObject%20a%3A%20sourceTarget.%0A%09jsPlumb%20makeTarget%3A%20anObject%20a%3A%20sourceTarget.'),
 messageSends: ["draggable:", "makeSource:a:", "makeTarget:a:"],
+referencedClasses: []
+}),
+smalltalk.MaglevJsPlumb.klass);
+
+smalltalk.addMethod(
+unescape('_referenceConnection'),
+smalltalk.method({
+selector: unescape('referenceConnection'),
+category: 'accessing',
+fn: function (){
+var self=this;
+return self['@referenceConnection'];
+return self;},
+args: [],
+source: unescape('referenceConnection%0A%09%5E%20referenceConnection'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.MaglevJsPlumb.klass);
+
+smalltalk.addMethod(
+unescape('_sourceTarget'),
+smalltalk.method({
+selector: unescape('sourceTarget'),
+category: 'accessing',
+fn: function (){
+var self=this;
+return self['@sourceTarget'];
+return self;},
+args: [],
+source: unescape('sourceTarget%0A%09%5E%20sourceTarget'),
+messageSends: [],
 referencedClasses: []
 }),
 smalltalk.MaglevJsPlumb.klass);
