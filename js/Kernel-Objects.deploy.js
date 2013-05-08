@@ -1483,7 +1483,8 @@ smalltalk.method({
 selector: unescape('size'),
 fn: function (){
 var self=this;
- return Object.keys(self['@jsObject']).size ;
+ var obj = self['@jsObject'];
+	return Object.keys(obj).size; ;
 return self;}
 }),
 smalltalk.JSObjectProxy);

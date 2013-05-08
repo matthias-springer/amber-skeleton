@@ -664,7 +664,8 @@ keysAndValuesDo: aBlock
 !
 
 size
-	< return Object.keys(self['@jsObject']).size >
+	< var obj = self['@jsObject'];
+	return Object.keys(obj).size; >
 ! !
 
 !JSObjectProxy methodsFor: 'proxy'!

@@ -1,8 +1,64 @@
 smalltalk.addPackage('Maglev-Core', {});
-smalltalk.addClass('Maglev', smalltalk.Object, [], 'Maglev-Core');
+smalltalk.addClass('Maglev', smalltalk.Object, ['objectSpace'], 'Maglev-Core');
+smalltalk.addMethod(
+unescape('_objectSpace'),
+smalltalk.method({
+selector: unescape('objectSpace'),
+fn: function (){
+var self=this;
+(($receiver = self['@objectSpace']) == nil || $receiver == undefined) ? (function(){return (self['@objectSpace']=smalltalk.send((smalltalk.MaglevObjectSpace || MaglevObjectSpace), "_instance", []));})() : $receiver;
+return self['@objectSpace'];
+return self;}
+}),
+smalltalk.Maglev);
+
+smalltalk.addMethod(
+unescape('_showObjectWindow_'),
+smalltalk.method({
+selector: unescape('showObjectWindow%3A'),
+fn: function (oop){
+var self=this;
+try{var window=nil;
+((($receiver = smalltalk.send(smalltalk.send(self, "_objectSpace", []), "_hasLoadedOop_", [oop])).klass === smalltalk.Boolean) ? (! $receiver ? (function(){return (function(){throw({name: 'stReturn', selector: '_showObjectWindow_', fn: function(){return smalltalk.send(self, "_showReloadObjectWindow_", [oop])}})})();})() : nil) : smalltalk.send($receiver, "_ifFalse_", [(function(){return (function(){throw({name: 'stReturn', selector: '_showObjectWindow_', fn: function(){return smalltalk.send(self, "_showReloadObjectWindow_", [oop])}})})();})]));
+(window=smalltalk.send(smalltalk.send(smalltalk.send(self, "_objectSpace", []), "_at_", [oop]), "_windowViewComponent", []));
+smalltalk.send(window, "_appendToWorkspace", []);
+(function(){throw({name: 'stReturn', selector: '_showObjectWindow_', fn: function(){return window}})})();
+return self;
+} catch(e) {if(e.name === 'stReturn' && e.selector === '_showObjectWindow_'){return e.fn()} throw(e)}}
+}),
+smalltalk.Maglev);
+
+smalltalk.addMethod(
+unescape('_showReloadObjectWindow_'),
+smalltalk.method({
+selector: unescape('showReloadObjectWindow%3A'),
+fn: function (oop){
+var self=this;
+var window=nil;
+(window=smalltalk.send((smalltalk.MaglevWaitingWindow || MaglevWaitingWindow), "_new", []));
+smalltalk.send(window, "_appendToWorkspace", []);
+smalltalk.send(smalltalk.send(self, "_objectSpace", []), "_reloadObject_withCallback_", [oop, (function(object){var objWindow=nil;
+(objWindow=smalltalk.send(object, "_windowViewComponentReplace_", [window]));return smalltalk.send(objWindow, "_renderReplace", []);})]);
+return self;}
+}),
+smalltalk.Maglev);
 
 
-smalltalk.addClass('MaglevObject', smalltalk.Object, ['oop', 'instVars', 'classObject', 'inspect'], 'Maglev-Core');
+smalltalk.Maglev.klass.iVarNames = ['instance'];
+smalltalk.addMethod(
+unescape('_instance'),
+smalltalk.method({
+selector: unescape('instance'),
+fn: function (){
+var self=this;
+(($receiver = self['@instance']) == nil || $receiver == undefined) ? (function(){return (self['@instance']=smalltalk.send((smalltalk.Maglev || Maglev), "_new", []));})() : $receiver;
+return self['@instance'];
+return self;}
+}),
+smalltalk.Maglev.klass);
+
+
+smalltalk.addClass('MaglevObject', smalltalk.Object, ['oop', 'instVars', 'classObject', 'inspection'], 'Maglev-Core');
 smalltalk.addMethod(
 unescape('_classObject'),
 smalltalk.method({
@@ -48,12 +104,12 @@ return self;}
 smalltalk.MaglevObject);
 
 smalltalk.addMethod(
-unescape('_inspect'),
+unescape('_inspection'),
 smalltalk.method({
-selector: unescape('inspect'),
+selector: unescape('inspection'),
 fn: function (){
 var self=this;
-return self['@inspect'];
+return self['@inspection'];
 return self;}
 }),
 smalltalk.MaglevObject);
@@ -99,7 +155,7 @@ fn: function (obj){
 var self=this;
 (self['@oop']=smalltalk.send(obj, "_oop", []));
 (self['@classObject']=smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObject_", [smalltalk.send(obj, "_classObject", [])]));
-(self['@inspect']=smalltalk.send(obj, "_inspect", []));
+(self['@inspection']=smalltalk.send(obj, "_inspection", []));
 (self['@instVars']=smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []));
 smalltalk.send(smalltalk.send(obj, "_instVars", []), "_keysAndValuesDo_", [(function(ivName, ivValue){return smalltalk.send(self['@instVars'], "_at_put_", [ivName, smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObject_", [ivValue])]);})]);
 return self;}
@@ -113,6 +169,20 @@ selector: unescape('windowViewComponent'),
 fn: function (){
 var self=this;
 return (function($rec){smalltalk.send($rec, "_object_", [self]);smalltalk.send($rec, "_initialize", []);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send(smalltalk.send(smalltalk.send(self, "_class", []), "_windowViewClass", []), "_basicNew", []));
+return self;}
+}),
+smalltalk.MaglevObject);
+
+smalltalk.addMethod(
+unescape('_windowViewComponentReplace_'),
+smalltalk.method({
+selector: unescape('windowViewComponentReplace%3A'),
+fn: function (aWindow){
+var self=this;
+var window=nil;
+(window=smalltalk.send(smalltalk.send(smalltalk.send(self, "_class", []), "_windowViewClass", []), "_newReplace_", [aWindow]));
+smalltalk.send(window, "_object_", [self]);
+return window;
 return self;}
 }),
 smalltalk.MaglevObject);
@@ -229,6 +299,17 @@ smalltalk.MaglevObject.klass);
 
 smalltalk.addClass('MaglevArray', smalltalk.MaglevObject, ['elements', 'size'], 'Maglev-Core');
 smalltalk.addMethod(
+unescape('_at_'),
+smalltalk.method({
+selector: unescape('at%3A'),
+fn: function (anInteger){
+var self=this;
+return smalltalk.send(smalltalk.send(self, "_elements", []), "_at_", [anInteger]);
+return self;}
+}),
+smalltalk.MaglevArray);
+
+smalltalk.addMethod(
 unescape('_elements'),
 smalltalk.method({
 selector: unescape('elements'),
@@ -270,8 +351,10 @@ smalltalk.method({
 selector: unescape('size'),
 fn: function (){
 var self=this;
-return self['@size'];
-return self;}
+try{(($receiver = self['@size']) == nil || $receiver == undefined) ? (function(){return (function(){throw({name: 'stReturn', selector: '_size', fn: function(){return smalltalk.send(self['@elements'], "_size", [])}})})();})() : $receiver;
+(function(){throw({name: 'stReturn', selector: '_size', fn: function(){return self['@size']}})})();
+return self;
+} catch(e) {if(e.name === 'stReturn' && e.selector === '_size'){return e.fn()} throw(e)}}
 }),
 smalltalk.MaglevArray);
 
@@ -310,6 +393,78 @@ return self;}
 smalltalk.MaglevArray.klass);
 
 
+smalltalk.addClass('MaglevFixnum', smalltalk.MaglevObject, [], 'Maglev-Core');
+
+smalltalk.addMethod(
+unescape('_basetype'),
+smalltalk.method({
+selector: unescape('basetype'),
+fn: function (){
+var self=this;
+return smalltalk.symbolFor("fixnum");
+return self;}
+}),
+smalltalk.MaglevFixnum.klass);
+
+smalltalk.addMethod(
+unescape('_inlineViewClass'),
+smalltalk.method({
+selector: unescape('inlineViewClass'),
+fn: function (){
+var self=this;
+return (smalltalk.MaglevFixnumInline || MaglevFixnumInline);
+return self;}
+}),
+smalltalk.MaglevFixnum.klass);
+
+smalltalk.addMethod(
+unescape('_windowViewClass'),
+smalltalk.method({
+selector: unescape('windowViewClass'),
+fn: function (){
+var self=this;
+return (smalltalk.MaglevFixnumWindow || MaglevFixnumWindow);
+return self;}
+}),
+smalltalk.MaglevFixnum.klass);
+
+
+smalltalk.addClass('MaglevFloat', smalltalk.MaglevObject, [], 'Maglev-Core');
+
+smalltalk.addMethod(
+unescape('_basetype'),
+smalltalk.method({
+selector: unescape('basetype'),
+fn: function (){
+var self=this;
+return smalltalk.symbolFor("float");
+return self;}
+}),
+smalltalk.MaglevFloat.klass);
+
+smalltalk.addMethod(
+unescape('_inlineViewClass'),
+smalltalk.method({
+selector: unescape('inlineViewClass'),
+fn: function (){
+var self=this;
+return (smalltalk.MaglevFloatInline || MaglevFloatInline);
+return self;}
+}),
+smalltalk.MaglevFloat.klass);
+
+smalltalk.addMethod(
+unescape('_windowViewClass'),
+smalltalk.method({
+selector: unescape('windowViewClass'),
+fn: function (){
+var self=this;
+return (smalltalk.MaglevFloatWindow || MaglevFloatWindow);
+return self;}
+}),
+smalltalk.MaglevFloat.klass);
+
+
 smalltalk.addClass('MaglevHash', smalltalk.MaglevObject, ['elements', 'size'], 'Maglev-Core');
 smalltalk.addMethod(
 unescape('_elements'),
@@ -342,7 +497,12 @@ var self=this;
 smalltalk.send(self, "_parseJSON_", [obj], smalltalk.MaglevObject);
 (self['@size']=smalltalk.send(obj, "_size", []));
 (self['@elements']=smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []));
-smalltalk.send(smalltalk.send(obj, "_elements", []), "_keysAndValuesDo_", [(function(key, value){return smalltalk.send(self['@elements'], "_at_put_", [smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObject_", [key]), smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObject_", [value])]);})]);
+smalltalk.send(smalltalk.send(obj, "_elements", []), "_keysAndValuesDo_", [(function(keySt, value){var key=nil;
+(key=smalltalk.send(keySt, "_asNumber", []));return ((($receiver = smalltalk.send(smalltalk.send(key, "_\\\\", [(2)]), "__eq_eq", [(0)])).klass === smalltalk.Boolean) ? ($receiver ? (function(){var objKey=nil;
+var objValue=nil;
+(objKey=smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObject_", [value]));(objValue=smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObject_", [smalltalk.send(smalltalk.send(obj, "_elements", []), "_at_", [((($receiver = key).klass === smalltalk.Number) ? $receiver +(1) : smalltalk.send($receiver, "__plus", [(1)]))])]));return smalltalk.send(self['@elements'], "_at_put_", [objKey, objValue]);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){var objKey=nil;
+var objValue=nil;
+(objKey=smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObject_", [value]));(objValue=smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObject_", [smalltalk.send(smalltalk.send(obj, "_elements", []), "_at_", [((($receiver = key).klass === smalltalk.Number) ? $receiver +(1) : smalltalk.send($receiver, "__plus", [(1)]))])]));return smalltalk.send(self['@elements'], "_at_put_", [objKey, objValue]);})]));})]);
 return self;}
 }),
 smalltalk.MaglevHash);
@@ -490,6 +650,42 @@ return self;}
 smalltalk.MaglevClass.klass);
 
 
+smalltalk.addClass('MaglevNilClass', smalltalk.MaglevObject, [], 'Maglev-Core');
+
+smalltalk.addMethod(
+unescape('_basetype'),
+smalltalk.method({
+selector: unescape('basetype'),
+fn: function (){
+var self=this;
+return smalltalk.symbolFor("nilclass");
+return self;}
+}),
+smalltalk.MaglevNilClass.klass);
+
+smalltalk.addMethod(
+unescape('_inlineViewClass'),
+smalltalk.method({
+selector: unescape('inlineViewClass'),
+fn: function (){
+var self=this;
+return (smalltalk.MaglevNilClassInline || MaglevNilClassInline);
+return self;}
+}),
+smalltalk.MaglevNilClass.klass);
+
+smalltalk.addMethod(
+unescape('_windowViewClass'),
+smalltalk.method({
+selector: unescape('windowViewClass'),
+fn: function (){
+var self=this;
+return (smalltalk.MaglevNilClassWindow || MaglevNilClassWindow);
+return self;}
+}),
+smalltalk.MaglevNilClass.klass);
+
+
 smalltalk.addClass('MaglevNotYetLoaded', smalltalk.MaglevObject, [], 'Maglev-Core');
 smalltalk.addMethod(
 unescape('_isLoaded'),
@@ -508,7 +704,8 @@ smalltalk.method({
 selector: unescape('parseJSON%3A'),
 fn: function (obj){
 var self=this;
-
+(self['@oop']=smalltalk.send(obj, "_oop", []));
+(self['@inspection']=smalltalk.send(obj, "_inspection", []));
 return self;}
 }),
 smalltalk.MaglevNotYetLoaded);
@@ -524,6 +721,78 @@ return nil;
 return self;}
 }),
 smalltalk.MaglevNotYetLoaded.klass);
+
+
+smalltalk.addClass('MaglevString', smalltalk.MaglevObject, [], 'Maglev-Core');
+
+smalltalk.addMethod(
+unescape('_basetype'),
+smalltalk.method({
+selector: unescape('basetype'),
+fn: function (){
+var self=this;
+return smalltalk.symbolFor("string");
+return self;}
+}),
+smalltalk.MaglevString.klass);
+
+smalltalk.addMethod(
+unescape('_inlineViewClass'),
+smalltalk.method({
+selector: unescape('inlineViewClass'),
+fn: function (){
+var self=this;
+return (smalltalk.MaglevStringInline || MaglevStringInline);
+return self;}
+}),
+smalltalk.MaglevString.klass);
+
+smalltalk.addMethod(
+unescape('_windowViewClass'),
+smalltalk.method({
+selector: unescape('windowViewClass'),
+fn: function (){
+var self=this;
+return (smalltalk.MaglevStringWindow || MaglevStringWindow);
+return self;}
+}),
+smalltalk.MaglevString.klass);
+
+
+smalltalk.addClass('MaglevSymbol', smalltalk.MaglevObject, [], 'Maglev-Core');
+
+smalltalk.addMethod(
+unescape('_basetype'),
+smalltalk.method({
+selector: unescape('basetype'),
+fn: function (){
+var self=this;
+return smalltalk.symbolFor("symbol");
+return self;}
+}),
+smalltalk.MaglevSymbol.klass);
+
+smalltalk.addMethod(
+unescape('_inlineViewClass'),
+smalltalk.method({
+selector: unescape('inlineViewClass'),
+fn: function (){
+var self=this;
+return (smalltalk.MaglevSymbolInline || MaglevSymbolInline);
+return self;}
+}),
+smalltalk.MaglevSymbol.klass);
+
+smalltalk.addMethod(
+unescape('_windowViewClass'),
+smalltalk.method({
+selector: unescape('windowViewClass'),
+fn: function (){
+var self=this;
+return (smalltalk.MaglevSymbolWindow || MaglevSymbolWindow);
+return self;}
+}),
+smalltalk.MaglevSymbol.klass);
 
 
 smalltalk.addClass('MaglevObjectSpace', smalltalk.Object, ['objects'], 'Maglev-Core');
@@ -545,6 +814,28 @@ selector: unescape('at%3AwithCallback%3A'),
 fn: function (anOop, aBlock){
 var self=this;
 ((($receiver = smalltalk.send(self['@objects'], "_includesKey_", [anOop])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(aBlock, "_value_", [smalltalk.send(self['@objects'], "_at_", [anOop])]);})() : (function(){return smalltalk.send(self, "_reloadObject_withCallback_", [anOop, aBlock]);})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return smalltalk.send(aBlock, "_value_", [smalltalk.send(self['@objects'], "_at_", [anOop])]);}), (function(){return smalltalk.send(self, "_reloadObject_withCallback_", [anOop, aBlock]);})]));
+return self;}
+}),
+smalltalk.MaglevObjectSpace);
+
+smalltalk.addMethod(
+unescape('_hasLoadedOop_'),
+smalltalk.method({
+selector: unescape('hasLoadedOop%3A'),
+fn: function (oop){
+var self=this;
+return smalltalk.send(smalltalk.send(self['@objects'], "_includesKey_", [oop]), "_and_", [(function(){return smalltalk.send(smalltalk.send(self['@objects'], "_at_", [oop]), "_isLoaded", []);})]);
+return self;}
+}),
+smalltalk.MaglevObjectSpace);
+
+smalltalk.addMethod(
+unescape('_hasOop_'),
+smalltalk.method({
+selector: unescape('hasOop%3A'),
+fn: function (oop){
+var self=this;
+return smalltalk.send(self['@objects'], "_includesKey_", [oop]);
 return self;}
 }),
 smalltalk.MaglevObjectSpace);
@@ -590,7 +881,7 @@ smalltalk.method({
 selector: unescape('updateObject%3A'),
 fn: function (anObject){
 var self=this;
-smalltalk.send(self['@objects'], "_at_put_", [smalltalk.send(anObject, "_oop", []), anObject]);
+((($receiver = smalltalk.send(anObject, "_isLoaded", [])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self['@objects'], "_at_put_", [smalltalk.send(anObject, "_oop", []), anObject]);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(self['@objects'], "_at_put_", [smalltalk.send(anObject, "_oop", []), anObject]);})]));
 return self;}
 }),
 smalltalk.MaglevObjectSpace);

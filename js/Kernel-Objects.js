@@ -2073,10 +2073,11 @@ selector: unescape('size'),
 category: 'accessing',
 fn: function (){
 var self=this;
- return Object.keys(self['@jsObject']).size ;
+ var obj = self['@jsObject'];
+	return Object.keys(obj).size; ;
 return self;},
 args: [],
-source: unescape('size%0A%09%3C%20return%20Object.keys%28self%5B%27@jsObject%27%5D%29.size%20%3E'),
+source: unescape('size%0A%09%3C%20var%20obj%20%3D%20self%5B%27@jsObject%27%5D%3B%0A%09return%20Object.keys%28obj%29.size%3B%20%3E'),
 messageSends: [],
 referencedClasses: []
 }),

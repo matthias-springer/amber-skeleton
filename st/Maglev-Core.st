@@ -1,10 +1,48 @@
 Smalltalk current createPackage: 'Maglev-Core' properties: #{}!
 Object subclass: #Maglev
-	instanceVariableNames: ''
+	instanceVariableNames: 'objectSpace'
 	package: 'Maglev-Core'!
 
+!Maglev methodsFor: 'accessing'!
+
+objectSpace
+	objectSpace ifNil: [objectSpace := MaglevObjectSpace instance].
+	^ objectSpace
+! !
+
+!Maglev methodsFor: 'rendering'!
+
+showObjectWindow: oop
+	|window|
+	(self objectSpace hasLoadedOop: oop)
+		ifFalse: [^ self showReloadObjectWindow: oop].
+	window := (self objectSpace at: oop) windowViewComponent.
+	window appendToWorkspace.
+	^ window
+!
+
+showReloadObjectWindow: oop
+	|window|
+	window := MaglevWaitingWindow new.
+	window appendToWorkspace.
+	self objectSpace
+		reloadObject: oop
+		withCallback: [:object | |objWindow|
+			objWindow := object windowViewComponentReplace: window.
+			objWindow renderReplace].
+! !
+
+Maglev class instanceVariableNames: 'instance'!
+
+!Maglev class methodsFor: 'singleton'!
+
+instance
+	instance ifNil: [instance := Maglev new].
+	^ instance
+! !
+
 Object subclass: #MaglevObject
-	instanceVariableNames: 'oop instVars classObject inspect'
+	instanceVariableNames: 'oop instVars classObject inspection'
 	package: 'Maglev-Core'!
 
 !MaglevObject methodsFor: 'accessing'!
@@ -13,8 +51,8 @@ classObject
 	^ classObject
 !
 
-inspect
-	^ inspect
+inspection
+	^ inspection
 !
 
 instVars
@@ -30,7 +68,7 @@ oop
 parseJSON: obj
 	oop := obj oop.
 	classObject := MaglevObject newObject: obj classObject.
-	inspect := obj inspect.
+	inspection := obj inspection.
 	instVars := Dictionary new.
 	obj instVars keysAndValuesDo: [:ivName :ivValue |
 		instVars at: ivName put: (MaglevObject newObject: ivValue)].
@@ -63,6 +101,13 @@ windowViewComponent
 		object: self;
 		initialize;
 		yourself
+!
+
+windowViewComponentReplace: aWindow
+	|window|
+	window := self class windowViewClass newReplace: aWindow.
+	window object: self.
+	^ window
 ! !
 
 !MaglevObject methodsFor: 'testing'!
@@ -140,11 +185,16 @@ MaglevObject subclass: #MaglevArray
 
 !MaglevArray methodsFor: 'accessing'!
 
+at: anInteger
+	^ self elements at: anInteger
+!
+
 elements
 	^ elements
 !
 
 size
+	size ifNil: [^ elements size].
 	^ size
 ! !
 
@@ -178,6 +228,42 @@ windowViewClass
 	^ MaglevArrayWindow
 ! !
 
+MaglevObject subclass: #MaglevFixnum
+	instanceVariableNames: ''
+	package: 'Maglev-Core'!
+
+!MaglevFixnum class methodsFor: 'constants'!
+
+basetype
+	^ #fixnum
+!
+
+inlineViewClass
+	^ MaglevFixnumInline
+!
+
+windowViewClass
+	^ MaglevFixnumWindow
+! !
+
+MaglevObject subclass: #MaglevFloat
+	instanceVariableNames: ''
+	package: 'Maglev-Core'!
+
+!MaglevFloat class methodsFor: 'constants'!
+
+basetype
+	^ #float
+!
+
+inlineViewClass
+	^ MaglevFloatInline
+!
+
+windowViewClass
+	^ MaglevFloatWindow
+! !
+
 MaglevObject subclass: #MaglevHash
 	instanceVariableNames: 'elements size'
 	package: 'Maglev-Core'!
@@ -198,8 +284,12 @@ parseJSON: obj
 	super parseJSON: obj.
 	size := obj size.
 	elements := Dictionary new.
-	obj elements keysAndValuesDo: [:key :value |
-		elements at: (MaglevObject newObject: key) put: (MaglevObject newObject: value)].
+	obj elements keysAndValuesDo: [:keySt :value | |key|
+		key := keySt asNumber.
+		key \\ 2 == 0 ifTrue: [ |objKey objValue|
+			objKey := MaglevObject newObject: value.
+			objValue := MaglevObject newObject: (obj elements at: key + 1).
+			elements at: objKey put: objValue]].
 ! !
 
 !MaglevHash methodsFor: 'testing'!
@@ -274,6 +364,24 @@ windowViewClass
 	^ MaglevClassWindow
 ! !
 
+MaglevObject subclass: #MaglevNilClass
+	instanceVariableNames: ''
+	package: 'Maglev-Core'!
+
+!MaglevNilClass class methodsFor: 'constants'!
+
+basetype
+	^ #nilclass
+!
+
+inlineViewClass
+	^ MaglevNilClassInline
+!
+
+windowViewClass
+	^ MaglevNilClassWindow
+! !
+
 MaglevObject subclass: #MaglevNotYetLoaded
 	instanceVariableNames: ''
 	package: 'Maglev-Core'!
@@ -281,6 +389,8 @@ MaglevObject subclass: #MaglevNotYetLoaded
 !MaglevNotYetLoaded methodsFor: 'instance creation'!
 
 parseJSON: obj
+	oop := obj oop.
+	inspection := obj inspection.
 ! !
 
 !MaglevNotYetLoaded methodsFor: 'testing'!
@@ -293,6 +403,42 @@ isLoaded
 
 basetype
 	^ nil
+! !
+
+MaglevObject subclass: #MaglevString
+	instanceVariableNames: ''
+	package: 'Maglev-Core'!
+
+!MaglevString class methodsFor: 'constants'!
+
+basetype
+	^ #string
+!
+
+inlineViewClass
+	^ MaglevStringInline
+!
+
+windowViewClass
+	^ MaglevStringWindow
+! !
+
+MaglevObject subclass: #MaglevSymbol
+	instanceVariableNames: ''
+	package: 'Maglev-Core'!
+
+!MaglevSymbol class methodsFor: 'constants'!
+
+basetype
+	^ #symbol
+!
+
+inlineViewClass
+	^ MaglevSymbolInline
+!
+
+windowViewClass
+	^ MaglevSymbolWindow
 ! !
 
 Object subclass: #MaglevObjectSpace
@@ -319,6 +465,14 @@ at: anOop withCallback: aBlock
 		ifFalse: [self reloadObject: anOop withCallback: aBlock].
 !
 
+hasLoadedOop: oop
+	^ (objects includesKey: oop) and: [(objects at: oop) isLoaded]
+!
+
+hasOop: oop
+	^ objects includesKey: oop
+!
+
 reloadObject: anOop
 	|obj|
 	obj := MaglevAjax 
@@ -336,8 +490,8 @@ reloadObject: anOop withCallback: aBlock
 !
 
 updateObject: anObject
-	"TODO: ensure that no data is overwritten by loaded==false objects."
-	objects at: anObject oop put: anObject.
+	anObject isLoaded
+		ifTrue: [objects at: anObject oop put: anObject].
 ! !
 
 MaglevObjectSpace class instanceVariableNames: 'instance'!

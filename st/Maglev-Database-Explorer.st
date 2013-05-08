@@ -42,7 +42,7 @@ with: anObject
 ! !
 
 Widget subclass: #MaglevIcon
-	instanceVariableNames: 'b icon'
+	instanceVariableNames: 'b icon spin'
 	package: 'Maglev-Database-Explorer'!
 
 !MaglevIcon methodsFor: 'accessing'!
@@ -54,14 +54,26 @@ icon
 
 icon: aString
 	icon := aString.
-	b ifNotNil: [	b class: 'icon-', aString].
+!
+
+spin
+	spin ifNil: [spin := false].
+	^ spin
+!
+
+spin: aBoolean
+	spin := aBoolean.
 ! !
 
 !MaglevIcon methodsFor: 'rendering'!
 
 renderOn: html
+	|cssClass|
+	cssClass := 'icon-', self icon.
+	self spin 
+		ifTrue: [cssClass := cssClass, ' icon-spin'].
 	b := html b
-		class: 'icon-', self icon;
+		class: cssClass;
 		yourself.
 ! !
 
@@ -89,6 +101,13 @@ star
 	^ self new
 		icon: 'star';
 		yourself
+!
+
+wait
+	^ self new
+		icon: 'refresh';
+		spin: true;
+		yourself
 ! !
 
 Widget subclass: #MaglevObjectInline
@@ -107,7 +126,7 @@ depth: anInteger
 !
 
 hasDropDown
-	hasDropDown ifNil: [hasDropDown := false].
+	hasDropDown ifNil: [hasDropDown := self hasDropDownDefault].
 	^ hasDropDown
 !
 
@@ -139,6 +158,20 @@ object
 
 object: anObject
 	object := anObject.
+! !
+
+!MaglevObjectInline methodsFor: 'constants'!
+
+hasDropDownDefault
+	^ true
+!
+
+maxDepth
+	^ 1
+!
+
+maxInspection
+	^ 15
 ! !
 
 !MaglevObjectInline methodsFor: 'rendering'!
@@ -180,12 +213,16 @@ renderObjectContainerOn: html
 !
 
 renderObjectOn: html
-	html with: object inspect.
+	|text|
+	text := object inspection copyFrom: 1 to: self maxInspection.
+	text size < object inspection size 
+		ifTrue: [text := text, '...'].
+	html with: text.
 !
 
 renderObjectWithDropDownOn: html
 	html span
-		class: 'dropdown'
+		class: 'dropdown';
 		with: [
 			html a
 				class: 'dropdown-toggle btn object-dropdown-toggle';
@@ -213,12 +250,6 @@ renderText: text withDropDownOn: html
 					html b class: 'caret']].
 ! !
 
-!MaglevObjectInline class methodsFor: 'constants'!
-
-maxDepth
-	^ 1
-! !
-
 !MaglevObjectInline class methodsFor: 'instance creation'!
 
 newWithDepth: anInteger
@@ -232,31 +263,7 @@ MaglevObjectInline subclass: #MaglevArrayInline
 	instanceVariableNames: ''
 	package: 'Maglev-Database-Explorer'!
 
-!MaglevArrayInline methodsFor: 'rendering'!
-
-renderObjectOn: html
-	|showElements maxElements|
-	maxElements := self class maxElements.
-	showElements := maxElements min: self object size.
-	self renderText: '[' withDropDownOn: html.
-	self isShort
-		ifTrue: [html with: '...']
-		ifFalse: [
-			(1 to: showElements) do: [:idx |
-				html with: ((self object at: idx) inlineViewComponentWithDepth: self depth - 1).
-				(idx < showElements or: [self object size > maxElements])
-					ifTrue: [html with: ', ']].
-			self size > maxElements
-				ifTrue: [html with: '...']	].
-	self renderText: ']' withDropDownOn: html.
-!
-
-renderObjectWithDropDownOn: html
-	"Do not render a drop down menu around the whole object."
-	self renderObjectOn: html.
-! !
-
-!MaglevArrayInline class methodsFor: 'constants'!
+!MaglevArrayInline methodsFor: 'constants'!
 
 maxDepth
 	^ 2
@@ -266,21 +273,100 @@ maxElements
 	^ 3
 ! !
 
+!MaglevArrayInline methodsFor: 'rendering'!
+
+renderObjectOn: html
+	|showElements maxElements|
+	maxElements := self maxElements.
+	showElements := maxElements min: self object size.
+	self renderText: '[' withDropDownOn: html.
+	self isShort
+		ifTrue: [html with: '...']
+		ifFalse: [
+			(1 to: showElements) do: [:idx |
+				html with: ((self object at: idx) inlineViewComponentWithDepth: self depth - 1).
+				(idx < showElements or: [self object size > maxElements])
+					ifTrue: [html with: ', ']].
+			self object size > maxElements
+				ifTrue: [html with: '...']	].
+	self renderText: ']' withDropDownOn: html.
+!
+
+renderObjectWithDropDownOn: html
+	"Do not render a drop down menu around the whole object."
+	self renderObjectOn: html.
+! !
+
+MaglevObjectInline subclass: #MaglevFixnumInline
+	instanceVariableNames: ''
+	package: 'Maglev-Database-Explorer'!
+
+!MaglevFixnumInline methodsFor: 'constants'!
+
+hasDropDownDefault
+	^ false
+! !
+
+MaglevObjectInline subclass: #MaglevFloatInline
+	instanceVariableNames: ''
+	package: 'Maglev-Database-Explorer'!
+
+!MaglevFloatInline methodsFor: 'constants'!
+
+hasDropDownDefault
+	^ false
+! !
+
 MaglevObjectInline subclass: #MaglevHashInline
 	instanceVariableNames: ''
 	package: 'Maglev-Database-Explorer'!
 
-!MaglevHashInline class methodsFor: 'constants'!
+!MaglevHashInline methodsFor: 'constants'!
 
 maxDepth
 	^ 2
+!
+
+maxElements
+	^ 3
+! !
+
+!MaglevHashInline methodsFor: 'rendering'!
+
+renderObjectOn: html
+	|showElements maxElements|
+	maxElements := self maxElements.
+	showElements := maxElements min: self object size.
+	self renderText: '{' withDropDownOn: html.
+	self isShort
+		ifTrue: [html with: '...']
+		ifFalse: [ |counter|
+			counter := 1.
+			self object keysAndValuesDo: [:key :value |
+				html 
+					with: (key inlineViewComponentWithDepth: self depth - 1);
+					with: '=>';
+					with: (value inlineViewComponentWithDepth: self depth - 1).
+				(counter < showElements or: [self object size > maxElements])
+					ifTrue: [html with: ', '].
+				counter := counter + 1.
+				counter > showElements ifTrue: [
+					self object size > maxElements ifTrue: [html with: '...'].
+					self renderText: '}' withDropDownOn: html.
+					^ self]]].
+	self renderText: '}' withDropDownOn: html.
+!
+
+renderObjectWithDropDownOn: html
+	"Do not render a drop down menu around the whole object."
+	self renderObjectOn: html.
 ! !
 
 MaglevObjectInline subclass: #MaglevModuleInline
 	instanceVariableNames: ''
 	package: 'Maglev-Database-Explorer'!
 
-!MaglevModuleInline class methodsFor: 'constants'!
+!MaglevModuleInline methodsFor: 'constants'!
 
 maxDepth
 	^ 1
@@ -290,10 +376,40 @@ MaglevModuleInline subclass: #MaglevClassInline
 	instanceVariableNames: ''
 	package: 'Maglev-Database-Explorer'!
 
-!MaglevClassInline class methodsFor: 'constants'!
+!MaglevClassInline methodsFor: 'constants'!
 
 maxDepth
 	^ 1
+! !
+
+MaglevObjectInline subclass: #MaglevNilClassInline
+	instanceVariableNames: ''
+	package: 'Maglev-Database-Explorer'!
+
+!MaglevNilClassInline methodsFor: 'constants'!
+
+hasDropDownDefault
+	^ false
+! !
+
+MaglevObjectInline subclass: #MaglevStringInline
+	instanceVariableNames: ''
+	package: 'Maglev-Database-Explorer'!
+
+!MaglevStringInline methodsFor: 'constants'!
+
+hasDropDownDefault
+	^ false
+! !
+
+MaglevObjectInline subclass: #MaglevSymbolInline
+	instanceVariableNames: ''
+	package: 'Maglev-Database-Explorer'!
+
+!MaglevSymbolInline methodsFor: 'constants'!
+
+hasDropDownDefault
+	^ false
 ! !
 
 Widget subclass: #MaglevTable
@@ -382,10 +498,25 @@ Widget subclass: #MaglevWindow
 	instanceVariableNames: 'container'
 	package: 'Maglev-Database-Explorer'!
 
+!MaglevWindow methodsFor: 'accessing'!
+
+container
+	^ container
+! !
+
 !MaglevWindow methodsFor: 'interactions'!
+
+clear
+	container asJQuery empty.
+!
 
 prepareWindow
 	MaglevJsPlumb prepareObject: (container asJQuery).
+!
+
+replace: aWindow
+	aWindow clear.
+	container := aWindow container.
 ! !
 
 !MaglevWindow methodsFor: 'rendering'!
@@ -417,7 +548,8 @@ renderHorziontalLineOn: html
 !
 
 renderOn: html
-	container := html div
+	container ifNil: [container := html div].
+	container
 		class: 'component window';
 		with: [
 			html div
@@ -426,6 +558,10 @@ renderOn: html
 					self renderWindowTitleOn: html.
 					self renderWindowContentOn: html]].
 	self prepareWindow.
+!
+
+renderReplace
+	self renderOn: (HTMLCanvas onJQuery: container asJQuery).
 !
 
 renderWindowContentOn: html
@@ -443,6 +579,14 @@ renderWindowTitleOn: html
 		with: [html span
 				class: 'window-title-content';
 				with: [self renderWindowTitleContentOn: html]].
+! !
+
+!MaglevWindow class methodsFor: 'instance creation'!
+
+newReplace: aWindow
+	^ self new
+		replace: aWindow;
+		yourself
 ! !
 
 MaglevWindow subclass: #MaglevObjectWindow
@@ -468,14 +612,14 @@ renderWindowContentOn: html
 !
 
 renderWindowTitleContentOn: html
-	html 
-		with: object inlineViewComponentShort;
-		with: ':'.
+	html with: object inlineViewComponentShort.
+	html with: ' :'.
 	self renderHeightPlaceholderOn: html.
 	html div
 		class: 'right-inline-block';
-		with: classObject inlineViewComponent.
-	self renderCloseButtonOn: html.
+		with: [
+			html with: classObject inlineViewComponent.
+			self renderCloseButtonOn: html].
 ! !
 
 MaglevObjectWindow subclass: #MaglevArrayWindow
@@ -489,6 +633,14 @@ renderWindowContentOn: html
 	self renderHorziontalLineOn: html.
 	html with: (MaglevTable newFor: self object elements).
 ! !
+
+MaglevObjectWindow subclass: #MaglevFixnumWindow
+	instanceVariableNames: ''
+	package: 'Maglev-Database-Explorer'!
+
+MaglevObjectWindow subclass: #MaglevFloatWindow
+	instanceVariableNames: ''
+	package: 'Maglev-Database-Explorer'!
 
 MaglevObjectWindow subclass: #MaglevHashWindow
 	instanceVariableNames: ''
@@ -509,4 +661,31 @@ MaglevObjectWindow subclass: #MaglevModuleWindow
 MaglevModuleWindow subclass: #MaglevClassWindow
 	instanceVariableNames: ''
 	package: 'Maglev-Database-Explorer'!
+
+MaglevObjectWindow subclass: #MaglevNilClassWindow
+	instanceVariableNames: ''
+	package: 'Maglev-Database-Explorer'!
+
+MaglevObjectWindow subclass: #MaglevStringWindow
+	instanceVariableNames: ''
+	package: 'Maglev-Database-Explorer'!
+
+MaglevObjectWindow subclass: #MaglevSymbolWindow
+	instanceVariableNames: ''
+	package: 'Maglev-Database-Explorer'!
+
+MaglevWindow subclass: #MaglevWaitingWindow
+	instanceVariableNames: ''
+	package: 'Maglev-Database-Explorer'!
+
+!MaglevWaitingWindow methodsFor: 'rendering'!
+
+renderWindowContentOn: html
+!
+
+renderWindowTitleOn: html
+	html
+		with: MaglevIcon wait;
+		with: ' loading...'.
+! !
 
