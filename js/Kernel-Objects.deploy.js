@@ -1583,6 +1583,17 @@ return self;}
 smalltalk.Number);
 
 smalltalk.addMethod(
+unescape('_ceiled'),
+smalltalk.method({
+selector: unescape('ceiled'),
+fn: function (){
+var self=this;
+ return Math.ceil(self); ;
+return self;}
+}),
+smalltalk.Number);
+
+smalltalk.addMethod(
 unescape('_clearInterval'),
 smalltalk.method({
 selector: unescape('clearInterval'),

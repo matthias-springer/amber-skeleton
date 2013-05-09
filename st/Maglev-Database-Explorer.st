@@ -339,15 +339,17 @@ renderLoadedObjectOn: html
 	maxElements := self maxElements.
 	showElements := maxElements min: self object elementsSize.
 	self renderText: '[' withDropDownOn: html.
+	html with: ' '.
 	self isShort
-		ifTrue: [html with: '...']
+		ifTrue: [html with: ' ... ']
 		ifFalse: [
 			(1 to: showElements) do: [:idx |
 				html with: ((self object at: idx) inlineViewComponentWithDepth: self depth - 1).
 				(idx < showElements or: [self object elementsSize > maxElements])
-					ifTrue: [html with: ', ']].
+					ifTrue: [html with: ' , ']].
 			self object elementsSize > maxElements
-				ifTrue: [html with: '...']	].
+				ifTrue: [html with: ' ... ']	].
+	html with: ' '.
 	self renderText: ']' withDropDownOn: html.
 !
 
@@ -415,8 +417,9 @@ renderLoadedObjectOn: html
 	maxElements := self maxElements.
 	showElements := maxElements min: self object elementsSize.
 	self renderText: '{' withDropDownOn: html.
+	html with: ' '.
 	self isShort
-		ifTrue: [html with: '...']
+		ifTrue: [html with: ' ... ']
 		ifFalse: [
 			(1 to: showElements) do: [:idx | |key value|
 				key := (self object at: idx) key.
@@ -426,9 +429,10 @@ renderLoadedObjectOn: html
 					with: '=>';
 					with: (value inlineViewComponentWithDepth: self depth + 1).
 				(idx < showElements or: [self object elementsSize > maxElements])
-					ifTrue: [html with: ', ']].
+					ifTrue: [html with: ' , ']].
 			self object elementsSize > maxElements
-				ifTrue: [html with: '...']	].
+				ifTrue: [html with: ' ... ']].
+	html with: ' '.
 	self renderText: '}' withDropDownOn: html.
 !
 
@@ -506,10 +510,31 @@ isDraggableDefault
 ! !
 
 Widget subclass: #MaglevTable
-	instanceVariableNames: 'object rangeFrom rangeTo isAssociationDictionary'
+	instanceVariableNames: 'object collectionName rangeFrom rangeTo isAssociationDictionary tableBody currentPage pageListItems pagination'
 	package: 'Maglev-Database-Explorer'!
 
 !MaglevTable methodsFor: 'accessing'!
+
+collection
+	^ object perform: collectionName
+!
+
+collectionName
+	^ collectionName
+!
+
+collectionName: aString
+	collectionName := aString
+!
+
+collectionSize
+	^ object perform: collectionName, 'Size'
+!
+
+currentPage
+	currentPage ifNil: [currentPage := 1].
+	^ currentPage
+!
 
 isAssociationDictionary
 	isAssociationDictionary ifNil: [isAssociationDictionary := false].
@@ -528,6 +553,14 @@ object: anObject
 	object := anObject.
 !
 
+pageSize
+	^ 10
+!
+
+pages
+	^ (self collectionSize / self pageSize) ceiled
+!
+
 rangeFrom
 	rangeFrom ifNil: [rangeFrom := 1].
 	^ rangeFrom
@@ -538,23 +571,10 @@ rangeFrom: anInteger
 !
 
 rangeTo
-	rangeTo ifNil: [rangeTo := 10 min: self object size].
-	^ rangeTo
-!
-
-rangeTo: anInteger
-	rangeTo := anInteger.
+	^ self rangeFrom + self pageSize - 1 min: self collectionSize
 ! !
 
 !MaglevTable methodsFor: 'rendering'!
-
-renderArrayBodyOn: html
-	(self rangeFrom to: self rangeTo) do: [:idx | |obj|
-		obj := object at: idx.
-		html tr with: [
-			html td with: idx inlineViewComponent.
-			html td with: obj inlineViewComponent]].
-!
 
 renderAssociation: key to: value on: html
 	html tr with: [
@@ -564,7 +584,7 @@ renderAssociation: key to: value on: html
 
 renderAssociationDictionaryBodyOn: html
 	(self rangeFrom to: self rangeTo) do: [:idx | |obj|
-		obj := object at: idx.
+		obj := self collection at: idx.
 		html tr with: [
 			html td with: obj key inlineViewComponent.
 			html td with: obj value inlineViewComponent]].
@@ -573,7 +593,7 @@ renderAssociationDictionaryBodyOn: html
 renderDictionaryBodyOn: html
 	|counter|
 	counter := 1.
-	self object keysAndValuesDo: [:key :value | 
+	self collection keysAndValuesDo: [:key :value | 
 		counter >= self rangeFrom ifTrue: [
 			value isAssociation
 				ifTrue: [self renderAssociation: value key to: value value on: html]
@@ -583,31 +603,84 @@ renderDictionaryBodyOn: html
 !
 
 renderOn: html
+	|pagClass|
+	self pages = 1 
+		ifTrue: [pagClass := 'display: none;']
+		ifFalse: [pagClass := ''].
 	html table
 		class: 'table table-bordered';
 		style: 'margin-bottom: 0px;';
-		with: [html tbody with: [self renderTableBodyOn: html]].
-	self renderPaginationOn: html.
+		with: [tableBody := html tbody].
+	html div
+		style: 'text-align: center;';
+		with: [pagination := html span
+			class: 'pagination';
+			style: pagClass].
+	self renderPagination.
+	self renderPage: 1.
 !
 
-renderPaginationOn: html
+renderPage: anInteger
+	|html|
+	currentPage := anInteger.
+	html := HTMLCanvas onJQuery: tableBody asJQuery.
+	rangeFrom := anInteger - 1 * self pageSize + 1.
+	tableBody asJQuery empty.
+	html 
+		with: MaglevIcon wait;
+		with: ' loading...'.
+	self renderPagination.
+	object 
+		ensureIsLoaded: collectionName 
+		from: rangeFrom 
+		to: self rangeTo 
+		withCallback: [
+			tableBody asJQuery empty.
+			self renderTableBodyOn: (HTMLCanvas onJQuery: tableBody asJQuery)].
+!
+
+renderPagination
+	|firstPage lastPage html|
+	pageListItems := Dictionary new.
+	firstPage := self currentPage - 5 max: 1.
+	lastPage := firstPage + 10 min: self pages.
+	pagination asJQuery empty.
+	html := (HTMLCanvas onJQuery: pagination asJQuery).
+	pagination
+		with: [html ul
+			style: 'margin-top: 10px;';
+			with: [(firstPage to: lastPage) do: [:index | |liClass|
+				currentPage = index
+					ifTrue: [liClass := 'disabled']
+					ifFalse: [liClass := 'active'].
+				html li
+					class: liClass;
+					with: [html a
+						onClick: [self renderPage: index];
+						with: index asString]]]].
 !
 
 renderTableBodyOn: html
-	(self object isKindOf: Array)
-		ifTrue: [self renderArrayBodyOn: html. ^ self].
-	(self object isKindOf: Dictionary) ifTrue: [
-		self isAssociationDictionary 
+	self isAssociationDictionary 
 			ifTrue: [self renderAssociationDictionaryBodyOn: html. ^ self]
-			ifFalse: [self renderDictionaryBodyOn: html. ^ self]].
-	self error: 'MaglevTable cannot render ', self object class.
+			ifFalse: [self renderDictionaryBodyOn: html. ^ self].
 ! !
 
 !MaglevTable class methodsFor: 'instance creation'!
 
-newFor: anObject
+newAssociationDictFor: anObject with: aString
 	^ self basicNew
 		object: anObject;
+		collectionName: aString;
+		isAssociationDictionary: true;
+		initialize;
+		yourself
+!
+
+newFor: anObject with: aString
+	^ self basicNew
+		object: anObject;
+		collectionName: aString;
 		initialize;
 		yourself
 ! !
@@ -636,6 +709,11 @@ top: aValue
 
 clear
 	container asJQuery empty.
+!
+
+closeWindow
+	MaglevJsPlumb deleteEndpointsFor: container asJQuery.
+	container asJQuery remove.
 !
 
 connectTo: aWindow as: type with: caption
@@ -670,6 +748,7 @@ renderCloseButtonOn: html
 		with: [html a
 				href: '#';
 				class: 'window-close-button';
+				onClick: [self closeWindow];
 				with: MaglevIcon remove].
 !
 
@@ -766,6 +845,11 @@ tabs
 
 !MaglevObjectWindow methodsFor: 'interactions'!
 
+closeWindow
+	MaglevObjectSpace instance unregisterWindow: self.
+	super closeWindow.
+!
+
 prepareWindow
 	super prepareWindow
 	MaglevObjectSpace registerWindow: self.
@@ -793,13 +877,15 @@ showTab: caption
 			ifFalse: [
 				tab hide.
 				capEl removeClass: 'active']].
+	"return false to avoid scrolling to the top"
+	^ false
 ! !
 
 !MaglevObjectWindow methodsFor: 'rendering'!
 
 checkAddConnectionTo: aWindow
-	object instVars keysAndValuesDo: [:ivName :ivValue |
-		ivValue == aWindow object ifTrue: [self connectTo: aWindow as: #iv with: ivName]].
+	object instVarsDo: [:ivName :ivValue |
+		ivValue == aWindow object ifTrue: [self connectTo: aWindow as: #iv with: ivName inspection]].
 	object classObject == aWindow object 
 		ifTrue: [self connectTo: aWindow as: #class with: nil].
 !
@@ -813,7 +899,7 @@ contentTabs
 !
 
 renderInstanceVariablesOn: html
-	html with: (MaglevTable newFor: self object instVars).
+	html with: (MaglevTable newAssociationDictFor: self object with: #instVars).
 !
 
 renderWindowContentOn: html
@@ -840,12 +926,13 @@ renderWindowContentOn: html
 
 renderWindowTitleContentOn: html
 	html with: object inlineViewComponentShort.
-	html with: ' :'.
 	self renderHeightPlaceholderOn: html.
 	html div
 		class: 'right-inline-block';
 		with: [
-			html with: classObject inlineViewComponent.
+			html 
+				with: ' : ';
+				with: classObject inlineViewComponent.
 			self renderCloseButtonOn: html].
 ! !
 
@@ -879,7 +966,7 @@ contentTabs
 !
 
 renderArrayElementsOn: html
-	html with: (MaglevTable newFor: self object elements).
+	html with: (MaglevTable newFor: self object with: #elements).
 ! !
 
 MaglevObjectWindow subclass: #MaglevFixnumWindow
@@ -896,6 +983,13 @@ MaglevObjectWindow subclass: #MaglevHashWindow
 
 !MaglevHashWindow methodsFor: 'rendering'!
 
+checkAddConnectionTo: aWindow
+	super checkAddConnectionTo: aWindow.
+	object keysAndValuesDo: [:key :value |
+		key == aWindow object ifTrue: [self connectTo: aWindow as: #hashKey with: 'self[...] = ', value shortInspection].
+		value == aWindow object ifTrue: [self connectTo: aWindow as: #hashValue with: 'self[', key shortInspection, '] = ...']].
+!
+
 contentTabs
 	|result|
 	result := super contentTabs.
@@ -905,7 +999,7 @@ contentTabs
 !
 
 renderHashElementsOn: html
-	html with: (MaglevTable newFor: self object elements).
+	html with: (MaglevTable newAssociationDictFor: self object with: #elements).
 ! !
 
 MaglevObjectWindow subclass: #MaglevModuleWindow
@@ -925,16 +1019,33 @@ contentTabs
 !
 
 renderConstantsOn: html
-	html with: (MaglevTable newFor: self object constants).
+	html with: (MaglevTable newAssociationDictFor: self object with: #constants).
 !
 
 renderIncludedModulesOn: html
-	html with: (MaglevTable newFor: self object includedModules).
+	html with: (MaglevTable newFor: self object with: #includedModules).
 ! !
 
 MaglevModuleWindow subclass: #MaglevClassWindow
 	instanceVariableNames: ''
 	package: 'Maglev-Database-Explorer'!
+
+!MaglevClassWindow methodsFor: 'rendering'!
+
+renderWindowTitleContentOn: html
+	html 
+		with: object inlineViewComponentShort;
+		with: ' < ';
+		with: object superclassObject inlineViewComponent.
+	self renderHeightPlaceholderOn: html.
+	html div
+		class: 'right-inline-block';
+		with: [
+			html 
+				with: ' : ';
+				with: classObject inlineViewComponent.
+			self renderCloseButtonOn: html].
+! !
 
 MaglevObjectWindow subclass: #MaglevNilClassWindow
 	instanceVariableNames: ''

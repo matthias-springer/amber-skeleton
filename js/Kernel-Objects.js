@@ -2268,6 +2268,22 @@ referencedClasses: ["Random"]
 smalltalk.Number);
 
 smalltalk.addMethod(
+unescape('_ceiled'),
+smalltalk.method({
+selector: unescape('ceiled'),
+category: 'converting',
+fn: function (){
+var self=this;
+ return Math.ceil(self); ;
+return self;},
+args: [],
+source: unescape('ceiled%0A%09%3C%20return%20Math.ceil%28self%29%3B%20%3E'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.Number);
+
+smalltalk.addMethod(
 unescape('_clearInterval'),
 smalltalk.method({
 selector: unescape('clearInterval'),

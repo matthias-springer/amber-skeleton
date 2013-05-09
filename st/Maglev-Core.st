@@ -58,6 +58,12 @@ showReloadObjectWindow: oop
 
 Maglev class instanceVariableNames: 'instance'!
 
+!Maglev class methodsFor: 'initializing'!
+
+ready
+	Maglev instance showObjectWindow: 159055361.
+! !
+
 !Maglev class methodsFor: 'singleton'!
 
 instance
@@ -83,12 +89,22 @@ instVars
 	^ instVars
 !
 
+instVarsDo: aBlock
+	instVars keysAndValuesDo: [:index :iv | aBlock value: iv key value: iv value].
+!
+
 instVarsSize
 	^ instVarsSize
 !
 
 oop
 	^ oop
+!
+
+shortInspection
+	inspection size > 10 
+		ifTrue: [^ (inspection copyFrom: 1 to: 10), '...']
+		ifFalse: [^ inspection].
 !
 
 windows
@@ -146,9 +162,10 @@ removeWindow: aWindow
 
 ensureIsLoaded: collectionName from: from to: to
 	|obj params|
+	(self isLoaded: collectionName from: from to: to) ifTrue: [^ self].
 	params := Dictionary new
-		at: 'range_', collectionName, '_from' put: from;
-		at: 'range_', collectionName, '_to' put: to;
+		at: 'range_', collectionName asString, '_from' put: from;
+		at: 'range_', collectionName asString, '_to' put: to;
 		yourself.
 	obj := MaglevAjax 
 		ajax: '/object/index/', self oop
@@ -158,9 +175,10 @@ ensureIsLoaded: collectionName from: from to: to
 
 ensureIsLoaded: collectionName from: from to: to withCallback: aBlock
 	|params|
+	(self isLoaded: collectionName from: from to: to) ifTrue: [aBlock value. ^ self].
 	params := Dictionary new
-		at: 'range_', collectionName, '_from' put: from;
-		at: 'range_', collectionName, '_to' put: to;
+		at: 'range_', collectionName asString, '_from' put: from;
+		at: 'range_', collectionName asString, '_to' put: to;
 		yourself.
 	MaglevAjax 
 		ajax: '/object/index/', self oop
@@ -212,6 +230,14 @@ hasInstVars
 
 isLoaded
 	^ isLoaded
+!
+
+isLoaded: collectionName from: from to: to
+	|collection|
+	collection := self perform: collectionName.
+	(from to: to) do: [:index |
+		(collection includesKey: index) ifFalse: [^ false]].
+	^ true
 ! !
 
 MaglevObject class instanceVariableNames: 'basetypes'!
@@ -486,6 +512,12 @@ windowViewClass
 MaglevModule subclass: #MaglevClass
 	instanceVariableNames: 'superclassObject size'
 	package: 'Maglev-Core'!
+
+!MaglevClass methodsFor: 'accessing'!
+
+superclassObject
+	^ superclassObject
+! !
 
 !MaglevClass methodsFor: 'instance creation'!
 

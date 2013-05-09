@@ -830,6 +830,10 @@ atRandom
     ^(Random new next * self) truncated + 1
 !
 
+ceiled
+	< return Math.ceil(self); >
+!
+
 rounded
 	<return Math.round(self);>
 !

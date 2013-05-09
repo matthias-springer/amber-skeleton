@@ -138,13 +138,19 @@ initializeJsPlumb
 !MaglevJsPlumb class methodsFor: 'interactions'!
 
 connectWindow: sourceWindow to: targetWindow as: cType with: caption
-	|params type defParams|
-	Transcript show: 'connecting ', sourceWindow object oop asString, ' to ', targetWindow object oop asString, ' as ', cType asString.
+	|params type defParams sourceEl targetEl text|
 	type := self connection at: cType.
-	< params = $.extend(true, {}, defParams); >.
-	params
-		basicAt: 'source' put: sourceWindow container asJQuery;
-		basicAt: 'target' put: targetWindow container asJQuery.
+	sourceEl := sourceWindow container asJQuery.
+	targetEl := targetWindow container asJQuery.
+	caption
+		ifNil: [text := '']
+		ifNotNil: [text := caption asString].
+	text = ''
+		ifFalse: [text := '<span class="component object-ivname-box" style="white-space: nowrap;">', text, '</span>'].
+	< params = $.extend(true, {}, type); 
+	params.source = sourceEl;
+	params.target = targetEl; 
+	params.overlays[1][1].label = text; >.
 
 	jsPlumb connect: params.
 !
@@ -158,6 +164,12 @@ connectWindow: sourceWindow to: targetWindow with: parameters
 		basicAt: 'target' put: targetWindow container.
 
 	jsPlumb connect: params.
+!
+
+deleteEndpointsFor: anObject
+	|endpoints|
+	endpoints := jsPlumb getEndpoints: anObject.
+	endpoints do: [:endpoint | jsPlumb deleteEndpoint: endpoint].
 !
 
 prepareObject: anObject

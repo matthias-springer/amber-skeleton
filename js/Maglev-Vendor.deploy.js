@@ -49,10 +49,18 @@ var self=this;
 var params=nil;
 var type=nil;
 var defParams=nil;
-smalltalk.send((smalltalk.Transcript || Transcript), "_show_", [smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send("connecting ", "__comma", [smalltalk.send(smalltalk.send(smalltalk.send(sourceWindow, "_object", []), "_oop", []), "_asString", [])]), "__comma", [" to "]), "__comma", [smalltalk.send(smalltalk.send(smalltalk.send(targetWindow, "_object", []), "_oop", []), "_asString", [])]), "__comma", [" as "]), "__comma", [smalltalk.send(cType, "_asString", [])])]);
+var sourceEl=nil;
+var targetEl=nil;
+var text=nil;
 (type=smalltalk.send(smalltalk.send(self, "_connection", []), "_at_", [cType]));
- params = $.extend(true, {}, defParams); ;
-(function($rec){smalltalk.send($rec, "_basicAt_put_", ["source", smalltalk.send(smalltalk.send(sourceWindow, "_container", []), "_asJQuery", [])]);return smalltalk.send($rec, "_basicAt_put_", ["target", smalltalk.send(smalltalk.send(targetWindow, "_container", []), "_asJQuery", [])]);})(params);
+(sourceEl=smalltalk.send(smalltalk.send(sourceWindow, "_container", []), "_asJQuery", []));
+(targetEl=smalltalk.send(smalltalk.send(targetWindow, "_container", []), "_asJQuery", []));
+(($receiver = caption) == nil || $receiver == undefined) ? (function(){return (text="");})() : (function(){return (text=smalltalk.send(caption, "_asString", []));})();
+((($receiver = smalltalk.send(text, "__eq", [""])).klass === smalltalk.Boolean) ? (! $receiver ? (function(){return (text=smalltalk.send(smalltalk.send(unescape("%3Cspan%20class%3D%22component%20object-ivname-box%22%20style%3D%22white-space%3A%20nowrap%3B%22%3E"), "__comma", [text]), "__comma", [unescape("%3C/span%3E")]));})() : nil) : smalltalk.send($receiver, "_ifFalse_", [(function(){return (text=smalltalk.send(smalltalk.send(unescape("%3Cspan%20class%3D%22component%20object-ivname-box%22%20style%3D%22white-space%3A%20nowrap%3B%22%3E"), "__comma", [text]), "__comma", [unescape("%3C/span%3E")]));})]));
+ params = $.extend(true, {}, type); 
+	params.source = sourceEl;
+	params.target = targetEl; 
+	params.overlays[1][1].label = text; ;
 smalltalk.send((typeof jsPlumb == 'undefined' ? nil : jsPlumb), "_connect_", [params]);
 return self;}
 }),
@@ -171,6 +179,19 @@ selector: unescape('defaults'),
 fn: function (){
 var self=this;
 return self['@defaults'];
+return self;}
+}),
+smalltalk.MaglevJsPlumb.klass);
+
+smalltalk.addMethod(
+unescape('_deleteEndpointsFor_'),
+smalltalk.method({
+selector: unescape('deleteEndpointsFor%3A'),
+fn: function (anObject){
+var self=this;
+var endpoints=nil;
+(endpoints=smalltalk.send((typeof jsPlumb == 'undefined' ? nil : jsPlumb), "_getEndpoints_", [anObject]));
+smalltalk.send(endpoints, "_do_", [(function(endpoint){return smalltalk.send((typeof jsPlumb == 'undefined' ? nil : jsPlumb), "_deleteEndpoint_", [endpoint]);})]);
 return self;}
 }),
 smalltalk.MaglevJsPlumb.klass);
