@@ -274,6 +274,10 @@ ifNotNil: aBlock ifNil: anotherBlock
 	^aBlock value
 !
 
+isAssociation
+	^ false
+!
+
 isClass
 	^false
 !

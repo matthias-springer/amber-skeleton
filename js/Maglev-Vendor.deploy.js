@@ -41,6 +41,24 @@ smalltalk.addClass('MaglevJsPlumb', smalltalk.Object, [], 'Maglev-Vendor');
 
 smalltalk.MaglevJsPlumb.klass.iVarNames = ['sourceTarget','defaults','referenceConnection','instanceOfConnection','connection'];
 smalltalk.addMethod(
+unescape('_connectWindow_to_as_with_'),
+smalltalk.method({
+selector: unescape('connectWindow%3Ato%3Aas%3Awith%3A'),
+fn: function (sourceWindow, targetWindow, cType, caption){
+var self=this;
+var params=nil;
+var type=nil;
+var defParams=nil;
+smalltalk.send((smalltalk.Transcript || Transcript), "_show_", [smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send("connecting ", "__comma", [smalltalk.send(smalltalk.send(smalltalk.send(sourceWindow, "_object", []), "_oop", []), "_asString", [])]), "__comma", [" to "]), "__comma", [smalltalk.send(smalltalk.send(smalltalk.send(targetWindow, "_object", []), "_oop", []), "_asString", [])]), "__comma", [" as "]), "__comma", [smalltalk.send(cType, "_asString", [])])]);
+(type=smalltalk.send(smalltalk.send(self, "_connection", []), "_at_", [cType]));
+ params = $.extend(true, {}, defParams); ;
+(function($rec){smalltalk.send($rec, "_basicAt_put_", ["source", smalltalk.send(smalltalk.send(sourceWindow, "_container", []), "_asJQuery", [])]);return smalltalk.send($rec, "_basicAt_put_", ["target", smalltalk.send(smalltalk.send(targetWindow, "_container", []), "_asJQuery", [])]);})(params);
+smalltalk.send((typeof jsPlumb == 'undefined' ? nil : jsPlumb), "_connect_", [params]);
+return self;}
+}),
+smalltalk.MaglevJsPlumb.klass);
+
+smalltalk.addMethod(
 unescape('_connectWindow_to_with_'),
 smalltalk.method({
 selector: unescape('connectWindow%3Ato%3Awith%3A'),
@@ -74,7 +92,7 @@ smalltalk.method({
 selector: unescape('constConnection'),
 fn: function (){
 var self=this;
-return (function($rec){smalltalk.send($rec, "_at_put_", ["iv", self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", ["hash_key", self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", ["hash_value", self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", ["array_element", self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", ["class", self['@instanceOfConnection']]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []));
+return (function($rec){smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("iv"), self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("hashKey"), self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("hashValue"), self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("arrayElement"), self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("class"), self['@instanceOfConnection']]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []));
 return self;}
 }),
 smalltalk.MaglevJsPlumb.klass);

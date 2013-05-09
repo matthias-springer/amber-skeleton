@@ -58,11 +58,11 @@ sourceTarget
 
 constConnection
 	^ Dictionary new
-		at: 'iv' put: referenceConnection;
-		at: 'hash_key' put: referenceConnection;
-		at: 'hash_value' put: referenceConnection;
-		at: 'array_element' put: referenceConnection;
-		at: 'class' put: instanceOfConnection;
+		at: #iv put: referenceConnection;
+		at: #hashKey put: referenceConnection;
+		at: #hashValue put: referenceConnection;
+		at: #arrayElement put: referenceConnection;
+		at: #class put: instanceOfConnection;
 		yourself
 !
 
@@ -136,6 +136,18 @@ initializeJsPlumb
 ! !
 
 !MaglevJsPlumb class methodsFor: 'interactions'!
+
+connectWindow: sourceWindow to: targetWindow as: cType with: caption
+	|params type defParams|
+	Transcript show: 'connecting ', sourceWindow object oop asString, ' to ', targetWindow object oop asString, ' as ', cType asString.
+	type := self connection at: cType.
+	< params = $.extend(true, {}, defParams); >.
+	params
+		basicAt: 'source' put: sourceWindow container asJQuery;
+		basicAt: 'target' put: targetWindow container asJQuery.
+
+	jsPlumb connect: params.
+!
 
 connectWindow: sourceWindow to: targetWindow with: parameters
 	|params type defParams|

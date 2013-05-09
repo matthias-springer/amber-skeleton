@@ -337,16 +337,16 @@ maxElements
 renderLoadedObjectOn: html
 	|showElements maxElements|
 	maxElements := self maxElements.
-	showElements := maxElements min: self object size.
+	showElements := maxElements min: self object elementsSize.
 	self renderText: '[' withDropDownOn: html.
 	self isShort
 		ifTrue: [html with: '...']
 		ifFalse: [
 			(1 to: showElements) do: [:idx |
 				html with: ((self object at: idx) inlineViewComponentWithDepth: self depth - 1).
-				(idx < showElements or: [self object size > maxElements])
+				(idx < showElements or: [self object elementsSize > maxElements])
 					ifTrue: [html with: ', ']].
-			self object size > maxElements
+			self object elementsSize > maxElements
 				ifTrue: [html with: '...']	].
 	self renderText: ']' withDropDownOn: html.
 !
@@ -413,24 +413,22 @@ isDraggableDefault
 renderLoadedObjectOn: html
 	|showElements maxElements|
 	maxElements := self maxElements.
-	showElements := maxElements min: self object size.
+	showElements := maxElements min: self object elementsSize.
 	self renderText: '{' withDropDownOn: html.
 	self isShort
 		ifTrue: [html with: '...']
-		ifFalse: [ |counter|
-			counter := 1.
-			self object keysAndValuesDo: [:key :value |
+		ifFalse: [
+			(1 to: showElements) do: [:idx | |key value|
+				key := (self object at: idx) key.
+				value := (self object at: idx) value.
 				html 
-					with: (key inlineViewComponentWithDepth: self depth - 1);
+					with: (key inlineViewComponentWithDepth: self depth + 1);
 					with: '=>';
-					with: (value inlineViewComponentWithDepth: self depth - 1).
-				(counter < showElements or: [self object size > maxElements])
-					ifTrue: [html with: ', '].
-				counter := counter + 1.
-				counter > showElements ifTrue: [
-					self object size > maxElements ifTrue: [html with: '...'].
-					self renderText: '}' withDropDownOn: html.
-					^ self]]].
+					with: (value inlineViewComponentWithDepth: self depth + 1).
+				(idx < showElements or: [self object elementsSize > maxElements])
+					ifTrue: [html with: ', ']].
+			self object elementsSize > maxElements
+				ifTrue: [html with: '...']	].
 	self renderText: '}' withDropDownOn: html.
 !
 
@@ -508,10 +506,19 @@ isDraggableDefault
 ! !
 
 Widget subclass: #MaglevTable
-	instanceVariableNames: 'object rangeFrom rangeTo'
+	instanceVariableNames: 'object rangeFrom rangeTo isAssociationDictionary'
 	package: 'Maglev-Database-Explorer'!
 
 !MaglevTable methodsFor: 'accessing'!
+
+isAssociationDictionary
+	isAssociationDictionary ifNil: [isAssociationDictionary := false].
+	^ isAssociationDictionary
+!
+
+isAssociationDictionary: aBoolean
+	isAssociationDictionary := aBoolean.
+!
 
 object
 	^ object
@@ -549,14 +556,28 @@ renderArrayBodyOn: html
 			html td with: obj inlineViewComponent]].
 !
 
+renderAssociation: key to: value on: html
+	html tr with: [
+		html td with: key inlineViewComponent.
+		html td with: value inlineViewComponent].
+!
+
+renderAssociationDictionaryBodyOn: html
+	(self rangeFrom to: self rangeTo) do: [:idx | |obj|
+		obj := object at: idx.
+		html tr with: [
+			html td with: obj key inlineViewComponent.
+			html td with: obj value inlineViewComponent]].
+!
+
 renderDictionaryBodyOn: html
 	|counter|
 	counter := 1.
 	self object keysAndValuesDo: [:key :value | 
 		counter >= self rangeFrom ifTrue: [
-			html tr with: [
-				html td with: key inlineViewComponent.
-				html td with: value inlineViewComponent]].
+			value isAssociation
+				ifTrue: [self renderAssociation: value key to: value value on: html]
+				ifFalse: [self renderAssociation: key to: value on: html]].
 		counter := counter + 1.
 		counter > self rangeTo ifTrue: [^ self]].
 !
@@ -575,8 +596,10 @@ renderPaginationOn: html
 renderTableBodyOn: html
 	(self object isKindOf: Array)
 		ifTrue: [self renderArrayBodyOn: html. ^ self].
-	(self object isKindOf: Dictionary)
-		ifTrue: [self renderDictionaryBodyOn: html. ^ self].
+	(self object isKindOf: Dictionary) ifTrue: [
+		self isAssociationDictionary 
+			ifTrue: [self renderAssociationDictionaryBodyOn: html. ^ self]
+			ifFalse: [self renderDictionaryBodyOn: html. ^ self]].
 	self error: 'MaglevTable cannot render ', self object class.
 ! !
 
@@ -613,6 +636,10 @@ top: aValue
 
 clear
 	container asJQuery empty.
+!
+
+connectTo: aWindow as: type with: caption
+	MaglevJsPlumb connectWindow: self to: aWindow as: type with: caption.
 !
 
 connectTo: aWindow with: parameters
@@ -694,6 +721,12 @@ renderWindowTitleOn: html
 				with: [self renderWindowTitleContentOn: html]].
 ! !
 
+!MaglevWindow methodsFor: 'testing'!
+
+isWaitingWindow
+	^ false
+! !
+
 !MaglevWindow class methodsFor: 'instance creation'!
 
 newReplace: aWindow
@@ -703,10 +736,15 @@ newReplace: aWindow
 ! !
 
 MaglevWindow subclass: #MaglevObjectWindow
-	instanceVariableNames: 'container object classObject'
+	instanceVariableNames: 'container object classObject tabs captions'
 	package: 'Maglev-Database-Explorer'!
 
 !MaglevObjectWindow methodsFor: 'accessing'!
+
+captions
+	captions ifNil: [captions := Dictionary new].
+	^ captions
+!
 
 container
 	^ container
@@ -719,6 +757,11 @@ object
 object: anObject
 	object := anObject.
 	classObject := anObject classObject.
+!
+
+tabs
+	tabs ifNil: [tabs := Dictionary new].
+	^ tabs
 ! !
 
 !MaglevObjectWindow methodsFor: 'interactions'!
@@ -729,16 +772,70 @@ prepareWindow
 !
 
 replace: aWindow
-	super replace: aWindow
-	MaglevObjectSpace unregisterWindow: aWindow.
-	MaglevObjectSpace registerWindow: self.
+	super replace: aWindow.
+	aWindow isWaitingWindow
+		ifFalse: [MaglevObjectSpace instance unregisterWindow: aWindow].
+	MaglevObjectSpace instance registerWindow: self.
+!
+
+showFirstTab
+	self tabs size > 0
+		ifTrue: [self showTab: (self tabs keys at: 1)].
+!
+
+showTab: caption
+	self tabs keysAndValuesDo: [:tabCaption :tab | |capEl|
+		capEl := self captions at: tabCaption.
+		caption = tabCaption
+			ifTrue: [
+				tab show.
+				capEl addClass: 'active']
+			ifFalse: [
+				tab hide.
+				capEl removeClass: 'active']].
 ! !
 
 !MaglevObjectWindow methodsFor: 'rendering'!
 
-renderWindowContentOn: html
-	self renderHorziontalLineOn: html.
+checkAddConnectionTo: aWindow
+	object instVars keysAndValuesDo: [:ivName :ivValue |
+		ivValue == aWindow object ifTrue: [self connectTo: aWindow as: #iv with: ivName]].
+	object classObject == aWindow object 
+		ifTrue: [self connectTo: aWindow as: #class with: nil].
+!
+
+contentTabs
+	|result|
+	result := Dictionary new.
+	self object hasInstVars 
+		ifTrue: [result at: 'Instance Variables' put: #renderInstanceVariablesOn:].
+	^ result
+!
+
+renderInstanceVariablesOn: html
 	html with: (MaglevTable newFor: self object instVars).
+!
+
+renderWindowContentOn: html
+	|tabs|
+	tabs := self contentTabs.
+	tabs size > 0 ifTrue: [
+		html ul
+			class: 'nav nav-tabs';
+			style: 'display: inline-block; margin-bottom: 0px; margin-top: 5px;';
+			with: [
+			self contentTabs keysAndValuesDo: [:caption :generator | |capEl|
+				capEl := html li with: [
+					html a
+						href: '#';
+						onClick: [self showTab: caption];
+						with: caption].
+				self captions at: caption put: capEl]]].
+	self contentTabs keysAndValuesDo: [:caption :generator | |tab|
+		tab := html div
+			with:	[self perform: generator withArguments: {html}].
+		self tabs at: caption put: tab].
+	self showFirstTab.
 !
 
 renderWindowTitleContentOn: html
@@ -752,15 +849,36 @@ renderWindowTitleContentOn: html
 			self renderCloseButtonOn: html].
 ! !
 
+!MaglevObjectWindow class methodsFor: 'instance creation'!
+
+newReplace: aWindow with: anObject
+	^ self new
+		object: anObject;
+		replace: aWindow;
+		yourself
+! !
+
 MaglevObjectWindow subclass: #MaglevArrayWindow
 	instanceVariableNames: ''
 	package: 'Maglev-Database-Explorer'!
 
 !MaglevArrayWindow methodsFor: 'rendering'!
 
-renderWindowContentOn: html
-	super renderWindowContentOn: html.
-	self renderHorziontalLineOn: html.
+checkAddConnectionTo: aWindow
+	super checkAddConnectionTo: aWindow.
+	object elements keysAndValuesDo: [:idx :value |
+		value == aWindow object ifTrue: [self connectTo: aWindow as: #arrayElement with: idx]].
+!
+
+contentTabs
+	|result|
+	result := super contentTabs.
+	self object hasElements 
+		ifTrue: [result at: 'Elements' put: #renderArrayElementsOn:].
+	^ result
+!
+
+renderArrayElementsOn: html
 	html with: (MaglevTable newFor: self object elements).
 ! !
 
@@ -778,15 +896,41 @@ MaglevObjectWindow subclass: #MaglevHashWindow
 
 !MaglevHashWindow methodsFor: 'rendering'!
 
-renderWindowContentOn: html
-	super renderWindowContentOn: html.
-	self renderHorziontalLineOn: html.
+contentTabs
+	|result|
+	result := super contentTabs.
+	self object hasElements 
+		ifTrue: [result at: 'Associations' put: #renderHashElementsOn:].
+	^ result
+!
+
+renderHashElementsOn: html
 	html with: (MaglevTable newFor: self object elements).
 ! !
 
 MaglevObjectWindow subclass: #MaglevModuleWindow
 	instanceVariableNames: ''
 	package: 'Maglev-Database-Explorer'!
+
+!MaglevModuleWindow methodsFor: 'rendering'!
+
+contentTabs
+	|result|
+	result := super contentTabs.
+	self object hasConstants 
+		ifTrue: [result at: 'Constants' put: #renderConstantsOn:].
+	self object hasIncludedModules
+		ifTrue: [result at: 'Included Modules' put: #renderIncludedModulesOn:].
+	^ result
+!
+
+renderConstantsOn: html
+	html with: (MaglevTable newFor: self object constants).
+!
+
+renderIncludedModulesOn: html
+	html with: (MaglevTable newFor: self object includedModules).
+! !
 
 MaglevModuleWindow subclass: #MaglevClassWindow
 	instanceVariableNames: ''
@@ -817,5 +961,11 @@ renderWindowTitleOn: html
 	html
 		with: MaglevIcon wait;
 		with: ' loading...'.
+! !
+
+!MaglevWaitingWindow methodsFor: 'testing'!
+
+isWaitingWindow
+ 	^ true
 ! !
 

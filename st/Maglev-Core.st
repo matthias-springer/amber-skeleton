@@ -1,6 +1,6 @@
 Smalltalk current createPackage: 'Maglev-Core' properties: #{}!
 Object subclass: #Maglev
-	instanceVariableNames: 'objectSpace'
+	instanceVariableNames: 'objectSpace windows'
 	package: 'Maglev-Core'!
 
 !Maglev methodsFor: 'accessing'!
@@ -10,7 +10,30 @@ objectSpace
 	^ objectSpace
 ! !
 
+!Maglev methodsFor: 'initializing'!
+
+initialize
+	windows := OrderedCollection new.
+! !
+
+!Maglev methodsFor: 'interactions'!
+
+addWindow: aWindow
+	windows add: aWindow.
+	self showConnectionsFor: aWindow.
+!
+
+removeWindow: aWindow
+	windows remove: aWindow.
+! !
+
 !Maglev methodsFor: 'rendering'!
+
+showConnectionsFor: aWindow
+	windows do: [:window | 
+		window checkAddConnectionTo: aWindow.
+		aWindow checkAddConnectionTo: window].
+!
 
 showObjectWindow: oop
 	|window|
@@ -43,7 +66,7 @@ instance
 ! !
 
 Object subclass: #MaglevObject
-	instanceVariableNames: 'oop instVars classObject inspection isLoaded windows'
+	instanceVariableNames: 'oop instVars instVarsSize classObject inspection isLoaded windows'
 	package: 'Maglev-Core'!
 
 !MaglevObject methodsFor: 'accessing'!
@@ -60,6 +83,10 @@ instVars
 	^ instVars
 !
 
+instVarsSize
+	^ instVarsSize
+!
+
 oop
 	^ oop
 !
@@ -69,20 +96,34 @@ windows
 	^ windows
 ! !
 
+!MaglevObject methodsFor: 'comparing'!
+
+= anObject
+	^ self oop = anObject oop
+!
+
+== anObject
+	^ self oop == anObject oop
+! !
+
 !MaglevObject methodsFor: 'instance creation'!
 
 parseJSON: obj
 	isLoaded := true.
+	instVars ifNil: [instVars := Dictionary new].
 	oop := obj oop.
 	classObject := MaglevObject newObject: obj classObject.
 	inspection := obj inspection.
-	instVars := Dictionary new.
-	obj instVars keysAndValuesDo: [:ivName :ivValue |
-		instVars at: ivName put: (MaglevObject newObject: ivValue)].
+	instVarsSize := obj instVarsSize.
+	obj instVars keysAndValuesDo: [:index :assoc | |key value|
+		key := MaglevObject newObject: (assoc at: 1).
+		value := MaglevObject newObject: (assoc at: 2).
+		instVars at: index asNumber put: key -> value].
 !
 
 parseJSONNotLoaded: obj
-	isLoaded := false.
+	self isLoaded 
+		ifNil: [isLoaded := false].
 	oop := obj oop.
 	inspection := obj inspection.
 ! !
@@ -91,12 +132,42 @@ parseJSONNotLoaded: obj
 
 addWindow: aWindow
 	self windows add: aWindow.
+	Maglev instance addWindow: aWindow.
 	^ aWindow
 !
 
 removeWindow: aWindow
 	self windows remove: aWindow.
+	Maglev instance removeWindow: aWindow.
 	^ aWindow
+! !
+
+!MaglevObject methodsFor: 'reloading'!
+
+ensureIsLoaded: collectionName from: from to: to
+	|obj params|
+	params := Dictionary new
+		at: 'range_', collectionName, '_from' put: from;
+		at: 'range_', collectionName, '_to' put: to;
+		yourself.
+	obj := MaglevAjax 
+		ajax: '/object/index/', self oop
+		data: params.
+	self parseJSON: obj.
+!
+
+ensureIsLoaded: collectionName from: from to: to withCallback: aBlock
+	|params|
+	params := Dictionary new
+		at: 'range_', collectionName, '_from' put: from;
+		at: 'range_', collectionName, '_to' put: to;
+		yourself.
+	MaglevAjax 
+		ajax: '/object/index/', self oop
+		data: params
+		withCallback: [:obj | 
+			self parseJSON: obj.
+			aBlock value].
 ! !
 
 !MaglevObject methodsFor: 'rendering'!
@@ -112,6 +183,7 @@ inlineViewComponentShort
 	^ self class inlineViewClass basicNew
 		object: self;
 		isShort: true;
+		isDraggable: false;
 		yourself
 !
 
@@ -129,13 +201,14 @@ windowViewComponent
 !
 
 windowViewComponentReplace: aWindow
-	|window|
-	window := self class windowViewClass newReplace: aWindow.
-	window object: self.
-	^ window
+	^ self class windowViewClass newReplace: aWindow with: self
 ! !
 
 !MaglevObject methodsFor: 'testing'!
+
+hasInstVars
+	^ instVars size > 0
+!
 
 isLoaded
 	^ isLoaded
@@ -203,7 +276,7 @@ parseJSON: obj
 ! !
 
 MaglevObject subclass: #MaglevArray
-	instanceVariableNames: 'elements size'
+	instanceVariableNames: 'elements elementsSize'
 	package: 'Maglev-Core'!
 
 !MaglevArray methodsFor: 'accessing'!
@@ -216,25 +289,28 @@ elements
 	^ elements
 !
 
-size
-	size ifNil: [^ elements size].
-	^ size
+elementsSize
+	^ elementsSize
 ! !
 
 !MaglevArray methodsFor: 'instance creation'!
 
 parseJSON: obj
 	super parseJSON: obj.
-	size := obj size.
-	elements := Array new.
-	obj elements do: [:element |
-		elements add: (MaglevObject newObject: element)].
+	elements ifNil: [elements := Dictionary new].
+	elementsSize := obj elementsSize.
+	obj elements keysAndValuesDo: [:index :element |
+		elements at: index asNumber put: (MaglevObject newObject: element)].
 ! !
 
 !MaglevArray methodsFor: 'testing'!
 
+hasElements
+	^ self elementsSize > 0
+!
+
 isFullyLoaded
-	^ size == elements size
+	^ self elementsSize == self elements size
 ! !
 
 !MaglevArray class methodsFor: 'constants'!
@@ -288,42 +364,47 @@ windowViewClass
 ! !
 
 MaglevObject subclass: #MaglevHash
-	instanceVariableNames: 'elements size'
+	instanceVariableNames: 'elements elementsSize'
 	package: 'Maglev-Core'!
 
 !MaglevHash methodsFor: 'accessing'!
+
+at: anInteger
+	^ self elements at: anInteger
+!
 
 elements
 	^ elements
 !
 
-keysAndValuesDo: aBlock
-	elements keysAndValuesDo: aBlock.
+elementsSize
+	^ elementsSize
 !
 
-size
-	size ifNil: [^ elements size].
-	^ size
+keysAndValuesDo: aBlock
+	elements keysAndValuesDo: [:index :kv | aBlock value: kv key value: kv value].
 ! !
 
 !MaglevHash methodsFor: 'instance creation'!
 
 parseJSON: obj
 	super parseJSON: obj.
-	size := obj size.
-	elements := Dictionary new.
-	obj elements keysAndValuesDo: [:keySt :value | |key|
-		key := keySt asNumber.
-		key \\ 2 == 0 ifTrue: [ |objKey objValue|
-			objKey := MaglevObject newObject: value.
-			objValue := MaglevObject newObject: (obj elements at: key + 1).
-			elements at: objKey put: objValue]].
+	elements ifNil: [elements := Dictionary new].
+	elementsSize := obj elementsSize.
+	obj elements keysAndValuesDo: [:index :assoc | |key value|
+		key := MaglevObject newObject: (assoc at: 1).
+		value := MaglevObject newObject: (assoc at: 2).
+		elements at: index asNumber put: key -> value].
 ! !
 
 !MaglevHash methodsFor: 'testing'!
 
+hasElements
+	^ self elementsSize > 0
+!
+
 isFullyLoaded
-	^ size == elements size
+	^ self elementsSize == self elements size
 ! !
 
 !MaglevHash class methodsFor: 'constants'!
@@ -341,16 +422,51 @@ windowViewClass
 ! !
 
 MaglevObject subclass: #MaglevModule
-	instanceVariableNames: 'includedModules'
+	instanceVariableNames: 'includedModules includedModulesSize constants constantsSize'
 	package: 'Maglev-Core'!
+
+!MaglevModule methodsFor: 'accessing'!
+
+constants
+	^ constants
+!
+
+constantsSize
+	^ constantsSize
+!
+
+includedModules
+	^ includedModules
+!
+
+includedModulesSize
+	^ includedModulesSize
+! !
 
 !MaglevModule methodsFor: 'instance creation'!
 
 parseJSON: obj
 	super parseJSON: obj.
-	includedModules := Array new.
-	obj includedModules do: [:module |
-		includedModules add: (MaglevObject newObject: module)].
+	includedModules ifNil: [includedModules := Dictionary new].
+	constants ifNil: [constants := Dictionary new].
+	includedModulesSize := obj includedModulesSize.
+	constantsSize := obj constantsSize.
+	obj includedModules keysAndValuesDo: [:index :value |
+		includedModules at: index asNumber put: (MaglevObject newObject: value)].
+	obj constants keysAndValuesDo: [:index :assoc | |key value|
+		key := MaglevObject newObject: (assoc at: 1).
+		value := MaglevObject newObject: (assoc at: 2).
+		constants at: index asNumber put: key -> value].
+! !
+
+!MaglevModule methodsFor: 'testing'!
+
+hasConstants
+	^ self constantsSize > 0
+!
+
+hasIncludedModules
+	^ self includedModulesSize > 0
 ! !
 
 !MaglevModule class methodsFor: 'constants'!
@@ -368,14 +484,14 @@ windowViewClass
 ! !
 
 MaglevModule subclass: #MaglevClass
-	instanceVariableNames: 'superclass elements size'
+	instanceVariableNames: 'superclassObject size'
 	package: 'Maglev-Core'!
 
 !MaglevClass methodsFor: 'instance creation'!
 
 parseJSON: obj
 	super parseJSON: obj.
-	superclass := MaglevObject newObject: obj superclass.
+	superclassObject := MaglevObject newObject: obj superclassObject.
 ! !
 
 !MaglevClass class methodsFor: 'constants'!
@@ -459,12 +575,12 @@ initialize
 !MaglevObjectSpace methodsFor: 'interactions'!
 
 registerWindow: aWindow
-	(self objects at: aWindow object oop)
+	(objects at: aWindow object oop)
 		addWindow: aWindow.
 !
 
 unregisterWindow: aWindow
-	(self objects at: aWindow object oop)
+	(objects at: aWindow object oop)
 		removeWindow: aWindow.
 ! !
 

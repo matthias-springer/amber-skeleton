@@ -51,6 +51,29 @@ smalltalk.addClass('MaglevJsPlumb', smalltalk.Object, [], 'Maglev-Vendor');
 
 smalltalk.MaglevJsPlumb.klass.iVarNames = ['sourceTarget','defaults','referenceConnection','instanceOfConnection','connection'];
 smalltalk.addMethod(
+unescape('_connectWindow_to_as_with_'),
+smalltalk.method({
+selector: unescape('connectWindow%3Ato%3Aas%3Awith%3A'),
+category: 'interactions',
+fn: function (sourceWindow, targetWindow, cType, caption){
+var self=this;
+var params=nil;
+var type=nil;
+var defParams=nil;
+smalltalk.send((smalltalk.Transcript || Transcript), "_show_", [smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send("connecting ", "__comma", [smalltalk.send(smalltalk.send(smalltalk.send(sourceWindow, "_object", []), "_oop", []), "_asString", [])]), "__comma", [" to "]), "__comma", [smalltalk.send(smalltalk.send(smalltalk.send(targetWindow, "_object", []), "_oop", []), "_asString", [])]), "__comma", [" as "]), "__comma", [smalltalk.send(cType, "_asString", [])])]);
+(type=smalltalk.send(smalltalk.send(self, "_connection", []), "_at_", [cType]));
+ params = $.extend(true, {}, defParams); ;
+(function($rec){smalltalk.send($rec, "_basicAt_put_", ["source", smalltalk.send(smalltalk.send(sourceWindow, "_container", []), "_asJQuery", [])]);return smalltalk.send($rec, "_basicAt_put_", ["target", smalltalk.send(smalltalk.send(targetWindow, "_container", []), "_asJQuery", [])]);})(params);
+smalltalk.send((typeof jsPlumb == 'undefined' ? nil : jsPlumb), "_connect_", [params]);
+return self;},
+args: ["sourceWindow", "targetWindow", "cType", "caption"],
+source: unescape('connectWindow%3A%20sourceWindow%20to%3A%20targetWindow%20as%3A%20cType%20with%3A%20caption%0A%09%7Cparams%20type%20defParams%7C%0A%09Transcript%20show%3A%20%27connecting%20%27%2C%20sourceWindow%20object%20oop%20asString%2C%20%27%20to%20%27%2C%20targetWindow%20object%20oop%20asString%2C%20%27%20as%20%27%2C%20cType%20asString.%0A%09type%20%3A%3D%20self%20connection%20at%3A%20cType.%0A%09%3C%20params%20%3D%20%24.extend%28true%2C%20%7B%7D%2C%20defParams%29%3B%20%3E.%0A%09params%0A%09%09basicAt%3A%20%27source%27%20put%3A%20sourceWindow%20container%20asJQuery%3B%0A%09%09basicAt%3A%20%27target%27%20put%3A%20targetWindow%20container%20asJQuery.%0A%0A%09jsPlumb%20connect%3A%20params.'),
+messageSends: ["show:", unescape("%2C"), "asString", "oop", "object", "at:", "connection", "basicAt:put:", "asJQuery", "container", "connect:"],
+referencedClasses: ["Transcript"]
+}),
+smalltalk.MaglevJsPlumb.klass);
+
+smalltalk.addMethod(
 unescape('_connectWindow_to_with_'),
 smalltalk.method({
 selector: unescape('connectWindow%3Ato%3Awith%3A'),
@@ -95,10 +118,10 @@ selector: unescape('constConnection'),
 category: 'constants',
 fn: function (){
 var self=this;
-return (function($rec){smalltalk.send($rec, "_at_put_", ["iv", self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", ["hash_key", self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", ["hash_value", self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", ["array_element", self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", ["class", self['@instanceOfConnection']]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []));
+return (function($rec){smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("iv"), self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("hashKey"), self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("hashValue"), self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("arrayElement"), self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("class"), self['@instanceOfConnection']]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []));
 return self;},
 args: [],
-source: unescape('constConnection%0A%09%5E%20Dictionary%20new%0A%09%09at%3A%20%27iv%27%20put%3A%20referenceConnection%3B%0A%09%09at%3A%20%27hash_key%27%20put%3A%20referenceConnection%3B%0A%09%09at%3A%20%27hash_value%27%20put%3A%20referenceConnection%3B%0A%09%09at%3A%20%27array_element%27%20put%3A%20referenceConnection%3B%0A%09%09at%3A%20%27class%27%20put%3A%20instanceOfConnection%3B%0A%09%09yourself'),
+source: unescape('constConnection%0A%09%5E%20Dictionary%20new%0A%09%09at%3A%20%23iv%20put%3A%20referenceConnection%3B%0A%09%09at%3A%20%23hashKey%20put%3A%20referenceConnection%3B%0A%09%09at%3A%20%23hashValue%20put%3A%20referenceConnection%3B%0A%09%09at%3A%20%23arrayElement%20put%3A%20referenceConnection%3B%0A%09%09at%3A%20%23class%20put%3A%20instanceOfConnection%3B%0A%09%09yourself'),
 messageSends: ["at:put:", "yourself", "new"],
 referencedClasses: ["Dictionary"]
 }),
