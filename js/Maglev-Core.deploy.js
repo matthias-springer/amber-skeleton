@@ -115,7 +115,7 @@ return self;}
 smalltalk.Maglev.klass);
 
 
-smalltalk.addClass('MaglevObject', smalltalk.Object, ['oop', 'instVars', 'instVarsSize', 'classObject', 'inspection', 'isLoaded', 'windows'], 'Maglev-Core');
+smalltalk.addClass('MaglevObject', smalltalk.Object, ['oop', 'instVars', 'instVarsSize', 'classObject', 'inspection', 'isLoaded', 'isException', 'windows'], 'Maglev-Core');
 smalltalk.addMethod(
 unescape('__eq'),
 smalltalk.method({
@@ -191,6 +191,20 @@ try{var params=nil;
 smalltalk.send((smalltalk.MaglevAjax || MaglevAjax), "_ajax_data_withCallback_", [smalltalk.send(unescape("/object/index/"), "__comma", [smalltalk.send(self, "_oop", [])]), params, (function(obj){smalltalk.send(self, "_parseJSON_", [obj]);return smalltalk.send(aBlock, "_value", []);})]);
 return self;
 } catch(e) {if(e.name === 'stReturn' && e.selector === '_ensureIsLoaded_from_to_withCallback_'){return e.fn()} throw(e)}}
+}),
+smalltalk.MaglevObject);
+
+smalltalk.addMethod(
+unescape('_evaluate_language_withCallback_'),
+smalltalk.method({
+selector: unescape('evaluate%3Alanguage%3AwithCallback%3A'),
+fn: function (code, aString, aBlock){
+var self=this;
+var params=nil;
+(params=(function($rec){smalltalk.send($rec, "_at_put_", ["language", aString]);smalltalk.send($rec, "_at_put_", ["code", code]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", [])));
+smalltalk.send((smalltalk.MaglevAjax || MaglevAjax), "_ajax_data_withCallback_", [smalltalk.send(unescape("/object/evaluate/"), "__comma", [smalltalk.send(self['@oop'], "_asString", [])]), params, (function(obj){var parsedObj=nil;
+(parsedObj=smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObject_", [obj]));return smalltalk.send(aBlock, "_value_value_", [smalltalk.send(smalltalk.send(parsedObj, "_isException", []), "_not", []), parsedObj]);})]);
+return self;}
 }),
 smalltalk.MaglevObject);
 
@@ -283,6 +297,17 @@ return self;}
 smalltalk.MaglevObject);
 
 smalltalk.addMethod(
+unescape('_isException'),
+smalltalk.method({
+selector: unescape('isException'),
+fn: function (){
+var self=this;
+return self['@isException'];
+return self;}
+}),
+smalltalk.MaglevObject);
+
+smalltalk.addMethod(
 unescape('_isLoaded'),
 smalltalk.method({
 selector: unescape('isLoaded'),
@@ -328,6 +353,7 @@ var self=this;
 (self['@isLoaded']=true);
 (($receiver = self['@instVars']) == nil || $receiver == undefined) ? (function(){return (self['@instVars']=smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []));})() : $receiver;
 (self['@oop']=smalltalk.send(obj, "_oop", []));
+(self['@isException']=smalltalk.send(obj, "_exception", []));
 (self['@classObject']=smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObject_", [smalltalk.send(obj, "_classObject", [])]));
 (self['@inspection']=smalltalk.send(obj, "_inspection", []));
 (self['@instVarsSize']=smalltalk.send(obj, "_instVarsSize", []));

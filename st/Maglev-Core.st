@@ -72,7 +72,7 @@ instance
 ! !
 
 Object subclass: #MaglevObject
-	instanceVariableNames: 'oop instVars instVarsSize classObject inspection isLoaded windows'
+	instanceVariableNames: 'oop instVars instVarsSize classObject inspection isLoaded isException windows'
 	package: 'Maglev-Core'!
 
 !MaglevObject methodsFor: 'accessing'!
@@ -95,6 +95,10 @@ instVarsDo: aBlock
 
 instVarsSize
 	^ instVarsSize
+!
+
+isException
+	^ isException
 !
 
 oop
@@ -128,6 +132,7 @@ parseJSON: obj
 	isLoaded := true.
 	instVars ifNil: [instVars := Dictionary new].
 	oop := obj oop.
+	isException := obj exception.
 	classObject := MaglevObject newObject: obj classObject.
 	inspection := obj inspection.
 	instVarsSize := obj instVarsSize.
@@ -150,6 +155,20 @@ addWindow: aWindow
 	self windows add: aWindow.
 	Maglev instance addWindow: aWindow.
 	^ aWindow
+!
+
+evaluate: code language: aString withCallback: aBlock
+	|params|
+	params := Dictionary new
+		at: 'language' put: aString;
+		at: 'code' put: code;
+		yourself.
+	MaglevAjax 
+		ajax: '/object/evaluate/', oop asString
+		data: params
+		withCallback: [:obj | |parsedObj|
+			parsedObj := MaglevObject newObject: obj.
+			aBlock value: parsedObj isException not value: parsedObj].
 !
 
 removeWindow: aWindow

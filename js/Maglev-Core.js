@@ -160,7 +160,7 @@ referencedClasses: ["Maglev"]
 smalltalk.Maglev.klass);
 
 
-smalltalk.addClass('MaglevObject', smalltalk.Object, ['oop', 'instVars', 'instVarsSize', 'classObject', 'inspection', 'isLoaded', 'windows'], 'Maglev-Core');
+smalltalk.addClass('MaglevObject', smalltalk.Object, ['oop', 'instVars', 'instVarsSize', 'classObject', 'inspection', 'isLoaded', 'isException', 'windows'], 'Maglev-Core');
 smalltalk.addMethod(
 unescape('__eq'),
 smalltalk.method({
@@ -266,6 +266,25 @@ args: ["collectionName", "from", "to", "aBlock"],
 source: unescape('ensureIsLoaded%3A%20collectionName%20from%3A%20from%20to%3A%20to%20withCallback%3A%20aBlock%0A%09%7Cparams%7C%0A%09%28self%20isLoaded%3A%20collectionName%20from%3A%20from%20to%3A%20to%29%20ifTrue%3A%20%5BaBlock%20value.%20%5E%20self%5D.%0A%09params%20%3A%3D%20Dictionary%20new%0A%09%09at%3A%20%27range_%27%2C%20collectionName%20asString%2C%20%27_from%27%20put%3A%20from%3B%0A%09%09at%3A%20%27range_%27%2C%20collectionName%20asString%2C%20%27_to%27%20put%3A%20to%3B%0A%09%09yourself.%0A%09MaglevAjax%20%0A%09%09ajax%3A%20%27/object/index/%27%2C%20self%20oop%0A%09%09data%3A%20params%0A%09%09withCallback%3A%20%5B%3Aobj%20%7C%20%0A%09%09%09self%20parseJSON%3A%20obj.%0A%09%09%09aBlock%20value%5D.'),
 messageSends: ["ifTrue:", "isLoaded:from:to:", "value", "at:put:", unescape("%2C"), "asString", "yourself", "new", "ajax:data:withCallback:", "oop", "parseJSON:"],
 referencedClasses: ["Dictionary", "MaglevAjax"]
+}),
+smalltalk.MaglevObject);
+
+smalltalk.addMethod(
+unescape('_evaluate_language_withCallback_'),
+smalltalk.method({
+selector: unescape('evaluate%3Alanguage%3AwithCallback%3A'),
+category: 'interactions',
+fn: function (code, aString, aBlock){
+var self=this;
+var params=nil;
+(params=(function($rec){smalltalk.send($rec, "_at_put_", ["language", aString]);smalltalk.send($rec, "_at_put_", ["code", code]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", [])));
+smalltalk.send((smalltalk.MaglevAjax || MaglevAjax), "_ajax_data_withCallback_", [smalltalk.send(unescape("/object/evaluate/"), "__comma", [smalltalk.send(self['@oop'], "_asString", [])]), params, (function(obj){var parsedObj=nil;
+(parsedObj=smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObject_", [obj]));return smalltalk.send(aBlock, "_value_value_", [smalltalk.send(smalltalk.send(parsedObj, "_isException", []), "_not", []), parsedObj]);})]);
+return self;},
+args: ["code", "aString", "aBlock"],
+source: unescape('evaluate%3A%20code%20language%3A%20aString%20withCallback%3A%20aBlock%0A%09%7Cparams%7C%0A%09params%20%3A%3D%20Dictionary%20new%0A%09%09at%3A%20%27language%27%20put%3A%20aString%3B%0A%09%09at%3A%20%27code%27%20put%3A%20code%3B%0A%09%09yourself.%0A%09MaglevAjax%20%0A%09%09ajax%3A%20%27/object/evaluate/%27%2C%20oop%20asString%0A%09%09data%3A%20params%0A%09%09withCallback%3A%20%5B%3Aobj%20%7C%20%7CparsedObj%7C%0A%09%09%09parsedObj%20%3A%3D%20MaglevObject%20newObject%3A%20obj.%0A%09%09%09aBlock%20value%3A%20parsedObj%20isException%20not%20value%3A%20parsedObj%5D.'),
+messageSends: ["at:put:", "yourself", "new", "ajax:data:withCallback:", unescape("%2C"), "asString", "newObject:", "value:value:", "not", "isException"],
+referencedClasses: ["Dictionary", "MaglevAjax", "MaglevObject"]
 }),
 smalltalk.MaglevObject);
 
@@ -398,6 +417,22 @@ referencedClasses: []
 smalltalk.MaglevObject);
 
 smalltalk.addMethod(
+unescape('_isException'),
+smalltalk.method({
+selector: unescape('isException'),
+category: 'accessing',
+fn: function (){
+var self=this;
+return self['@isException'];
+return self;},
+args: [],
+source: unescape('isException%0A%09%5E%20isException'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.MaglevObject);
+
+smalltalk.addMethod(
 unescape('_isLoaded'),
 smalltalk.method({
 selector: unescape('isLoaded'),
@@ -459,6 +494,7 @@ var self=this;
 (self['@isLoaded']=true);
 (($receiver = self['@instVars']) == nil || $receiver == undefined) ? (function(){return (self['@instVars']=smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []));})() : $receiver;
 (self['@oop']=smalltalk.send(obj, "_oop", []));
+(self['@isException']=smalltalk.send(obj, "_exception", []));
 (self['@classObject']=smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObject_", [smalltalk.send(obj, "_classObject", [])]));
 (self['@inspection']=smalltalk.send(obj, "_inspection", []));
 (self['@instVarsSize']=smalltalk.send(obj, "_instVarsSize", []));
@@ -467,8 +503,8 @@ var value=nil;
 (key=smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObject_", [smalltalk.send(assoc, "_at_", [(1)])]));(value=smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObject_", [smalltalk.send(assoc, "_at_", [(2)])]));return smalltalk.send(self['@instVars'], "_at_put_", [smalltalk.send(index, "_asNumber", []), smalltalk.send(key, "__minus_gt", [value])]);})]);
 return self;},
 args: ["obj"],
-source: unescape('parseJSON%3A%20obj%0A%09isLoaded%20%3A%3D%20true.%0A%09instVars%20ifNil%3A%20%5BinstVars%20%3A%3D%20Dictionary%20new%5D.%0A%09oop%20%3A%3D%20obj%20oop.%0A%09classObject%20%3A%3D%20MaglevObject%20newObject%3A%20obj%20classObject.%0A%09inspection%20%3A%3D%20obj%20inspection.%0A%09instVarsSize%20%3A%3D%20obj%20instVarsSize.%0A%09obj%20instVars%20keysAndValuesDo%3A%20%5B%3Aindex%20%3Aassoc%20%7C%20%7Ckey%20value%7C%0A%09%09key%20%3A%3D%20MaglevObject%20newObject%3A%20%28assoc%20at%3A%201%29.%0A%09%09value%20%3A%3D%20MaglevObject%20newObject%3A%20%28assoc%20at%3A%202%29.%0A%09%09instVars%20at%3A%20index%20asNumber%20put%3A%20key%20-%3E%20value%5D.'),
-messageSends: ["ifNil:", "new", "oop", "newObject:", "classObject", "inspection", "instVarsSize", "keysAndValuesDo:", "instVars", "at:", "at:put:", "asNumber", unescape("-%3E")],
+source: unescape('parseJSON%3A%20obj%0A%09isLoaded%20%3A%3D%20true.%0A%09instVars%20ifNil%3A%20%5BinstVars%20%3A%3D%20Dictionary%20new%5D.%0A%09oop%20%3A%3D%20obj%20oop.%0A%09isException%20%3A%3D%20obj%20exception.%0A%09classObject%20%3A%3D%20MaglevObject%20newObject%3A%20obj%20classObject.%0A%09inspection%20%3A%3D%20obj%20inspection.%0A%09instVarsSize%20%3A%3D%20obj%20instVarsSize.%0A%09obj%20instVars%20keysAndValuesDo%3A%20%5B%3Aindex%20%3Aassoc%20%7C%20%7Ckey%20value%7C%0A%09%09key%20%3A%3D%20MaglevObject%20newObject%3A%20%28assoc%20at%3A%201%29.%0A%09%09value%20%3A%3D%20MaglevObject%20newObject%3A%20%28assoc%20at%3A%202%29.%0A%09%09instVars%20at%3A%20index%20asNumber%20put%3A%20key%20-%3E%20value%5D.'),
+messageSends: ["ifNil:", "new", "oop", "exception", "newObject:", "classObject", "inspection", "instVarsSize", "keysAndValuesDo:", "instVars", "at:", "at:put:", "asNumber", unescape("-%3E")],
 referencedClasses: ["Dictionary", "MaglevObject"]
 }),
 smalltalk.MaglevObject);

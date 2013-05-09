@@ -116,6 +116,168 @@ wait
 		yourself
 ! !
 
+Widget subclass: #MaglevObjectDropdown
+	instanceVariableNames: 'container resultContainer editor editorElement rubyButton smalltalkButton object'
+	package: 'Maglev-Database-Explorer'!
+
+!MaglevObjectDropdown methodsFor: 'accessing'!
+
+code
+	^ editor getValue
+!
+
+language
+	self isRuby
+		ifTrue: [^ 'ruby']
+		ifFalse: [^ 'smalltalk']
+! !
+
+!MaglevObjectDropdown methodsFor: 'initializing'!
+
+initializeEditor
+	editor := ace edit: (editorElement asJQuery at: 0).
+	editor setTheme: 'ace/theme/clouds'.
+	editor getSession setMode: 'ace/mode/ruby'.
+!
+
+mouseFix
+	< var menu = self['@container'];
+	var editor = self['@editorElement'];
+	menu._asJQuery().mousedown(function (event) {
+		event.preventDefault();
+		return false;
+	});
+	editor._asJQuery().mousedown(function (event) {
+		event.preventDefault();
+		return false;
+	}); >
+! !
+
+!MaglevObjectDropdown methodsFor: 'interactions'!
+
+appendToInlineObject: anObject for: dropdownContainer
+	object := anObject object.
+	container asJQuery appendTo: dropdownContainer asJQuery.
+!
+
+evalDoIt
+!
+
+evalInspectIt
+!
+
+evalPrintIt
+	self executeWithCallback: [:success :resultObj | 
+		success
+			ifTrue: [resultContainer with: resultObj inlineViewComponent]
+			ifFalse: [resultContainer with: resultObj inlineViewComponent]].
+!
+
+executeWithCallback: aBlock
+	|html|
+	html := HTMLCanvas onJQuery: resultContainer asJQuery.
+	resultContainer
+		addClass: 'alert-info';
+		removeClass: 'alert-success';
+		removeClass: 'alert-error'.
+	resultContainer asJQuery empty.
+	resultContainer
+		with: MaglevIcon wait;
+		with: ' loading...';
+		show.
+	object 
+		evaluate: self code 
+		language: self language 
+		withCallback: [:success :resultObj |
+			resultContainer asJQuery empty.
+			resultContainer removeClass: 'alert-info'.
+			success
+				ifTrue: [resultContainer addClass: 'alert-success']
+				ifFalse: [resultContainer addClass: 'alert-error'].
+			aBlock value: success value: resultObj]
+! !
+
+!MaglevObjectDropdown methodsFor: 'rendering'!
+
+renderButtonsOn: html
+	html button
+		class: 'btn btn-primary';
+		type: 'button';
+		with: 'Do it';
+		onClick: [self evalDoIt].
+	html button
+		class: 'btn btn-primary';
+		type: 'button';
+		with: 'Print it';
+		onClick: [self evalPrintIt].
+	html button
+		class: 'btn btn-primary';
+		type: 'button';
+		with: 'Inspect it';
+		onClick: [self evalInspectIt].
+	html div
+		class: 'btn-group';
+		data: 'toggle' with: 'buttons-radio';
+		with: [
+			rubyButton := html button
+				class: 'btn active';
+				data: 'toggle' with: 'buttons-checkbox';
+				type: 'button';
+				with: 'Ruby'.
+			smalltalkButton := html button
+				class: 'btn';
+				data: 'toggle' with: 'buttons-checkbox';
+				type: 'button';
+				with: 'Smalltalk'].
+!
+
+renderFormOn: html
+	html form
+		style: 'margin: 0px;';
+		with: [
+			editorElement := html span
+				class: 'pull-left code-area'.
+			html div style: 'clear: both;'.
+			resultContainer := html div
+				class: 'alert';
+				hide.
+			html div
+				class: 'button-area';
+				with: [self renderButtonsOn: html]].
+!
+
+renderOn: html
+	container := html div
+		class: 'dropdown-menu';
+		with: [html fieldset
+				class: 'textbox';
+				style: 'padding: 10px';
+				with: [self renderFormOn: html]].
+	self initializeEditor.
+	self mouseFix.
+! !
+
+!MaglevObjectDropdown methodsFor: 'testing'!
+
+isRuby
+	^ rubyButton asJQuery hasClass: 'active'
+!
+
+isSmalltalk
+	^ smalltalkButton asJQuery hasClass: 'active'
+! !
+
+MaglevObjectDropdown class instanceVariableNames: 'instance'!
+
+!MaglevObjectDropdown class methodsFor: 'singleton'!
+
+instance
+	instance ifNil: [
+		instance := self new.
+		instance appendToJQuery: '#temporary-rendering-area' asJQuery].
+	^ instance
+! !
+
 Widget subclass: #MaglevObjectInline
 	instanceVariableNames: 'object hasDropDown isDraggable depth isShort dragContent dragDummy dragObject'
 	package: 'Maglev-Database-Explorer'!
@@ -216,6 +378,10 @@ dragStop: event a: ui
 	dragObject top: 0.
 	dragDummy hide.
 	dragContent show.
+!
+
+showDropdownFor: dropdownContainer
+	MaglevObjectDropdown instance appendToInlineObject: self for: dropdownContainer.
 ! !
 
 !MaglevObjectInline methodsFor: 'rendering'!
@@ -272,12 +438,14 @@ renderObjectOn: html
 !
 
 renderObjectWithDropDownOn: html
-	html span
+	|dropdownContainer|
+	dropdownContainer := html span
 		class: 'dropdown';
 		with: [
 			html a
 				class: 'dropdown-toggle btn object-dropdown-toggle';
 				data: 'toggle' with: 'dropdown';
+				onClick: [self showDropdownFor: dropdownContainer];
 				with: [
 					self renderObjectOn: html.
 					html b class: 'caret']].
@@ -290,12 +458,14 @@ renderOn: html
 !
 
 renderText: text withDropDownOn: html
-	html span
+	|dropdownContainer|
+	dropdownContainer := html span
 		class: 'dropdown';
 		with: [
 			html a
 				class: 'dropdown-toggle btn object-dropdown-toggle';
 				data: 'toggle' with: 'dropdown';
+				onClick: [self showDropdownFor: dropdownContainer];
 				with: [
 					html with: text.
 					html b class: 'caret']].
