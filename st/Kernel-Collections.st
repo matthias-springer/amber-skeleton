@@ -1025,6 +1025,10 @@ asUppercase
 	<return self.toUpperCase()>
 !
 
+escapedString
+	^ self replace: '''' with: ''''''
+!
+
 reversed
 	<return self.split("").reverse().join("")>
 !

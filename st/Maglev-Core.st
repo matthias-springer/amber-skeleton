@@ -206,6 +206,12 @@ paramsAllElements
 		yourself
 !
 
+paramsFullString
+	^ Dictionary new
+		at: 'fullString' put: true;
+		yourself
+!
+
 removeWindow: aWindow
 	self windows remove: aWindow.
 	Maglev instance removeWindow: aWindow.
@@ -489,6 +495,13 @@ atKeyInspection: anObject
 	self error: 'Object is not in the collection'.
 !
 
+atKeyString: anObject
+	self elements do: [:assoc |
+		anObject = assoc key string
+			ifTrue: [^ assoc value]].
+	self error: 'Object is not in the collection'.
+!
+
 elements
 	^ elements
 !
@@ -580,6 +593,16 @@ parseJSON: obj
 		constants at: index asNumber put: key -> value].
 ! !
 
+!MaglevModule methodsFor: 'interactions'!
+
+compileSmalltalkSourceCode: aSelectorString withCallback: aBlock
+	self 
+		evaluateWithoutUpdate: 'self compile: ''', aSelectorString escapedString, '''.'
+		language: 'smalltalk'
+		with: Dictionary new
+		withCallback: aBlock.
+! !
+
 !MaglevModule methodsFor: 'testing'!
 
 hasConstants
@@ -625,9 +648,17 @@ parseJSON: obj
 
 allSmalltalkSelectorsWithCallback: aBlock
 	self 
-		evaluateWithoutUpdate: '|selectors| selectors := RubyHash new. Behavior categoryNames do: [:category | selectors at: category put: (Behavior selectorsIn: category)]. selectors.' 
+		evaluateWithoutUpdate: '|selectors| selectors := RubyHash new. self categoryNames do: [:category | selectors at: category put: (self selectorsIn: category)]. selectors.' 
 		language: 'smalltalk'
 		with: self paramsAllElements 
+		withCallback: aBlock.
+!
+
+smalltalkSourceCodeFor: aSelectorString withCallback: aBlock
+	self 
+		evaluateWithoutUpdate: 'self sourceCodeAt: ''', aSelectorString, '''.'
+		language: 'smalltalk'
+		with: self paramsFullString
 		withCallback: aBlock.
 ! !
 
@@ -664,8 +695,28 @@ windowViewClass
 ! !
 
 MaglevObject subclass: #MaglevString
-	instanceVariableNames: ''
+	instanceVariableNames: 'string isStringComplete'
 	package: 'Maglev-Core'!
+
+!MaglevString methodsFor: 'accessing'!
+
+string
+	^ string
+! !
+
+!MaglevString methodsFor: 'instance creation'!
+
+parseJSON: obj
+	super parseJSON: obj.
+	string := obj string.
+	isStringComplete := obj stringComplete.
+!
+
+parseJSONNotLoaded: obj
+	super parseJSONNotLoaded: obj.
+	string := obj string.
+	isStringComplete := obj stringComplete.
+! !
 
 !MaglevString class methodsFor: 'constants'!
 
@@ -682,8 +733,28 @@ windowViewClass
 ! !
 
 MaglevObject subclass: #MaglevSymbol
-	instanceVariableNames: ''
+	instanceVariableNames: 'string isStringComplete'
 	package: 'Maglev-Core'!
+
+!MaglevSymbol methodsFor: 'accessing'!
+
+string
+	^ string
+! !
+
+!MaglevSymbol methodsFor: 'instance creation'!
+
+parseJSON: obj
+	super parseJSON: obj.
+	string := obj string.
+	isStringComplete := obj stringComplete.
+!
+
+parseJSONNotLoaded: obj
+	super parseJSONNotLoaded: obj.
+	string := obj string.
+	isStringComplete := obj stringComplete.
+! !
 
 !MaglevSymbol class methodsFor: 'constants'!
 

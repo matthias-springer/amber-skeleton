@@ -384,6 +384,17 @@ return self;}
 smalltalk.MaglevObject);
 
 smalltalk.addMethod(
+unescape('_paramsFullString'),
+smalltalk.method({
+selector: unescape('paramsFullString'),
+fn: function (){
+var self=this;
+return (function($rec){smalltalk.send($rec, "_at_put_", ["fullString", true]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []));
+return self;}
+}),
+smalltalk.MaglevObject);
+
+smalltalk.addMethod(
 unescape('_parseJSON_'),
 smalltalk.method({
 selector: unescape('parseJSON%3A'),
@@ -852,6 +863,19 @@ return self;
 smalltalk.MaglevHash);
 
 smalltalk.addMethod(
+unescape('_atKeyString_'),
+smalltalk.method({
+selector: unescape('atKeyString%3A'),
+fn: function (anObject){
+var self=this;
+try{smalltalk.send(smalltalk.send(self, "_elements", []), "_do_", [(function(assoc){return ((($receiver = smalltalk.send(anObject, "__eq", [smalltalk.send(smalltalk.send(assoc, "_key", []), "_string", [])])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (function(){throw({name: 'stReturn', selector: '_atKeyString_', fn: function(){return smalltalk.send(assoc, "_value", [])}})})();})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return (function(){throw({name: 'stReturn', selector: '_atKeyString_', fn: function(){return smalltalk.send(assoc, "_value", [])}})})();})]));})]);
+smalltalk.send(self, "_error_", ["Object is not in the collection"]);
+return self;
+} catch(e) {if(e.name === 'stReturn' && e.selector === '_atKeyString_'){return e.fn()} throw(e)}}
+}),
+smalltalk.MaglevHash);
+
+smalltalk.addMethod(
 unescape('_elements'),
 smalltalk.method({
 selector: unescape('elements'),
@@ -969,6 +993,17 @@ smalltalk.MaglevHash.klass);
 
 
 smalltalk.addClass('MaglevModule', smalltalk.MaglevObject, ['includedModules', 'includedModulesSize', 'constants', 'constantsSize'], 'Maglev-Core');
+smalltalk.addMethod(
+unescape('_compileSmalltalkSourceCode_withCallback_'),
+smalltalk.method({
+selector: unescape('compileSmalltalkSourceCode%3AwithCallback%3A'),
+fn: function (aSelectorString, aBlock){
+var self=this;
+smalltalk.send(self, "_evaluateWithoutUpdate_language_with_withCallback_", [smalltalk.send(smalltalk.send(unescape("self%20compile%3A%20%27"), "__comma", [smalltalk.send(aSelectorString, "_escapedString", [])]), "__comma", [unescape("%27.")]), "smalltalk", smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []), aBlock]);
+return self;}
+}),
+smalltalk.MaglevModule);
+
 smalltalk.addMethod(
 unescape('_constants'),
 smalltalk.method({
@@ -1096,7 +1131,7 @@ smalltalk.method({
 selector: unescape('allSmalltalkSelectorsWithCallback%3A'),
 fn: function (aBlock){
 var self=this;
-smalltalk.send(self, "_evaluateWithoutUpdate_language_with_withCallback_", [unescape("%7Cselectors%7C%20selectors%20%3A%3D%20RubyHash%20new.%20Behavior%20categoryNames%20do%3A%20%5B%3Acategory%20%7C%20selectors%20at%3A%20category%20put%3A%20%28Behavior%20selectorsIn%3A%20category%29%5D.%20selectors."), "smalltalk", smalltalk.send(self, "_paramsAllElements", []), aBlock]);
+smalltalk.send(self, "_evaluateWithoutUpdate_language_with_withCallback_", [unescape("%7Cselectors%7C%20selectors%20%3A%3D%20RubyHash%20new.%20self%20categoryNames%20do%3A%20%5B%3Acategory%20%7C%20selectors%20at%3A%20category%20put%3A%20%28self%20selectorsIn%3A%20category%29%5D.%20selectors."), "smalltalk", smalltalk.send(self, "_paramsAllElements", []), aBlock]);
 return self;}
 }),
 smalltalk.MaglevClass);
@@ -1109,6 +1144,17 @@ fn: function (obj){
 var self=this;
 smalltalk.send(self, "_parseJSON_", [obj], smalltalk.MaglevModule);
 (self['@superclassObject']=smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObject_", [smalltalk.send(obj, "_superclassObject", [])]));
+return self;}
+}),
+smalltalk.MaglevClass);
+
+smalltalk.addMethod(
+unescape('_smalltalkSourceCodeFor_withCallback_'),
+smalltalk.method({
+selector: unescape('smalltalkSourceCodeFor%3AwithCallback%3A'),
+fn: function (aSelectorString, aBlock){
+var self=this;
+smalltalk.send(self, "_evaluateWithoutUpdate_language_with_withCallback_", [smalltalk.send(smalltalk.send(unescape("self%20sourceCodeAt%3A%20%27"), "__comma", [aSelectorString]), "__comma", [unescape("%27.")]), "smalltalk", smalltalk.send(self, "_paramsFullString", []), aBlock]);
 return self;}
 }),
 smalltalk.MaglevClass);
@@ -1195,7 +1241,44 @@ return self;}
 smalltalk.MaglevNilClass.klass);
 
 
-smalltalk.addClass('MaglevString', smalltalk.MaglevObject, [], 'Maglev-Core');
+smalltalk.addClass('MaglevString', smalltalk.MaglevObject, ['string', 'isStringComplete'], 'Maglev-Core');
+smalltalk.addMethod(
+unescape('_parseJSON_'),
+smalltalk.method({
+selector: unescape('parseJSON%3A'),
+fn: function (obj){
+var self=this;
+smalltalk.send(self, "_parseJSON_", [obj], smalltalk.MaglevObject);
+(self['@string']=smalltalk.send(obj, "_string", []));
+(self['@isStringComplete']=smalltalk.send(obj, "_stringComplete", []));
+return self;}
+}),
+smalltalk.MaglevString);
+
+smalltalk.addMethod(
+unescape('_parseJSONNotLoaded_'),
+smalltalk.method({
+selector: unescape('parseJSONNotLoaded%3A'),
+fn: function (obj){
+var self=this;
+smalltalk.send(self, "_parseJSONNotLoaded_", [obj], smalltalk.MaglevObject);
+(self['@string']=smalltalk.send(obj, "_string", []));
+(self['@isStringComplete']=smalltalk.send(obj, "_stringComplete", []));
+return self;}
+}),
+smalltalk.MaglevString);
+
+smalltalk.addMethod(
+unescape('_string'),
+smalltalk.method({
+selector: unescape('string'),
+fn: function (){
+var self=this;
+return self['@string'];
+return self;}
+}),
+smalltalk.MaglevString);
+
 
 smalltalk.addMethod(
 unescape('_basetype'),
@@ -1231,7 +1314,44 @@ return self;}
 smalltalk.MaglevString.klass);
 
 
-smalltalk.addClass('MaglevSymbol', smalltalk.MaglevObject, [], 'Maglev-Core');
+smalltalk.addClass('MaglevSymbol', smalltalk.MaglevObject, ['string', 'isStringComplete'], 'Maglev-Core');
+smalltalk.addMethod(
+unescape('_parseJSON_'),
+smalltalk.method({
+selector: unescape('parseJSON%3A'),
+fn: function (obj){
+var self=this;
+smalltalk.send(self, "_parseJSON_", [obj], smalltalk.MaglevObject);
+(self['@string']=smalltalk.send(obj, "_string", []));
+(self['@isStringComplete']=smalltalk.send(obj, "_stringComplete", []));
+return self;}
+}),
+smalltalk.MaglevSymbol);
+
+smalltalk.addMethod(
+unescape('_parseJSONNotLoaded_'),
+smalltalk.method({
+selector: unescape('parseJSONNotLoaded%3A'),
+fn: function (obj){
+var self=this;
+smalltalk.send(self, "_parseJSONNotLoaded_", [obj], smalltalk.MaglevObject);
+(self['@string']=smalltalk.send(obj, "_string", []));
+(self['@isStringComplete']=smalltalk.send(obj, "_stringComplete", []));
+return self;}
+}),
+smalltalk.MaglevSymbol);
+
+smalltalk.addMethod(
+unescape('_string'),
+smalltalk.method({
+selector: unescape('string'),
+fn: function (){
+var self=this;
+return self['@string'];
+return self;}
+}),
+smalltalk.MaglevSymbol);
+
 
 smalltalk.addMethod(
 unescape('_basetype'),

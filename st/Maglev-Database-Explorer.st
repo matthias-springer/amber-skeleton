@@ -1195,8 +1195,63 @@ renderIncludedModulesOn: html
 ! !
 
 MaglevModuleWindow subclass: #MaglevClassWindow
-	instanceVariableNames: 'categoryNamesSelect selectorsSelect selectors'
+	instanceVariableNames: 'categoryNamesSelect selectorsSelect selectors editorContainer editor waitingScreen errorBox'
 	package: 'Maglev-Database-Explorer'!
+
+!MaglevClassWindow methodsFor: 'initializing'!
+
+bindCommands
+	|aceEditor|
+	aceEditor := editor.
+	< var commands = aceEditor.commands;
+	commands.addCommand({
+    		name: "save",
+    		bindKey: {win: "Ctrl-S", mac: "Command-S"},
+		exec: function() {self._commandSave();}}); >.
+!
+
+initializeEditor
+	editor := ace edit: (editorContainer asJQuery at: 0).
+	editor setTheme: 'ace/theme/clouds'.
+	editor getSession setMode: 'ace/mode/ruby'.
+	self mouseFix.
+	self bindCommands.
+!
+
+mouseFix
+	< var editor = self['@editorContainer'];
+	editor._asJQuery().mousedown(function (event) {
+		event.preventDefault();
+		return false;
+	}); >
+! !
+
+!MaglevClassWindow methodsFor: 'interactions'!
+
+commandSave
+	errorBox hide.
+	errorBox asJQuery empty.
+	object 
+		compileSmalltalkSourceCode: editor getValue 
+		withCallback: [:success :obj |
+			obj isException
+				ifTrue: [self signalFailure: obj]
+				ifFalse: [self signalSuccess]].
+!
+
+signalFailure: aDescription
+	|html|
+	html := HTMLCanvas onJQuery: errorBox asJQuery.
+	html with: aDescription inlineViewComponent.
+	errorBox show.
+	editorContainer asJQuery css: 'background-color' with: '#ff0039'.
+	editorContainer asJQuery animate: (Object new basicAt: 'backgroundColor' put: '#ffffff'; yourself) timeout: 250.
+!
+
+signalSuccess
+	editorContainer asJQuery css: 'background-color' with: '#3fb618'.
+	editorContainer asJQuery animate: (Object new basicAt: 'backgroundColor' put: '#ffffff'; yourself) timeout: 250.
+! !
 
 !MaglevClassWindow methodsFor: 'rendering'!
 
@@ -1212,14 +1267,31 @@ renderCodeTabOn: html
 		style: 'width: 100%;'.
 	categoryNamesSelect := html select
 		size: 10;
-		style: 'width: 50%;'.
+		style: 'width: 50%;';
+		hide.
 	selectorsSelect := html select
 		size: 10;
-		style: 'width: 50%;'.
+		style: 'width: 50%;';
+		hide.
+	waitingScreen := html div
+		with: [html
+			with: MaglevIcon wait;
+			with: ' loading...'].
+	editorContainer := html span
+		class: 'pull-left code-area'.
+	html div style: 'clear: both;'.
+	errorBox := html div
+		class: 'alert alert-error';
+		style: 'margin-bottom: 0px;';
+		hide.
 	self object allSmalltalkSelectorsWithCallback: [:success :obj |
 		selectors := obj.
 		self renderSelectorCategories.
-		self renderSelectors].
+		self renderSelectors.
+		self initializeEditor.
+		waitingScreen hide.
+		categoryNamesSelect show.
+		selectorsSelect show].
 !
 
 renderSelectorCategories
@@ -1230,9 +1302,10 @@ renderSelectorCategories
 	selectors keysAndValuesDo: [:category :catSelectors |
 		html 
 			with: [html option
-				with: category inspection]].
+				with: category string]].
 	categoryNamesSelect asJQuery val: '(all)'.
 	categoryNamesSelect onChange: [self renderSelectors].
+	self sortList: categoryNamesSelect.
 !
 
 renderSelectors
@@ -1243,11 +1316,26 @@ renderSelectors
 	selectedCategory = '(all)'
 		ifTrue: [currentSelectors := Array new.
 			selectors valuesDo: [:selGroup | currentSelectors addAll: selGroup]]
-		ifFalse: [currentSelectors := selectors atKeyInspection: selectedCategory].
+		ifFalse: [currentSelectors := selectors atKeyString: selectedCategory].
 	currentSelectors do: [:catSelectors |
 		html 
 			with: [html option
-				with: catSelectors inspection]].
+				with: catSelectors string]].
+	self sortList: selectorsSelect.
+	selectorsSelect onChange: [self renderSourceCode].
+!
+
+renderSourceCode
+	|selectorString|
+	editorContainer hide.
+	waitingScreen show.
+	selectorString := selectorsSelect asJQuery val.
+	object 
+		smalltalkSourceCodeFor: selectorString 
+		withCallback: [:success :obj |
+			editor setValue: obj string.
+			editorContainer show.
+			waitingScreen hide].
 !
 
 renderWindowTitleContentOn: html
@@ -1263,6 +1351,14 @@ renderWindowTitleContentOn: html
 				with: ' : ';
 				with: classObject inlineViewComponent.
 			self renderCloseButtonOn: html].
+!
+
+sortList: aListBox
+	|box children|
+	box := aListBox asJQuery.
+	< children = box.children('option').sort(function (a, b) {return a.innerHTML >> b.innerHTML ? 1 : -1}); >.
+	box empty.
+	children appendTo: box.
 ! !
 
 MaglevObjectWindow subclass: #MaglevNilClassWindow
