@@ -289,6 +289,44 @@ referencedClasses: ["Dictionary", "MaglevAjax", "MaglevObject"]
 smalltalk.MaglevObject);
 
 smalltalk.addMethod(
+unescape('_evaluateWithoutUpdate_language_with_withCallback_'),
+smalltalk.method({
+selector: unescape('evaluateWithoutUpdate%3Alanguage%3Awith%3AwithCallback%3A'),
+category: 'interactions',
+fn: function (code, aString, additionalParams, aBlock){
+var self=this;
+var params=nil;
+(params=(function($rec){smalltalk.send($rec, "_at_put_", ["language", aString]);smalltalk.send($rec, "_at_put_", ["code", code]);smalltalk.send($rec, "_addAll_", [additionalParams]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", [])));
+smalltalk.send((smalltalk.MaglevAjax || MaglevAjax), "_ajax_data_withCallback_", [smalltalk.send(unescape("/object/evaluate/"), "__comma", [smalltalk.send(self['@oop'], "_asString", [])]), params, (function(obj){var parsedObj=nil;
+(parsedObj=smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObjectWithoutUpdate_", [obj]));return smalltalk.send(aBlock, "_value_value_", [smalltalk.send(smalltalk.send(parsedObj, "_isException", []), "_not", []), parsedObj]);})]);
+return self;},
+args: ["code", "aString", "additionalParams", "aBlock"],
+source: unescape('evaluateWithoutUpdate%3A%20code%20language%3A%20aString%20with%3A%20additionalParams%20withCallback%3A%20aBlock%0A%09%7Cparams%7C%0A%09params%20%3A%3D%20Dictionary%20new%0A%09%09at%3A%20%27language%27%20put%3A%20aString%3B%0A%09%09at%3A%20%27code%27%20put%3A%20code%3B%0A%09%09addAll%3A%20additionalParams%3B%0A%09%09yourself.%0A%09MaglevAjax%20%0A%09%09ajax%3A%20%27/object/evaluate/%27%2C%20oop%20asString%0A%09%09data%3A%20params%0A%09%09withCallback%3A%20%5B%3Aobj%20%7C%20%7CparsedObj%7C%0A%09%09%09parsedObj%20%3A%3D%20MaglevObject%20newObjectWithoutUpdate%3A%20obj.%0A%09%09%09aBlock%20value%3A%20parsedObj%20isException%20not%20value%3A%20parsedObj%5D.'),
+messageSends: ["at:put:", "addAll:", "yourself", "new", "ajax:data:withCallback:", unescape("%2C"), "asString", "newObjectWithoutUpdate:", "value:value:", "not", "isException"],
+referencedClasses: ["Dictionary", "MaglevAjax", "MaglevObject"]
+}),
+smalltalk.MaglevObject);
+
+smalltalk.addMethod(
+unescape('_evaluateWithoutUpdate_language_withCallback_'),
+smalltalk.method({
+selector: unescape('evaluateWithoutUpdate%3Alanguage%3AwithCallback%3A'),
+category: 'interactions',
+fn: function (code, aString, aBlock){
+var self=this;
+var params=nil;
+(params=(function($rec){smalltalk.send($rec, "_at_put_", ["language", aString]);smalltalk.send($rec, "_at_put_", ["code", code]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", [])));
+smalltalk.send((smalltalk.MaglevAjax || MaglevAjax), "_ajax_data_withCallback_", [smalltalk.send(unescape("/object/evaluate/"), "__comma", [smalltalk.send(self['@oop'], "_asString", [])]), params, (function(obj){var parsedObj=nil;
+(parsedObj=smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObjectWithoutUpdate_", [obj]));return smalltalk.send(aBlock, "_value_value_", [smalltalk.send(smalltalk.send(parsedObj, "_isException", []), "_not", []), parsedObj]);})]);
+return self;},
+args: ["code", "aString", "aBlock"],
+source: unescape('evaluateWithoutUpdate%3A%20code%20language%3A%20aString%20withCallback%3A%20aBlock%0A%09%7Cparams%7C%0A%09params%20%3A%3D%20Dictionary%20new%0A%09%09at%3A%20%27language%27%20put%3A%20aString%3B%0A%09%09at%3A%20%27code%27%20put%3A%20code%3B%0A%09%09yourself.%0A%09MaglevAjax%20%0A%09%09ajax%3A%20%27/object/evaluate/%27%2C%20oop%20asString%0A%09%09data%3A%20params%0A%09%09withCallback%3A%20%5B%3Aobj%20%7C%20%7CparsedObj%7C%0A%09%09%09parsedObj%20%3A%3D%20MaglevObject%20newObjectWithoutUpdate%3A%20obj.%0A%09%09%09aBlock%20value%3A%20parsedObj%20isException%20not%20value%3A%20parsedObj%5D.'),
+messageSends: ["at:put:", "yourself", "new", "ajax:data:withCallback:", unescape("%2C"), "asString", "newObjectWithoutUpdate:", "value:value:", "not", "isException"],
+referencedClasses: ["Dictionary", "MaglevAjax", "MaglevObject"]
+}),
+smalltalk.MaglevObject);
+
+smalltalk.addMethod(
 unescape('_hasInstVars'),
 smalltalk.method({
 selector: unescape('hasInstVars'),
@@ -485,6 +523,22 @@ referencedClasses: []
 smalltalk.MaglevObject);
 
 smalltalk.addMethod(
+unescape('_paramsAllElements'),
+smalltalk.method({
+selector: unescape('paramsAllElements'),
+category: 'interactions',
+fn: function (){
+var self=this;
+return (function($rec){smalltalk.send($rec, "_at_put_", ["allElements", true]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []));
+return self;},
+args: [],
+source: unescape('paramsAllElements%0A%09%5E%20Dictionary%20new%0A%09%09at%3A%20%27allElements%27%20put%3A%20true%3B%0A%09%09yourself'),
+messageSends: ["at:put:", "yourself", "new"],
+referencedClasses: ["Dictionary"]
+}),
+smalltalk.MaglevObject);
+
+smalltalk.addMethod(
 unescape('_parseJSON_'),
 smalltalk.method({
 selector: unescape('parseJSON%3A'),
@@ -612,7 +666,7 @@ referencedClasses: ["OrderedCollection"]
 smalltalk.MaglevObject);
 
 
-smalltalk.MaglevObject.klass.iVarNames = ['basetypes'];
+smalltalk.MaglevObject.klass.iVarNames = ['basetypes','doesUpdateObjectSpace'];
 smalltalk.addMethod(
 unescape('_basetype'),
 smalltalk.method({
@@ -640,6 +694,39 @@ return self['@basetypes'];
 return self;},
 args: [],
 source: unescape('basetypes%0A%09%5E%20basetypes'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.MaglevObject.klass);
+
+smalltalk.addMethod(
+unescape('_doesUpdateObjectSpace'),
+smalltalk.method({
+selector: unescape('doesUpdateObjectSpace'),
+category: 'accessing',
+fn: function (){
+var self=this;
+(($receiver = self['@doesUpdateObjectSpace']) == nil || $receiver == undefined) ? (function(){return (self['@doesUpdateObjectSpace']=true);})() : $receiver;
+return self['@doesUpdateObjectSpace'];
+return self;},
+args: [],
+source: unescape('doesUpdateObjectSpace%0A%09doesUpdateObjectSpace%20ifNil%3A%20%5BdoesUpdateObjectSpace%20%3A%3D%20true%5D.%0A%09%5E%20doesUpdateObjectSpace'),
+messageSends: ["ifNil:"],
+referencedClasses: []
+}),
+smalltalk.MaglevObject.klass);
+
+smalltalk.addMethod(
+unescape('_doesUpdateObjectSpace_'),
+smalltalk.method({
+selector: unescape('doesUpdateObjectSpace%3A'),
+category: 'accessing',
+fn: function (aBoolean){
+var self=this;
+(self['@doesUpdateObjectSpace']=aBoolean);
+return self;},
+args: ["aBoolean"],
+source: unescape('doesUpdateObjectSpace%3A%20aBoolean%0A%09doesUpdateObjectSpace%20%3A%3D%20aBoolean.'),
 messageSends: [],
 referencedClasses: []
 }),
@@ -721,13 +808,34 @@ fn: function (obj){
 var self=this;
 var object=nil;
 (object=smalltalk.send(self, "_parseJSON_", [obj]));
-smalltalk.send(smalltalk.send((smalltalk.MaglevObjectSpace || MaglevObjectSpace), "_instance", []), "_updateObject_", [object]);
+((($receiver = smalltalk.send(self, "_doesUpdateObjectSpace", [])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(smalltalk.send((smalltalk.MaglevObjectSpace || MaglevObjectSpace), "_instance", []), "_updateObject_", [object]);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(smalltalk.send((smalltalk.MaglevObjectSpace || MaglevObjectSpace), "_instance", []), "_updateObject_", [object]);})]));
 return object;
 return self;},
 args: ["obj"],
-source: unescape('newObject%3A%20obj%0A%09%7Cobject%7C%0A%09object%20%3A%3D%20self%20parseJSON%3A%20obj.%0A%09MaglevObjectSpace%20instance%20updateObject%3A%20object.%0A%09%5E%20object'),
-messageSends: ["parseJSON:", "updateObject:", "instance"],
+source: unescape('newObject%3A%20obj%0A%09%7Cobject%7C%0A%09object%20%3A%3D%20self%20parseJSON%3A%20obj.%0A%09self%20doesUpdateObjectSpace%20%0A%09%09ifTrue%3A%20%5BMaglevObjectSpace%20instance%20updateObject%3A%20object%5D.%0A%09%5E%20object'),
+messageSends: ["parseJSON:", "ifTrue:", "doesUpdateObjectSpace", "updateObject:", "instance"],
 referencedClasses: ["MaglevObjectSpace"]
+}),
+smalltalk.MaglevObject.klass);
+
+smalltalk.addMethod(
+unescape('_newObjectWithoutUpdate_'),
+smalltalk.method({
+selector: unescape('newObjectWithoutUpdate%3A'),
+category: 'instance creation',
+fn: function (obj){
+var self=this;
+var before=nil;
+var result=nil;
+(before=smalltalk.send(self, "_doesUpdateObjectSpace", []));
+(result=smalltalk.send(self, "_newObject_", [obj]));
+(self['@doesUpdateObjectSpace']=before);
+return result;
+return self;},
+args: ["obj"],
+source: unescape('newObjectWithoutUpdate%3A%20obj%0A%09%7Cbefore%20result%7C%0A%09before%20%3A%3D%20self%20doesUpdateObjectSpace.%0A%09result%20%3A%3D%20self%20newObject%3A%20obj.%0A%09doesUpdateObjectSpace%20%3A%3D%20before.%0A%09%5E%20result'),
+messageSends: ["doesUpdateObjectSpace", "newObject:"],
+referencedClasses: []
 }),
 smalltalk.MaglevObject.klass);
 
@@ -780,6 +888,22 @@ return self;},
 args: ["anInteger"],
 source: unescape('at%3A%20anInteger%0A%09%5E%20self%20elements%20at%3A%20anInteger'),
 messageSends: ["at:", "elements"],
+referencedClasses: []
+}),
+smalltalk.MaglevArray);
+
+smalltalk.addMethod(
+unescape('_do_'),
+smalltalk.method({
+selector: unescape('do%3A'),
+category: 'accessing',
+fn: function (aBlock){
+var self=this;
+smalltalk.send(smalltalk.send(self, "_elements", []), "_do_", [aBlock]);
+return self;},
+args: ["aBlock"],
+source: unescape('do%3A%20aBlock%0A%09self%20elements%20do%3A%20aBlock.'),
+messageSends: ["do:", "elements"],
 referencedClasses: []
 }),
 smalltalk.MaglevArray);
@@ -1037,6 +1161,42 @@ referencedClasses: []
 smalltalk.MaglevHash);
 
 smalltalk.addMethod(
+unescape('_atKey_'),
+smalltalk.method({
+selector: unescape('atKey%3A'),
+category: 'accessing',
+fn: function (anObject){
+var self=this;
+try{smalltalk.send(smalltalk.send(self, "_elements", []), "_do_", [(function(assoc){return ((($receiver = smalltalk.send(anObject, "__eq", [smalltalk.send(assoc, "_key", [])])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (function(){throw({name: 'stReturn', selector: '_atKey_', fn: function(){return smalltalk.send(assoc, "_value", [])}})})();})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return (function(){throw({name: 'stReturn', selector: '_atKey_', fn: function(){return smalltalk.send(assoc, "_value", [])}})})();})]));})]);
+smalltalk.send(self, "_error_", ["Object is not in the collection"]);
+return self;
+} catch(e) {if(e.name === 'stReturn' && e.selector === '_atKey_'){return e.fn()} throw(e)}},
+args: ["anObject"],
+source: unescape('atKey%3A%20anObject%0A%09self%20elements%20do%3A%20%5B%3Aassoc%20%7C%0A%09%09anObject%20%3D%20assoc%20key%0A%09%09%09ifTrue%3A%20%5B%5E%20assoc%20value%5D%5D.%0A%09self%20error%3A%20%27Object%20is%20not%20in%20the%20collection%27.'),
+messageSends: ["do:", "elements", "ifTrue:", unescape("%3D"), "key", "value", "error:"],
+referencedClasses: []
+}),
+smalltalk.MaglevHash);
+
+smalltalk.addMethod(
+unescape('_atKeyInspection_'),
+smalltalk.method({
+selector: unescape('atKeyInspection%3A'),
+category: 'accessing',
+fn: function (anObject){
+var self=this;
+try{smalltalk.send(smalltalk.send(self, "_elements", []), "_do_", [(function(assoc){return ((($receiver = smalltalk.send(anObject, "__eq", [smalltalk.send(smalltalk.send(assoc, "_key", []), "_inspection", [])])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (function(){throw({name: 'stReturn', selector: '_atKeyInspection_', fn: function(){return smalltalk.send(assoc, "_value", [])}})})();})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return (function(){throw({name: 'stReturn', selector: '_atKeyInspection_', fn: function(){return smalltalk.send(assoc, "_value", [])}})})();})]));})]);
+smalltalk.send(self, "_error_", ["Object is not in the collection"]);
+return self;
+} catch(e) {if(e.name === 'stReturn' && e.selector === '_atKeyInspection_'){return e.fn()} throw(e)}},
+args: ["anObject"],
+source: unescape('atKeyInspection%3A%20anObject%0A%09self%20elements%20do%3A%20%5B%3Aassoc%20%7C%0A%09%09anObject%20%3D%20assoc%20key%20inspection%0A%09%09%09ifTrue%3A%20%5B%5E%20assoc%20value%5D%5D.%0A%09self%20error%3A%20%27Object%20is%20not%20in%20the%20collection%27.'),
+messageSends: ["do:", "elements", "ifTrue:", unescape("%3D"), "inspection", "key", "value", "error:"],
+referencedClasses: []
+}),
+smalltalk.MaglevHash);
+
+smalltalk.addMethod(
 unescape('_elements'),
 smalltalk.method({
 selector: unescape('elements'),
@@ -1134,6 +1294,22 @@ args: ["obj"],
 source: unescape('parseJSON%3A%20obj%0A%09super%20parseJSON%3A%20obj.%0A%09elements%20ifNil%3A%20%5Belements%20%3A%3D%20Dictionary%20new%5D.%0A%09elementsSize%20%3A%3D%20obj%20elementsSize.%0A%09obj%20elements%20keysAndValuesDo%3A%20%5B%3Aindex%20%3Aassoc%20%7C%20%7Ckey%20value%7C%0A%09%09key%20%3A%3D%20MaglevObject%20newObject%3A%20%28assoc%20at%3A%201%29.%0A%09%09value%20%3A%3D%20MaglevObject%20newObject%3A%20%28assoc%20at%3A%202%29.%0A%09%09elements%20at%3A%20index%20asNumber%20put%3A%20key%20-%3E%20value%5D.'),
 messageSends: ["parseJSON:", "ifNil:", "new", "elementsSize", "keysAndValuesDo:", "elements", "newObject:", "at:", "at:put:", "asNumber", unescape("-%3E")],
 referencedClasses: ["Dictionary", "MaglevObject"]
+}),
+smalltalk.MaglevHash);
+
+smalltalk.addMethod(
+unescape('_valuesDo_'),
+smalltalk.method({
+selector: unescape('valuesDo%3A'),
+category: 'accessing',
+fn: function (aBlock){
+var self=this;
+smalltalk.send(smalltalk.send(self, "_elements", []), "_do_", [(function(assoc){return smalltalk.send(aBlock, "_value_", [smalltalk.send(assoc, "_value", [])]);})]);
+return self;},
+args: ["aBlock"],
+source: unescape('valuesDo%3A%20aBlock%0A%09self%20elements%20do%3A%20%5B%3Aassoc%20%7C%0A%09%09aBlock%20value%3A%20assoc%20value%5D.'),
+messageSends: ["do:", "elements", "value:", "value"],
+referencedClasses: []
 }),
 smalltalk.MaglevHash);
 
@@ -1359,6 +1535,22 @@ smalltalk.MaglevModule.klass);
 
 
 smalltalk.addClass('MaglevClass', smalltalk.MaglevModule, ['superclassObject', 'size'], 'Maglev-Core');
+smalltalk.addMethod(
+unescape('_allSmalltalkSelectorsWithCallback_'),
+smalltalk.method({
+selector: unescape('allSmalltalkSelectorsWithCallback%3A'),
+category: 'interactions',
+fn: function (aBlock){
+var self=this;
+smalltalk.send(self, "_evaluateWithoutUpdate_language_with_withCallback_", [unescape("%7Cselectors%7C%20selectors%20%3A%3D%20RubyHash%20new.%20Behavior%20categoryNames%20do%3A%20%5B%3Acategory%20%7C%20selectors%20at%3A%20category%20put%3A%20%28Behavior%20selectorsIn%3A%20category%29%5D.%20selectors."), "smalltalk", smalltalk.send(self, "_paramsAllElements", []), aBlock]);
+return self;},
+args: ["aBlock"],
+source: unescape('allSmalltalkSelectorsWithCallback%3A%20aBlock%0A%09self%20%0A%09%09evaluateWithoutUpdate%3A%20%27%7Cselectors%7C%20selectors%20%3A%3D%20RubyHash%20new.%20Behavior%20categoryNames%20do%3A%20%5B%3Acategory%20%7C%20selectors%20at%3A%20category%20put%3A%20%28Behavior%20selectorsIn%3A%20category%29%5D.%20selectors.%27%20%0A%09%09language%3A%20%27smalltalk%27%0A%09%09with%3A%20self%20paramsAllElements%20%0A%09%09withCallback%3A%20aBlock.'),
+messageSends: ["evaluateWithoutUpdate:language:with:withCallback:", "paramsAllElements"],
+referencedClasses: []
+}),
+smalltalk.MaglevClass);
+
 smalltalk.addMethod(
 unescape('_parseJSON_'),
 smalltalk.method({

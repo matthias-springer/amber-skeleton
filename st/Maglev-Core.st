@@ -171,6 +171,41 @@ evaluate: code language: aString withCallback: aBlock
 			aBlock value: parsedObj isException not value: parsedObj].
 !
 
+evaluateWithoutUpdate: code language: aString with: additionalParams withCallback: aBlock
+	|params|
+	params := Dictionary new
+		at: 'language' put: aString;
+		at: 'code' put: code;
+		addAll: additionalParams;
+		yourself.
+	MaglevAjax 
+		ajax: '/object/evaluate/', oop asString
+		data: params
+		withCallback: [:obj | |parsedObj|
+			parsedObj := MaglevObject newObjectWithoutUpdate: obj.
+			aBlock value: parsedObj isException not value: parsedObj].
+!
+
+evaluateWithoutUpdate: code language: aString withCallback: aBlock
+	|params|
+	params := Dictionary new
+		at: 'language' put: aString;
+		at: 'code' put: code;
+		yourself.
+	MaglevAjax 
+		ajax: '/object/evaluate/', oop asString
+		data: params
+		withCallback: [:obj | |parsedObj|
+			parsedObj := MaglevObject newObjectWithoutUpdate: obj.
+			aBlock value: parsedObj isException not value: parsedObj].
+!
+
+paramsAllElements
+	^ Dictionary new
+		at: 'allElements' put: true;
+		yourself
+!
+
 removeWindow: aWindow
 	self windows remove: aWindow.
 	Maglev instance removeWindow: aWindow.
@@ -259,12 +294,21 @@ isLoaded: collectionName from: from to: to
 	^ true
 ! !
 
-MaglevObject class instanceVariableNames: 'basetypes'!
+MaglevObject class instanceVariableNames: 'basetypes doesUpdateObjectSpace'!
 
 !MaglevObject class methodsFor: 'accessing'!
 
 basetypes
 	^ basetypes
+!
+
+doesUpdateObjectSpace
+	doesUpdateObjectSpace ifNil: [doesUpdateObjectSpace := true].
+	^ doesUpdateObjectSpace
+!
+
+doesUpdateObjectSpace: aBoolean
+	doesUpdateObjectSpace := aBoolean.
 ! !
 
 !MaglevObject class methodsFor: 'constants'!
@@ -308,8 +352,17 @@ newFor: aBaseType
 newObject: obj
 	|object|
 	object := self parseJSON: obj.
-	MaglevObjectSpace instance updateObject: object.
+	self doesUpdateObjectSpace 
+		ifTrue: [MaglevObjectSpace instance updateObject: object].
 	^ object
+!
+
+newObjectWithoutUpdate: obj
+	|before result|
+	before := self doesUpdateObjectSpace.
+	result := self newObject: obj.
+	doesUpdateObjectSpace := before.
+	^ result
 !
 
 parseJSON: obj
@@ -328,6 +381,10 @@ MaglevObject subclass: #MaglevArray
 
 at: anInteger
 	^ self elements at: anInteger
+!
+
+do: aBlock
+	self elements do: aBlock.
 !
 
 elements
@@ -418,6 +475,20 @@ at: anInteger
 	^ self elements at: anInteger
 !
 
+atKey: anObject
+	self elements do: [:assoc |
+		anObject = assoc key
+			ifTrue: [^ assoc value]].
+	self error: 'Object is not in the collection'.
+!
+
+atKeyInspection: anObject
+	self elements do: [:assoc |
+		anObject = assoc key inspection
+			ifTrue: [^ assoc value]].
+	self error: 'Object is not in the collection'.
+!
+
 elements
 	^ elements
 !
@@ -428,6 +499,11 @@ elementsSize
 
 keysAndValuesDo: aBlock
 	elements keysAndValuesDo: [:index :kv | aBlock value: kv key value: kv value].
+!
+
+valuesDo: aBlock
+	self elements do: [:assoc |
+		aBlock value: assoc value].
 ! !
 
 !MaglevHash methodsFor: 'instance creation'!
@@ -543,6 +619,16 @@ superclassObject
 parseJSON: obj
 	super parseJSON: obj.
 	superclassObject := MaglevObject newObject: obj superclassObject.
+! !
+
+!MaglevClass methodsFor: 'interactions'!
+
+allSmalltalkSelectorsWithCallback: aBlock
+	self 
+		evaluateWithoutUpdate: '|selectors| selectors := RubyHash new. Behavior categoryNames do: [:category | selectors at: category put: (Behavior selectorsIn: category)]. selectors.' 
+		language: 'smalltalk'
+		with: self paramsAllElements 
+		withCallback: aBlock.
 ! !
 
 !MaglevClass class methodsFor: 'constants'!

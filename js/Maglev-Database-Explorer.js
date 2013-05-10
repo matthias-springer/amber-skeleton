@@ -294,7 +294,7 @@ var self=this;
 
 return self;},
 args: [],
-source: unescape('evalDoIt%0A%09'),
+source: unescape('evalDoIt'),
 messageSends: [],
 referencedClasses: []
 }),
@@ -326,7 +326,7 @@ var self=this;
 smalltalk.send(self, "_executeWithCallback_", [(function(success, resultObj){return ((($receiver = success).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self['@resultContainer'], "_with_", [smalltalk.send(resultObj, "_inlineViewComponent", [])]);})() : (function(){return smalltalk.send(self['@resultContainer'], "_with_", [smalltalk.send(resultObj, "_inlineViewComponent", [])]);})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return smalltalk.send(self['@resultContainer'], "_with_", [smalltalk.send(resultObj, "_inlineViewComponent", [])]);}), (function(){return smalltalk.send(self['@resultContainer'], "_with_", [smalltalk.send(resultObj, "_inlineViewComponent", [])]);})]));})]);
 return self;},
 args: [],
-source: unescape('evalPrintIt%0A%09self%20executeWithCallback%3A%20%5B%3Asuccess%20%3AresultObj%20%7C%20%0A%09%09success%0A%09%09%09ifTrue%3A%20%5BresultContainer%20with%3A%20resultObj%20inlineViewComponent%5D%0A%09%09%09ifFalse%3A%20%5BresultContainer%20with%3A%20resultObj%20inlineViewComponent%5D%5D.%0A%09%09'),
+source: unescape('evalPrintIt%0A%09self%20executeWithCallback%3A%20%5B%3Asuccess%20%3AresultObj%20%7C%20%0A%09%09success%0A%09%09%09ifTrue%3A%20%5BresultContainer%20with%3A%20resultObj%20inlineViewComponent%5D%0A%09%09%09ifFalse%3A%20%5BresultContainer%20with%3A%20resultObj%20inlineViewComponent%5D%5D.'),
 messageSends: ["executeWithCallback:", "ifTrue:ifFalse:", "with:", "inlineViewComponent"],
 referencedClasses: []
 }),
@@ -1683,14 +1683,12 @@ selector: unescape('renderDictionaryBodyOn%3A'),
 category: 'rendering',
 fn: function (html){
 var self=this;
-try{var counter=nil;
-(counter=(1));
-smalltalk.send(smalltalk.send(self, "_collection", []), "_keysAndValuesDo_", [(function(key, value){((($receiver = ((($receiver = counter).klass === smalltalk.Number) ? $receiver >=smalltalk.send(self, "_rangeFrom", []) : smalltalk.send($receiver, "__gt_eq", [smalltalk.send(self, "_rangeFrom", [])]))).klass === smalltalk.Boolean) ? ($receiver ? (function(){return ((($receiver = smalltalk.send(value, "_isAssociation", [])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self, "_renderAssociation_to_on_", [smalltalk.send(value, "_key", []), smalltalk.send(value, "_value", []), html]);})() : (function(){return smalltalk.send(self, "_renderAssociation_to_on_", [key, value, html]);})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return smalltalk.send(self, "_renderAssociation_to_on_", [smalltalk.send(value, "_key", []), smalltalk.send(value, "_value", []), html]);}), (function(){return smalltalk.send(self, "_renderAssociation_to_on_", [key, value, html]);})]));})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return ((($receiver = smalltalk.send(value, "_isAssociation", [])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self, "_renderAssociation_to_on_", [smalltalk.send(value, "_key", []), smalltalk.send(value, "_value", []), html]);})() : (function(){return smalltalk.send(self, "_renderAssociation_to_on_", [key, value, html]);})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return smalltalk.send(self, "_renderAssociation_to_on_", [smalltalk.send(value, "_key", []), smalltalk.send(value, "_value", []), html]);}), (function(){return smalltalk.send(self, "_renderAssociation_to_on_", [key, value, html]);})]));})]));(counter=((($receiver = counter).klass === smalltalk.Number) ? $receiver +(1) : smalltalk.send($receiver, "__plus", [(1)])));return ((($receiver = ((($receiver = counter).klass === smalltalk.Number) ? $receiver >smalltalk.send(self, "_rangeTo", []) : smalltalk.send($receiver, "__gt", [smalltalk.send(self, "_rangeTo", [])]))).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (function(){throw({name: 'stReturn', selector: '_renderDictionaryBodyOn_', fn: function(){return self}})})();})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return (function(){throw({name: 'stReturn', selector: '_renderDictionaryBodyOn_', fn: function(){return self}})})();})]));})]);
-return self;
-} catch(e) {if(e.name === 'stReturn' && e.selector === '_renderDictionaryBodyOn_'){return e.fn()} throw(e)}},
+smalltalk.send(smalltalk.send(smalltalk.send(self, "_rangeFrom", []), "_to_", [smalltalk.send(self, "_rangeTo", [])]), "_do_", [(function(idx){var obj=nil;
+(obj=smalltalk.send(smalltalk.send(self, "_collection", []), "_at_", [idx]));return smalltalk.send(smalltalk.send(html, "_tr", []), "_with_", [(function(){smalltalk.send(smalltalk.send(html, "_td", []), "_with_", [smalltalk.send(idx, "_inlineViewComponent", [])]);return smalltalk.send(smalltalk.send(html, "_td", []), "_with_", [smalltalk.send(obj, "_inlineViewComponent", [])]);})]);})]);
+return self;},
 args: ["html"],
-source: unescape('renderDictionaryBodyOn%3A%20html%0A%09%7Ccounter%7C%0A%09counter%20%3A%3D%201.%0A%09self%20collection%20keysAndValuesDo%3A%20%5B%3Akey%20%3Avalue%20%7C%20%0A%09%09counter%20%3E%3D%20self%20rangeFrom%20ifTrue%3A%20%5B%0A%09%09%09value%20isAssociation%0A%09%09%09%09ifTrue%3A%20%5Bself%20renderAssociation%3A%20value%20key%20to%3A%20value%20value%20on%3A%20html%5D%0A%09%09%09%09ifFalse%3A%20%5Bself%20renderAssociation%3A%20key%20to%3A%20value%20on%3A%20html%5D%5D.%0A%09%09counter%20%3A%3D%20counter%20+%201.%0A%09%09counter%20%3E%20self%20rangeTo%20ifTrue%3A%20%5B%5E%20self%5D%5D.'),
-messageSends: ["keysAndValuesDo:", "collection", "ifTrue:", unescape("%3E%3D"), "rangeFrom", "ifTrue:ifFalse:", "isAssociation", "renderAssociation:to:on:", "key", "value", unescape("+"), unescape("%3E"), "rangeTo"],
+source: unescape('renderDictionaryBodyOn%3A%20html%0A%09%28self%20rangeFrom%20to%3A%20self%20rangeTo%29%20do%3A%20%5B%3Aidx%20%7C%20%7Cobj%7C%0A%09%09obj%20%3A%3D%20self%20collection%20at%3A%20idx.%0A%09%09html%20tr%20with%3A%20%5B%0A%09%09%09html%20td%20with%3A%20idx%20inlineViewComponent.%0A%09%09%09html%20td%20with%3A%20obj%20inlineViewComponent%5D%5D.'),
+messageSends: ["do:", "to:", "rangeFrom", "rangeTo", "at:", "collection", "with:", "tr", "td", "inlineViewComponent"],
 referencedClasses: []
 }),
 smalltalk.MaglevTable);
@@ -2144,7 +2142,7 @@ referencedClasses: []
 smalltalk.MaglevWindow.klass);
 
 
-smalltalk.addClass('MaglevObjectWindow', smalltalk.MaglevWindow, ['container', 'object', 'classObject', 'tabs', 'captions'], 'Maglev-Database-Explorer');
+smalltalk.addClass('MaglevObjectWindow', smalltalk.MaglevWindow, ['container', 'object', 'classObject', 'tabs', 'captions', 'tabsContainer'], 'Maglev-Database-Explorer');
 smalltalk.addMethod(
 unescape('_captions'),
 smalltalk.method({
@@ -2303,18 +2301,18 @@ selector: unescape('renderWindowContentOn%3A'),
 category: 'rendering',
 fn: function (html){
 var self=this;
-var tabs=nil;
-(self['@tabs']=smalltalk.send(self, "_contentTabs", []));
-((($receiver = ((($receiver = smalltalk.send(self['@tabs'], "_size", [])).klass === smalltalk.Number) ? $receiver >(0) : smalltalk.send($receiver, "__gt", [(0)]))).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (function($rec){smalltalk.send($rec, "_class_", [unescape("nav%20nav-tabs")]);smalltalk.send($rec, "_style_", [unescape("display%3A%20inline-block%3B%20margin-bottom%3A%200px%3B%20margin-top%3A%205px%3B")]);return smalltalk.send($rec, "_with_", [(function(){return smalltalk.send(smalltalk.send(self, "_contentTabs", []), "_keysAndValuesDo_", [(function(caption, generator){var capEl=nil;
-(capEl=smalltalk.send(smalltalk.send(html, "_li", []), "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_href_", [unescape("%23")]);smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_showTab_", [caption]);})]);return smalltalk.send($rec, "_with_", [caption]);})(smalltalk.send(html, "_a", []));})]));return smalltalk.send(smalltalk.send(self, "_captions", []), "_at_put_", [caption, capEl]);})]);})]);})(smalltalk.send(html, "_ul", []));})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return (function($rec){smalltalk.send($rec, "_class_", [unescape("nav%20nav-tabs")]);smalltalk.send($rec, "_style_", [unescape("display%3A%20inline-block%3B%20margin-bottom%3A%200px%3B%20margin-top%3A%205px%3B")]);return smalltalk.send($rec, "_with_", [(function(){return smalltalk.send(smalltalk.send(self, "_contentTabs", []), "_keysAndValuesDo_", [(function(caption, generator){var capEl=nil;
-(capEl=smalltalk.send(smalltalk.send(html, "_li", []), "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_href_", [unescape("%23")]);smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_showTab_", [caption]);})]);return smalltalk.send($rec, "_with_", [caption]);})(smalltalk.send(html, "_a", []));})]));return smalltalk.send(smalltalk.send(self, "_captions", []), "_at_put_", [caption, capEl]);})]);})]);})(smalltalk.send(html, "_ul", []));})]));
-smalltalk.send(smalltalk.send(self, "_contentTabs", []), "_keysAndValuesDo_", [(function(caption, generator){var tab=nil;
-(tab=smalltalk.send(smalltalk.send(html, "_div", []), "_with_", [(function(){return smalltalk.send(self, "_perform_withArguments_", [generator, [html]]);})]));return smalltalk.send(smalltalk.send(self, "_tabs", []), "_at_put_", [caption, tab]);})]);
-smalltalk.send(self, "_showFirstTab", []);
+var allTabs=nil;
+var firstCaption=nil;
+(allTabs=smalltalk.send(self, "_contentTabs", []));
+((($receiver = ((($receiver = smalltalk.send(allTabs, "_size", [])).klass === smalltalk.Number) ? $receiver >(0) : smalltalk.send($receiver, "__gt", [(0)]))).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (function($rec){smalltalk.send($rec, "_class_", [unescape("nav%20nav-tabs")]);smalltalk.send($rec, "_style_", [unescape("display%3A%20inline-block%3B%20margin-bottom%3A%200px%3B%20margin-top%3A%205px%3B%20width%3A%20100%25%3B")]);return smalltalk.send($rec, "_with_", [(function(){return smalltalk.send(smalltalk.send(self, "_contentTabs", []), "_keysAndValuesDo_", [(function(caption, generator){var capEl=nil;
+(($receiver = firstCaption) == nil || $receiver == undefined) ? (function(){return (firstCaption=caption);})() : $receiver;(capEl=smalltalk.send(smalltalk.send(html, "_li", []), "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_href_", [unescape("%23")]);smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_showTab_", [caption]);})]);return smalltalk.send($rec, "_with_", [caption]);})(smalltalk.send(html, "_a", []));})]));return smalltalk.send(smalltalk.send(self, "_captions", []), "_at_put_", [caption, capEl]);})]);})]);})(smalltalk.send(html, "_ul", []));})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return (function($rec){smalltalk.send($rec, "_class_", [unescape("nav%20nav-tabs")]);smalltalk.send($rec, "_style_", [unescape("display%3A%20inline-block%3B%20margin-bottom%3A%200px%3B%20margin-top%3A%205px%3B%20width%3A%20100%25%3B")]);return smalltalk.send($rec, "_with_", [(function(){return smalltalk.send(smalltalk.send(self, "_contentTabs", []), "_keysAndValuesDo_", [(function(caption, generator){var capEl=nil;
+(($receiver = firstCaption) == nil || $receiver == undefined) ? (function(){return (firstCaption=caption);})() : $receiver;(capEl=smalltalk.send(smalltalk.send(html, "_li", []), "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_href_", [unescape("%23")]);smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_showTab_", [caption]);})]);return smalltalk.send($rec, "_with_", [caption]);})(smalltalk.send(html, "_a", []));})]));return smalltalk.send(smalltalk.send(self, "_captions", []), "_at_put_", [caption, capEl]);})]);})]);})(smalltalk.send(html, "_ul", []));})]));
+(self['@tabsContainer']=smalltalk.send(html, "_div", []));
+(($receiver = firstCaption) != nil && $receiver != undefined) ? (function(){return smalltalk.send(self, "_showTab_", [firstCaption]);})() : nil;
 return self;},
 args: ["html"],
-source: unescape('renderWindowContentOn%3A%20html%0A%09%7Ctabs%7C%0A%09tabs%20%3A%3D%20self%20contentTabs.%0A%09tabs%20size%20%3E%200%20ifTrue%3A%20%5B%0A%09%09html%20ul%0A%09%09%09class%3A%20%27nav%20nav-tabs%27%3B%0A%09%09%09style%3A%20%27display%3A%20inline-block%3B%20margin-bottom%3A%200px%3B%20margin-top%3A%205px%3B%27%3B%0A%09%09%09with%3A%20%5B%0A%09%09%09self%20contentTabs%20keysAndValuesDo%3A%20%5B%3Acaption%20%3Agenerator%20%7C%20%7CcapEl%7C%0A%09%09%09%09capEl%20%3A%3D%20html%20li%20with%3A%20%5B%0A%09%09%09%09%09html%20a%0A%09%09%09%09%09%09href%3A%20%27%23%27%3B%0A%09%09%09%09%09%09onClick%3A%20%5Bself%20showTab%3A%20caption%5D%3B%0A%09%09%09%09%09%09with%3A%20caption%5D.%0A%09%09%09%09self%20captions%20at%3A%20caption%20put%3A%20capEl%5D%5D%5D.%0A%09self%20contentTabs%20keysAndValuesDo%3A%20%5B%3Acaption%20%3Agenerator%20%7C%20%7Ctab%7C%0A%09%09tab%20%3A%3D%20html%20div%0A%09%09%09with%3A%09%5Bself%20perform%3A%20generator%20withArguments%3A%20%7Bhtml%7D%5D.%0A%09%09self%20tabs%20at%3A%20caption%20put%3A%20tab%5D.%0A%09self%20showFirstTab.'),
-messageSends: ["contentTabs", "ifTrue:", unescape("%3E"), "size", "class:", "style:", "with:", "keysAndValuesDo:", "li", "href:", "onClick:", "showTab:", "a", "at:put:", "captions", "ul", "div", "perform:withArguments:", "tabs", "showFirstTab"],
+source: unescape('renderWindowContentOn%3A%20html%0A%09%7CallTabs%20firstCaption%7C%0A%09allTabs%20%3A%3D%20self%20contentTabs.%0A%09allTabs%20size%20%3E%200%20ifTrue%3A%20%5B%0A%09%09html%20ul%0A%09%09%09class%3A%20%27nav%20nav-tabs%27%3B%0A%09%09%09style%3A%20%27display%3A%20inline-block%3B%20margin-bottom%3A%200px%3B%20margin-top%3A%205px%3B%20width%3A%20100%25%3B%27%3B%0A%09%09%09with%3A%20%5B%0A%09%09%09self%20contentTabs%20keysAndValuesDo%3A%20%5B%3Acaption%20%3Agenerator%20%7C%20%7CcapEl%7C%0A%09%09%09%09firstCaption%20ifNil%3A%20%5BfirstCaption%20%3A%3D%20caption%5D.%0A%09%09%09%09capEl%20%3A%3D%20html%20li%20with%3A%20%5B%0A%09%09%09%09%09html%20a%0A%09%09%09%09%09%09href%3A%20%27%23%27%3B%0A%09%09%09%09%09%09onClick%3A%20%5Bself%20showTab%3A%20caption%5D%3B%0A%09%09%09%09%09%09with%3A%20caption%5D.%0A%09%09%09%09self%20captions%20at%3A%20caption%20put%3A%20capEl%5D%5D%5D.%0A%09tabsContainer%20%3A%3D%20html%20div.%0A%09firstCaption%20ifNotNil%3A%20%5Bself%20showTab%3A%20firstCaption%5D.'),
+messageSends: ["contentTabs", "ifTrue:", unescape("%3E"), "size", "class:", "style:", "with:", "keysAndValuesDo:", "ifNil:", "li", "href:", "onClick:", "showTab:", "a", "at:put:", "captions", "ul", "div", "ifNotNil:"],
 referencedClasses: []
 }),
 smalltalk.MaglevObjectWindow);
@@ -2356,36 +2354,27 @@ referencedClasses: ["MaglevObjectSpace"]
 smalltalk.MaglevObjectWindow);
 
 smalltalk.addMethod(
-unescape('_showFirstTab'),
-smalltalk.method({
-selector: unescape('showFirstTab'),
-category: 'interactions',
-fn: function (){
-var self=this;
-((($receiver = ((($receiver = smalltalk.send(smalltalk.send(self, "_tabs", []), "_size", [])).klass === smalltalk.Number) ? $receiver >(0) : smalltalk.send($receiver, "__gt", [(0)]))).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self, "_showTab_", [smalltalk.send(smalltalk.send(smalltalk.send(self, "_tabs", []), "_keys", []), "_at_", [(1)])]);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(self, "_showTab_", [smalltalk.send(smalltalk.send(smalltalk.send(self, "_tabs", []), "_keys", []), "_at_", [(1)])]);})]));
-return self;},
-args: [],
-source: unescape('showFirstTab%0A%09self%20tabs%20size%20%3E%200%0A%09%09ifTrue%3A%20%5Bself%20showTab%3A%20%28self%20tabs%20keys%20at%3A%201%29%5D.'),
-messageSends: ["ifTrue:", unescape("%3E"), "size", "tabs", "showTab:", "at:", "keys"],
-referencedClasses: []
-}),
-smalltalk.MaglevObjectWindow);
-
-smalltalk.addMethod(
 unescape('_showTab_'),
 smalltalk.method({
 selector: unescape('showTab%3A'),
 category: 'interactions',
 fn: function (caption){
 var self=this;
+var allTabs=nil;
+(allTabs=smalltalk.send(self, "_contentTabs", []));
+((($receiver = smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(self, "_tabs", []), "_includesKey_", [caption]), "_not", []), "_and_", [(function(){return smalltalk.send(allTabs, "_includesKey_", [caption]);})])).klass === smalltalk.Boolean) ? ($receiver ? (function(){var tab=nil;
+var html=nil;
+(html=smalltalk.send((smalltalk.HTMLCanvas || HTMLCanvas), "_onJQuery_", [smalltalk.send(self['@tabsContainer'], "_asJQuery", [])]));(tab=smalltalk.send(smalltalk.send(html, "_div", []), "_with_", [(function(){return smalltalk.send(self, "_perform_withArguments_", [smalltalk.send(allTabs, "_at_", [caption]), [html]]);})]));return smalltalk.send(smalltalk.send(self, "_tabs", []), "_at_put_", [caption, tab]);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){var tab=nil;
+var html=nil;
+(html=smalltalk.send((smalltalk.HTMLCanvas || HTMLCanvas), "_onJQuery_", [smalltalk.send(self['@tabsContainer'], "_asJQuery", [])]));(tab=smalltalk.send(smalltalk.send(html, "_div", []), "_with_", [(function(){return smalltalk.send(self, "_perform_withArguments_", [smalltalk.send(allTabs, "_at_", [caption]), [html]]);})]));return smalltalk.send(smalltalk.send(self, "_tabs", []), "_at_put_", [caption, tab]);})]));
 smalltalk.send(smalltalk.send(self, "_tabs", []), "_keysAndValuesDo_", [(function(tabCaption, tab){var capEl=nil;
 (capEl=smalltalk.send(smalltalk.send(self, "_captions", []), "_at_", [tabCaption]));return ((($receiver = smalltalk.send(caption, "__eq", [tabCaption])).klass === smalltalk.Boolean) ? ($receiver ? (function(){smalltalk.send(tab, "_show", []);return smalltalk.send(capEl, "_addClass_", ["active"]);})() : (function(){smalltalk.send(tab, "_hide", []);return smalltalk.send(capEl, "_removeClass_", ["active"]);})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){smalltalk.send(tab, "_show", []);return smalltalk.send(capEl, "_addClass_", ["active"]);}), (function(){smalltalk.send(tab, "_hide", []);return smalltalk.send(capEl, "_removeClass_", ["active"]);})]));})]);
 return false;
 return self;},
 args: ["caption"],
-source: unescape('showTab%3A%20caption%0A%09self%20tabs%20keysAndValuesDo%3A%20%5B%3AtabCaption%20%3Atab%20%7C%20%7CcapEl%7C%0A%09%09capEl%20%3A%3D%20self%20captions%20at%3A%20tabCaption.%0A%09%09caption%20%3D%20tabCaption%0A%09%09%09ifTrue%3A%20%5B%0A%09%09%09%09tab%20show.%0A%09%09%09%09capEl%20addClass%3A%20%27active%27%5D%0A%09%09%09ifFalse%3A%20%5B%0A%09%09%09%09tab%20hide.%0A%09%09%09%09capEl%20removeClass%3A%20%27active%27%5D%5D.%0A%09%22return%20false%20to%20avoid%20scrolling%20to%20the%20top%22%0A%09%5E%20false'),
-messageSends: ["keysAndValuesDo:", "tabs", "at:", "captions", "ifTrue:ifFalse:", unescape("%3D"), "show", "addClass:", "hide", "removeClass:"],
-referencedClasses: []
+source: unescape('showTab%3A%20caption%0A%09%7CallTabs%7C%0A%09allTabs%20%3A%3D%20self%20contentTabs.%0A%09%22Lazy%20generate%20new%20tabs.%22%0A%09%28%28self%20tabs%20includesKey%3A%20caption%29%20not%20and%3A%20%5BallTabs%20includesKey%3A%20caption%5D%29%0A%09%09ifTrue%3A%20%5B%20%7Ctab%20html%7C%0A%09%09%09html%20%3A%3D%20HTMLCanvas%20onJQuery%3A%20tabsContainer%20asJQuery.%0A%09%09%09tab%20%3A%3D%20html%20div%0A%09%09%09%09with%3A%20%5Bself%20perform%3A%20%28allTabs%20at%3A%20caption%29%20withArguments%3A%20%7Bhtml%7D%5D.%0A%09%09%09self%20tabs%20at%3A%20caption%20put%3A%20tab%5D.%0A%09self%20tabs%20keysAndValuesDo%3A%20%5B%3AtabCaption%20%3Atab%20%7C%20%7CcapEl%7C%0A%09%09capEl%20%3A%3D%20self%20captions%20at%3A%20tabCaption.%0A%09%09caption%20%3D%20tabCaption%0A%09%09%09ifTrue%3A%20%5B%0A%09%09%09%09tab%20show.%0A%09%09%09%09capEl%20addClass%3A%20%27active%27%5D%0A%09%09%09ifFalse%3A%20%5B%0A%09%09%09%09tab%20hide.%0A%09%09%09%09capEl%20removeClass%3A%20%27active%27%5D%5D.%0A%09%22return%20false%20to%20avoid%20scrolling%20to%20the%20top%22%0A%09%5E%20false'),
+messageSends: ["contentTabs", "ifTrue:", "and:", "not", "includesKey:", "tabs", "onJQuery:", "asJQuery", "with:", "div", "perform:withArguments:", "at:", "at:put:", "keysAndValuesDo:", "captions", "ifTrue:ifFalse:", unescape("%3D"), "show", "addClass:", "hide", "removeClass:"],
+referencedClasses: ["HTMLCanvas"]
 }),
 smalltalk.MaglevObjectWindow);
 
@@ -2595,7 +2584,90 @@ smalltalk.MaglevModuleWindow);
 
 
 
-smalltalk.addClass('MaglevClassWindow', smalltalk.MaglevModuleWindow, [], 'Maglev-Database-Explorer');
+smalltalk.addClass('MaglevClassWindow', smalltalk.MaglevModuleWindow, ['categoryNamesSelect', 'selectorsSelect', 'selectors'], 'Maglev-Database-Explorer');
+smalltalk.addMethod(
+unescape('_contentTabs'),
+smalltalk.method({
+selector: unescape('contentTabs'),
+category: 'rendering',
+fn: function (){
+var self=this;
+var result=nil;
+(result=smalltalk.send(self, "_contentTabs", [], smalltalk.MaglevModuleWindow));
+smalltalk.send(result, "_at_put_", ["Code", smalltalk.symbolFor("renderCodeTabOn:")]);
+return result;
+return self;},
+args: [],
+source: unescape('contentTabs%0A%09%7Cresult%7C%0A%09result%20%3A%3D%20super%20contentTabs.%0A%09result%20at%3A%20%27Code%27%20put%3A%20%23renderCodeTabOn%3A.%0A%09%5E%20result'),
+messageSends: ["contentTabs", "at:put:"],
+referencedClasses: []
+}),
+smalltalk.MaglevClassWindow);
+
+smalltalk.addMethod(
+unescape('_renderCodeTabOn_'),
+smalltalk.method({
+selector: unescape('renderCodeTabOn%3A'),
+category: 'rendering',
+fn: function (html){
+var self=this;
+smalltalk.send(smalltalk.send(html, "_root", []), "_style_", [unescape("width%3A%20100%25%3B")]);
+(self['@categoryNamesSelect']=(function($rec){smalltalk.send($rec, "_size_", [(10)]);return smalltalk.send($rec, "_style_", [unescape("width%3A%2050%25%3B")]);})(smalltalk.send(html, "_select", [])));
+(self['@selectorsSelect']=(function($rec){smalltalk.send($rec, "_size_", [(10)]);return smalltalk.send($rec, "_style_", [unescape("width%3A%2050%25%3B")]);})(smalltalk.send(html, "_select", [])));
+smalltalk.send(smalltalk.send(self, "_object", []), "_allSmalltalkSelectorsWithCallback_", [(function(success, obj){(self['@selectors']=obj);smalltalk.send(self, "_renderSelectorCategories", []);return smalltalk.send(self, "_renderSelectors", []);})]);
+return self;},
+args: ["html"],
+source: unescape('renderCodeTabOn%3A%20html%0A%09html%20root%0A%09%09style%3A%20%27width%3A%20100%25%3B%27.%0A%09categoryNamesSelect%20%3A%3D%20html%20select%0A%09%09size%3A%2010%3B%0A%09%09style%3A%20%27width%3A%2050%25%3B%27.%0A%09selectorsSelect%20%3A%3D%20html%20select%0A%09%09size%3A%2010%3B%0A%09%09style%3A%20%27width%3A%2050%25%3B%27.%0A%09self%20object%20allSmalltalkSelectorsWithCallback%3A%20%5B%3Asuccess%20%3Aobj%20%7C%0A%09%09selectors%20%3A%3D%20obj.%0A%09%09self%20renderSelectorCategories.%0A%09%09self%20renderSelectors%5D.'),
+messageSends: ["style:", "root", "size:", "select", "allSmalltalkSelectorsWithCallback:", "object", "renderSelectorCategories", "renderSelectors"],
+referencedClasses: []
+}),
+smalltalk.MaglevClassWindow);
+
+smalltalk.addMethod(
+unescape('_renderSelectorCategories'),
+smalltalk.method({
+selector: unescape('renderSelectorCategories'),
+category: 'rendering',
+fn: function (){
+var self=this;
+var html=nil;
+smalltalk.send(smalltalk.send(self['@categoryNamesSelect'], "_asJQuery", []), "_empty", []);
+(html=smalltalk.send((smalltalk.HTMLCanvas || HTMLCanvas), "_onJQuery_", [smalltalk.send(self['@categoryNamesSelect'], "_asJQuery", [])]));
+smalltalk.send(html, "_with_", [(function(){return smalltalk.send(smalltalk.send(html, "_option", []), "_with_", [unescape("%28all%29")]);})]);
+smalltalk.send(self['@selectors'], "_keysAndValuesDo_", [(function(category, catSelectors){return smalltalk.send(html, "_with_", [(function(){return smalltalk.send(smalltalk.send(html, "_option", []), "_with_", [smalltalk.send(category, "_inspection", [])]);})]);})]);
+smalltalk.send(smalltalk.send(self['@categoryNamesSelect'], "_asJQuery", []), "_val_", [unescape("%28all%29")]);
+smalltalk.send(self['@categoryNamesSelect'], "_onChange_", [(function(){return smalltalk.send(self, "_renderSelectors", []);})]);
+return self;},
+args: [],
+source: unescape('renderSelectorCategories%0A%09%7Chtml%7C%0A%09categoryNamesSelect%20asJQuery%20empty.%0A%09html%20%3A%3D%20HTMLCanvas%20onJQuery%3A%20categoryNamesSelect%20asJQuery.%0A%09html%20with%3A%20%5Bhtml%20option%20with%3A%20%27%28all%29%27%5D.%0A%09selectors%20keysAndValuesDo%3A%20%5B%3Acategory%20%3AcatSelectors%20%7C%0A%09%09html%20%0A%09%09%09with%3A%20%5Bhtml%20option%0A%09%09%09%09with%3A%20category%20inspection%5D%5D.%0A%09categoryNamesSelect%20asJQuery%20val%3A%20%27%28all%29%27.%0A%09categoryNamesSelect%20onChange%3A%20%5Bself%20renderSelectors%5D.'),
+messageSends: ["empty", "asJQuery", "onJQuery:", "with:", "option", "keysAndValuesDo:", "inspection", "val:", "onChange:", "renderSelectors"],
+referencedClasses: ["HTMLCanvas"]
+}),
+smalltalk.MaglevClassWindow);
+
+smalltalk.addMethod(
+unescape('_renderSelectors'),
+smalltalk.method({
+selector: unescape('renderSelectors'),
+category: 'rendering',
+fn: function (){
+var self=this;
+var html=nil;
+var selectedCategory=nil;
+var currentSelectors=nil;
+smalltalk.send(smalltalk.send(self['@selectorsSelect'], "_asJQuery", []), "_empty", []);
+(html=smalltalk.send((smalltalk.HTMLCanvas || HTMLCanvas), "_onJQuery_", [smalltalk.send(self['@selectorsSelect'], "_asJQuery", [])]));
+(selectedCategory=smalltalk.send(smalltalk.send(self['@categoryNamesSelect'], "_asJQuery", []), "_val", []));
+((($receiver = smalltalk.send(selectedCategory, "__eq", [unescape("%28all%29")])).klass === smalltalk.Boolean) ? ($receiver ? (function(){(currentSelectors=smalltalk.send((smalltalk.Array || Array), "_new", []));return smalltalk.send(self['@selectors'], "_valuesDo_", [(function(selGroup){return smalltalk.send(currentSelectors, "_addAll_", [selGroup]);})]);})() : (function(){return (currentSelectors=smalltalk.send(self['@selectors'], "_atKeyInspection_", [selectedCategory]));})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){(currentSelectors=smalltalk.send((smalltalk.Array || Array), "_new", []));return smalltalk.send(self['@selectors'], "_valuesDo_", [(function(selGroup){return smalltalk.send(currentSelectors, "_addAll_", [selGroup]);})]);}), (function(){return (currentSelectors=smalltalk.send(self['@selectors'], "_atKeyInspection_", [selectedCategory]));})]));
+smalltalk.send(currentSelectors, "_do_", [(function(catSelectors){return smalltalk.send(html, "_with_", [(function(){return smalltalk.send(smalltalk.send(html, "_option", []), "_with_", [smalltalk.send(catSelectors, "_inspection", [])]);})]);})]);
+return self;},
+args: [],
+source: unescape('renderSelectors%0A%09%7Chtml%20selectedCategory%20currentSelectors%7C%0A%09selectorsSelect%20asJQuery%20empty.%0A%09html%20%3A%3D%20HTMLCanvas%20onJQuery%3A%20selectorsSelect%20asJQuery.%0A%09selectedCategory%20%3A%3D%20categoryNamesSelect%20asJQuery%20val.%0A%09selectedCategory%20%3D%20%27%28all%29%27%0A%09%09ifTrue%3A%20%5BcurrentSelectors%20%3A%3D%20Array%20new.%0A%09%09%09selectors%20valuesDo%3A%20%5B%3AselGroup%20%7C%20currentSelectors%20addAll%3A%20selGroup%5D%5D%0A%09%09ifFalse%3A%20%5BcurrentSelectors%20%3A%3D%20selectors%20atKeyInspection%3A%20selectedCategory%5D.%0A%09currentSelectors%20do%3A%20%5B%3AcatSelectors%20%7C%0A%09%09html%20%0A%09%09%09with%3A%20%5Bhtml%20option%0A%09%09%09%09with%3A%20catSelectors%20inspection%5D%5D.'),
+messageSends: ["empty", "asJQuery", "onJQuery:", "val", "ifTrue:ifFalse:", unescape("%3D"), "new", "valuesDo:", "addAll:", "atKeyInspection:", "do:", "with:", "option", "inspection"],
+referencedClasses: ["HTMLCanvas", "Array"]
+}),
+smalltalk.MaglevClassWindow);
+
 smalltalk.addMethod(
 unescape('_renderWindowTitleContentOn_'),
 smalltalk.method({

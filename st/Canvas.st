@@ -684,6 +684,10 @@ show
 	self asJQuery show.
 !
 
+size: anInteger
+    self at: 'size' put: anInteger asString
+!
+
 src: aString
     self  at: 'src' put: aString
 !

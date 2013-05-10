@@ -761,15 +761,11 @@ renderAssociationDictionaryBodyOn: html
 !
 
 renderDictionaryBodyOn: html
-	|counter|
-	counter := 1.
-	self collection keysAndValuesDo: [:key :value | 
-		counter >= self rangeFrom ifTrue: [
-			value isAssociation
-				ifTrue: [self renderAssociation: value key to: value value on: html]
-				ifFalse: [self renderAssociation: key to: value on: html]].
-		counter := counter + 1.
-		counter > self rangeTo ifTrue: [^ self]].
+	(self rangeFrom to: self rangeTo) do: [:idx | |obj|
+		obj := self collection at: idx.
+		html tr with: [
+			html td with: idx inlineViewComponent.
+			html td with: obj inlineViewComponent]].
 !
 
 renderOn: html
@@ -985,7 +981,7 @@ newReplace: aWindow
 ! !
 
 MaglevWindow subclass: #MaglevObjectWindow
-	instanceVariableNames: 'container object classObject tabs captions'
+	instanceVariableNames: 'container object classObject tabs captions tabsContainer'
 	package: 'Maglev-Database-Explorer'!
 
 !MaglevObjectWindow methodsFor: 'accessing'!
@@ -1032,12 +1028,16 @@ replace: aWindow
 	MaglevObjectSpace instance registerWindow: self.
 !
 
-showFirstTab
-	self tabs size > 0
-		ifTrue: [self showTab: (self tabs keys at: 1)].
-!
-
 showTab: caption
+	|allTabs|
+	allTabs := self contentTabs.
+	"Lazy generate new tabs."
+	((self tabs includesKey: caption) not and: [allTabs includesKey: caption])
+		ifTrue: [ |tab html|
+			html := HTMLCanvas onJQuery: tabsContainer asJQuery.
+			tab := html div
+				with: [self perform: (allTabs at: caption) withArguments: {html}].
+			self tabs at: caption put: tab].
 	self tabs keysAndValuesDo: [:tabCaption :tab | |capEl|
 		capEl := self captions at: tabCaption.
 		caption = tabCaption
@@ -1073,25 +1073,23 @@ renderInstanceVariablesOn: html
 !
 
 renderWindowContentOn: html
-	|tabs|
-	tabs := self contentTabs.
-	tabs size > 0 ifTrue: [
+	|allTabs firstCaption|
+	allTabs := self contentTabs.
+	allTabs size > 0 ifTrue: [
 		html ul
 			class: 'nav nav-tabs';
-			style: 'display: inline-block; margin-bottom: 0px; margin-top: 5px;';
+			style: 'display: inline-block; margin-bottom: 0px; margin-top: 5px; width: 100%;';
 			with: [
 			self contentTabs keysAndValuesDo: [:caption :generator | |capEl|
+				firstCaption ifNil: [firstCaption := caption].
 				capEl := html li with: [
 					html a
 						href: '#';
 						onClick: [self showTab: caption];
 						with: caption].
 				self captions at: caption put: capEl]]].
-	self contentTabs keysAndValuesDo: [:caption :generator | |tab|
-		tab := html div
-			with:	[self perform: generator withArguments: {html}].
-		self tabs at: caption put: tab].
-	self showFirstTab.
+	tabsContainer := html div.
+	firstCaption ifNotNil: [self showTab: firstCaption].
 !
 
 renderWindowTitleContentOn: html
@@ -1197,10 +1195,60 @@ renderIncludedModulesOn: html
 ! !
 
 MaglevModuleWindow subclass: #MaglevClassWindow
-	instanceVariableNames: ''
+	instanceVariableNames: 'categoryNamesSelect selectorsSelect selectors'
 	package: 'Maglev-Database-Explorer'!
 
 !MaglevClassWindow methodsFor: 'rendering'!
+
+contentTabs
+	|result|
+	result := super contentTabs.
+	result at: 'Code' put: #renderCodeTabOn:.
+	^ result
+!
+
+renderCodeTabOn: html
+	html root
+		style: 'width: 100%;'.
+	categoryNamesSelect := html select
+		size: 10;
+		style: 'width: 50%;'.
+	selectorsSelect := html select
+		size: 10;
+		style: 'width: 50%;'.
+	self object allSmalltalkSelectorsWithCallback: [:success :obj |
+		selectors := obj.
+		self renderSelectorCategories.
+		self renderSelectors].
+!
+
+renderSelectorCategories
+	|html|
+	categoryNamesSelect asJQuery empty.
+	html := HTMLCanvas onJQuery: categoryNamesSelect asJQuery.
+	html with: [html option with: '(all)'].
+	selectors keysAndValuesDo: [:category :catSelectors |
+		html 
+			with: [html option
+				with: category inspection]].
+	categoryNamesSelect asJQuery val: '(all)'.
+	categoryNamesSelect onChange: [self renderSelectors].
+!
+
+renderSelectors
+	|html selectedCategory currentSelectors|
+	selectorsSelect asJQuery empty.
+	html := HTMLCanvas onJQuery: selectorsSelect asJQuery.
+	selectedCategory := categoryNamesSelect asJQuery val.
+	selectedCategory = '(all)'
+		ifTrue: [currentSelectors := Array new.
+			selectors valuesDo: [:selGroup | currentSelectors addAll: selGroup]]
+		ifFalse: [currentSelectors := selectors atKeyInspection: selectedCategory].
+	currentSelectors do: [:catSelectors |
+		html 
+			with: [html option
+				with: catSelectors inspection]].
+!
 
 renderWindowTitleContentOn: html
 	html 

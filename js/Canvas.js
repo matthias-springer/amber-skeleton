@@ -2977,6 +2977,22 @@ referencedClasses: []
 smalltalk.TagBrush);
 
 smalltalk.addMethod(
+unescape('_size_'),
+smalltalk.method({
+selector: unescape('size%3A'),
+category: 'attributes',
+fn: function (anInteger){
+var self=this;
+smalltalk.send(self, "_at_put_", ["size", smalltalk.send(anInteger, "_asString", [])]);
+return self;},
+args: ["anInteger"],
+source: unescape('size%3A%20anInteger%0A%20%20%20%20self%20at%3A%20%27size%27%20put%3A%20anInteger%20asString'),
+messageSends: ["at:put:", "asString"],
+referencedClasses: []
+}),
+smalltalk.TagBrush);
+
+smalltalk.addMethod(
 unescape('_src_'),
 smalltalk.method({
 selector: unescape('src%3A'),
