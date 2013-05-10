@@ -2584,7 +2584,7 @@ smalltalk.MaglevModuleWindow);
 
 
 
-smalltalk.addClass('MaglevClassWindow', smalltalk.MaglevModuleWindow, ['categoryNamesSelect', 'selectorsSelect', 'selectors', 'editorContainer', 'editor', 'waitingScreen', 'errorBox'], 'Maglev-Database-Explorer');
+smalltalk.addClass('MaglevClassWindow', smalltalk.MaglevModuleWindow, ['categoryNamesSelect', 'selectorsSelect', 'selectors', 'rubySelectors', 'editorContainer', 'editor', 'waitingScreen', 'errorBox'], 'Maglev-Database-Explorer');
 smalltalk.addMethod(
 unescape('_bindCommands'),
 smalltalk.method({
@@ -2698,12 +2698,28 @@ smalltalk.send(smalltalk.send(html, "_root", []), "_style_", [unescape("width%3A
 (self['@editorContainer']=smalltalk.send(smalltalk.send(html, "_span", []), "_class_", [unescape("pull-left%20code-area")]));
 smalltalk.send(smalltalk.send(html, "_div", []), "_style_", [unescape("clear%3A%20both%3B")]);
 (self['@errorBox']=(function($rec){smalltalk.send($rec, "_class_", [unescape("alert%20alert-error")]);smalltalk.send($rec, "_style_", [unescape("margin-bottom%3A%200px%3B")]);return smalltalk.send($rec, "_hide", []);})(smalltalk.send(html, "_div", [])));
-smalltalk.send(smalltalk.send(self, "_object", []), "_allSmalltalkSelectorsWithCallback_", [(function(success, obj){(self['@selectors']=obj);smalltalk.send(self, "_renderSelectorCategories", []);smalltalk.send(self, "_renderSelectors", []);smalltalk.send(self, "_initializeEditor", []);smalltalk.send(self['@waitingScreen'], "_hide", []);smalltalk.send(self['@categoryNamesSelect'], "_show", []);return smalltalk.send(self['@selectorsSelect'], "_show", []);})]);
+smalltalk.send(smalltalk.send(self, "_object", []), "_allSmalltalkSelectorsWithCallback_", [(function(success, obj){(self['@selectors']=obj);return smalltalk.send(smalltalk.send(self, "_object", []), "_allRubySelectorsWithCallback_", [(function(rSuccess, rObj){(self['@rubySelectors']=rObj);smalltalk.send(self, "_renderSelectorCategories", []);smalltalk.send(self, "_renderSelectors", []);smalltalk.send(self, "_initializeEditor", []);smalltalk.send(self['@waitingScreen'], "_hide", []);smalltalk.send(self['@categoryNamesSelect'], "_show", []);return smalltalk.send(self['@selectorsSelect'], "_show", []);})]);})]);
 return self;},
 args: ["html"],
-source: unescape('renderCodeTabOn%3A%20html%0A%09html%20root%0A%09%09style%3A%20%27width%3A%20100%25%3B%27.%0A%09categoryNamesSelect%20%3A%3D%20html%20select%0A%09%09size%3A%2010%3B%0A%09%09style%3A%20%27width%3A%2050%25%3B%27%3B%0A%09%09hide.%0A%09selectorsSelect%20%3A%3D%20html%20select%0A%09%09size%3A%2010%3B%0A%09%09style%3A%20%27width%3A%2050%25%3B%27%3B%0A%09%09hide.%0A%09waitingScreen%20%3A%3D%20html%20div%0A%09%09with%3A%20%5Bhtml%0A%09%09%09with%3A%20MaglevIcon%20wait%3B%0A%09%09%09with%3A%20%27%20loading...%27%5D.%0A%09editorContainer%20%3A%3D%20html%20span%0A%09%09class%3A%20%27pull-left%20code-area%27.%0A%09html%20div%20style%3A%20%27clear%3A%20both%3B%27.%0A%09errorBox%20%3A%3D%20html%20div%0A%09%09class%3A%20%27alert%20alert-error%27%3B%0A%09%09style%3A%20%27margin-bottom%3A%200px%3B%27%3B%0A%09%09hide.%0A%09self%20object%20allSmalltalkSelectorsWithCallback%3A%20%5B%3Asuccess%20%3Aobj%20%7C%0A%09%09selectors%20%3A%3D%20obj.%0A%09%09self%20renderSelectorCategories.%0A%09%09self%20renderSelectors.%0A%09%09self%20initializeEditor.%0A%09%09waitingScreen%20hide.%0A%09%09categoryNamesSelect%20show.%0A%09%09selectorsSelect%20show%5D.'),
-messageSends: ["style:", "root", "size:", "hide", "select", "with:", "div", "wait", "class:", "span", "allSmalltalkSelectorsWithCallback:", "object", "renderSelectorCategories", "renderSelectors", "initializeEditor", "show"],
+source: unescape('renderCodeTabOn%3A%20html%0A%09html%20root%0A%09%09style%3A%20%27width%3A%20100%25%3B%27.%0A%09categoryNamesSelect%20%3A%3D%20html%20select%0A%09%09size%3A%2010%3B%0A%09%09style%3A%20%27width%3A%2050%25%3B%27%3B%0A%09%09hide.%0A%09selectorsSelect%20%3A%3D%20html%20select%0A%09%09size%3A%2010%3B%0A%09%09style%3A%20%27width%3A%2050%25%3B%27%3B%0A%09%09hide.%0A%09waitingScreen%20%3A%3D%20html%20div%0A%09%09with%3A%20%5Bhtml%0A%09%09%09with%3A%20MaglevIcon%20wait%3B%0A%09%09%09with%3A%20%27%20loading...%27%5D.%0A%09editorContainer%20%3A%3D%20html%20span%0A%09%09class%3A%20%27pull-left%20code-area%27.%0A%09html%20div%20style%3A%20%27clear%3A%20both%3B%27.%0A%09errorBox%20%3A%3D%20html%20div%0A%09%09class%3A%20%27alert%20alert-error%27%3B%0A%09%09style%3A%20%27margin-bottom%3A%200px%3B%27%3B%0A%09%09hide.%0A%09self%20object%20allSmalltalkSelectorsWithCallback%3A%20%5B%3Asuccess%20%3Aobj%20%7C%0A%09%09selectors%20%3A%3D%20obj.%0A%09%09self%20object%20allRubySelectorsWithCallback%3A%20%5B%3ArSuccess%20%3ArObj%20%7C%0A%09%09%09rubySelectors%20%3A%3D%20rObj.%0A%09%09%09self%20renderSelectorCategories.%0A%09%09%09self%20renderSelectors.%0A%09%09%09self%20initializeEditor.%0A%09%09%09waitingScreen%20hide.%0A%09%09%09categoryNamesSelect%20show.%0A%09%09%09selectorsSelect%20show%5D%5D.'),
+messageSends: ["style:", "root", "size:", "hide", "select", "with:", "div", "wait", "class:", "span", "allSmalltalkSelectorsWithCallback:", "object", "allRubySelectorsWithCallback:", "renderSelectorCategories", "renderSelectors", "initializeEditor", "show"],
 referencedClasses: ["MaglevIcon"]
+}),
+smalltalk.MaglevClassWindow);
+
+smalltalk.addMethod(
+unescape('_renderRubySourceCodeFor_'),
+smalltalk.method({
+selector: unescape('renderRubySourceCodeFor%3A'),
+category: 'rendering',
+fn: function (selectorString){
+var self=this;
+smalltalk.send(self['@object'], "_rubySourceCodeFor_withCallback_", [selectorString, (function(success, obj){smalltalk.send(self['@editor'], "_setValue_pos_", [smalltalk.send(obj, "_string", []), (-1)]);smalltalk.send(self['@editorContainer'], "_show", []);return smalltalk.send(self['@waitingScreen'], "_hide", []);})]);
+return self;},
+args: ["selectorString"],
+source: unescape('renderRubySourceCodeFor%3A%20selectorString%0A%09object%20%0A%09%09rubySourceCodeFor%3A%20selectorString%20%0A%09%09withCallback%3A%20%5B%3Asuccess%20%3Aobj%20%7C%0A%09%09%09editor%20setValue%3A%20obj%20string%20pos%3A%20-1.%0A%09%09%09editorContainer%20show.%0A%09%09%09waitingScreen%20hide%5D.'),
+messageSends: ["rubySourceCodeFor:withCallback:", "setValue:pos:", "string", "show", "hide"],
+referencedClasses: []
 }),
 smalltalk.MaglevClassWindow);
 
@@ -2717,14 +2733,15 @@ var self=this;
 var html=nil;
 smalltalk.send(smalltalk.send(self['@categoryNamesSelect'], "_asJQuery", []), "_empty", []);
 (html=smalltalk.send((smalltalk.HTMLCanvas || HTMLCanvas), "_onJQuery_", [smalltalk.send(self['@categoryNamesSelect'], "_asJQuery", [])]));
-smalltalk.send(html, "_with_", [(function(){return smalltalk.send(smalltalk.send(html, "_option", []), "_with_", [unescape("%28all%29")]);})]);
+smalltalk.send(html, "_with_", [(function(){return smalltalk.send(smalltalk.send(html, "_option", []), "_with_", [unescape("%28all%20Ruby%29")]);})]);
+smalltalk.send(html, "_with_", [(function(){return smalltalk.send(smalltalk.send(html, "_option", []), "_with_", [unescape("%28all%20Smalltalk%29")]);})]);
 smalltalk.send(self['@selectors'], "_keysAndValuesDo_", [(function(category, catSelectors){return smalltalk.send(html, "_with_", [(function(){return smalltalk.send(smalltalk.send(html, "_option", []), "_with_", [smalltalk.send(category, "_string", [])]);})]);})]);
-smalltalk.send(smalltalk.send(self['@categoryNamesSelect'], "_asJQuery", []), "_val_", [unescape("%28all%29")]);
+smalltalk.send(smalltalk.send(self['@categoryNamesSelect'], "_asJQuery", []), "_val_", [unescape("%28all%20Smalltalk%29")]);
 smalltalk.send(self['@categoryNamesSelect'], "_onChange_", [(function(){return smalltalk.send(self, "_renderSelectors", []);})]);
 smalltalk.send(self, "_sortList_", [self['@categoryNamesSelect']]);
 return self;},
 args: [],
-source: unescape('renderSelectorCategories%0A%09%7Chtml%7C%0A%09categoryNamesSelect%20asJQuery%20empty.%0A%09html%20%3A%3D%20HTMLCanvas%20onJQuery%3A%20categoryNamesSelect%20asJQuery.%0A%09html%20with%3A%20%5Bhtml%20option%20with%3A%20%27%28all%29%27%5D.%0A%09selectors%20keysAndValuesDo%3A%20%5B%3Acategory%20%3AcatSelectors%20%7C%0A%09%09html%20%0A%09%09%09with%3A%20%5Bhtml%20option%0A%09%09%09%09with%3A%20category%20string%5D%5D.%0A%09categoryNamesSelect%20asJQuery%20val%3A%20%27%28all%29%27.%0A%09categoryNamesSelect%20onChange%3A%20%5Bself%20renderSelectors%5D.%0A%09self%20sortList%3A%20categoryNamesSelect.'),
+source: unescape('renderSelectorCategories%0A%09%7Chtml%7C%0A%09categoryNamesSelect%20asJQuery%20empty.%0A%09html%20%3A%3D%20HTMLCanvas%20onJQuery%3A%20categoryNamesSelect%20asJQuery.%0A%09html%20with%3A%20%5Bhtml%20option%20with%3A%20%27%28all%20Ruby%29%27%5D.%0A%09html%20with%3A%20%5Bhtml%20option%20with%3A%20%27%28all%20Smalltalk%29%27%5D.%0A%09selectors%20keysAndValuesDo%3A%20%5B%3Acategory%20%3AcatSelectors%20%7C%0A%09%09html%20%0A%09%09%09with%3A%20%5Bhtml%20option%0A%09%09%09%09with%3A%20category%20string%5D%5D.%0A%09categoryNamesSelect%20asJQuery%20val%3A%20%27%28all%20Smalltalk%29%27.%0A%09categoryNamesSelect%20onChange%3A%20%5Bself%20renderSelectors%5D.%0A%09self%20sortList%3A%20categoryNamesSelect.'),
 messageSends: ["empty", "asJQuery", "onJQuery:", "with:", "option", "keysAndValuesDo:", "string", "val:", "onChange:", "renderSelectors", "sortList:"],
 referencedClasses: ["HTMLCanvas"]
 }),
@@ -2743,15 +2760,31 @@ var currentSelectors=nil;
 smalltalk.send(smalltalk.send(self['@selectorsSelect'], "_asJQuery", []), "_empty", []);
 (html=smalltalk.send((smalltalk.HTMLCanvas || HTMLCanvas), "_onJQuery_", [smalltalk.send(self['@selectorsSelect'], "_asJQuery", [])]));
 (selectedCategory=smalltalk.send(smalltalk.send(self['@categoryNamesSelect'], "_asJQuery", []), "_val", []));
-((($receiver = smalltalk.send(selectedCategory, "__eq", [unescape("%28all%29")])).klass === smalltalk.Boolean) ? ($receiver ? (function(){(currentSelectors=smalltalk.send((smalltalk.Array || Array), "_new", []));return smalltalk.send(self['@selectors'], "_valuesDo_", [(function(selGroup){return smalltalk.send(currentSelectors, "_addAll_", [selGroup]);})]);})() : (function(){return (currentSelectors=smalltalk.send(self['@selectors'], "_atKeyString_", [selectedCategory]));})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){(currentSelectors=smalltalk.send((smalltalk.Array || Array), "_new", []));return smalltalk.send(self['@selectors'], "_valuesDo_", [(function(selGroup){return smalltalk.send(currentSelectors, "_addAll_", [selGroup]);})]);}), (function(){return (currentSelectors=smalltalk.send(self['@selectors'], "_atKeyString_", [selectedCategory]));})]));
+((($receiver = smalltalk.send(selectedCategory, "__eq", [unescape("%28all%20Smalltalk%29")])).klass === smalltalk.Boolean) ? ($receiver ? (function(){(currentSelectors=smalltalk.send((smalltalk.Array || Array), "_new", []));return smalltalk.send(self['@selectors'], "_valuesDo_", [(function(selGroup){return smalltalk.send(currentSelectors, "_addAll_", [selGroup]);})]);})() : (function(){return ((($receiver = smalltalk.send(selectedCategory, "__eq", [unescape("%28all%20Ruby%29")])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (currentSelectors=self['@rubySelectors']);})() : (function(){return (currentSelectors=smalltalk.send(self['@selectors'], "_atKeyString_", [selectedCategory]));})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return (currentSelectors=self['@rubySelectors']);}), (function(){return (currentSelectors=smalltalk.send(self['@selectors'], "_atKeyString_", [selectedCategory]));})]));})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){(currentSelectors=smalltalk.send((smalltalk.Array || Array), "_new", []));return smalltalk.send(self['@selectors'], "_valuesDo_", [(function(selGroup){return smalltalk.send(currentSelectors, "_addAll_", [selGroup]);})]);}), (function(){return ((($receiver = smalltalk.send(selectedCategory, "__eq", [unescape("%28all%20Ruby%29")])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (currentSelectors=self['@rubySelectors']);})() : (function(){return (currentSelectors=smalltalk.send(self['@selectors'], "_atKeyString_", [selectedCategory]));})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return (currentSelectors=self['@rubySelectors']);}), (function(){return (currentSelectors=smalltalk.send(self['@selectors'], "_atKeyString_", [selectedCategory]));})]));})]));
 smalltalk.send(currentSelectors, "_do_", [(function(catSelectors){return smalltalk.send(html, "_with_", [(function(){return smalltalk.send(smalltalk.send(html, "_option", []), "_with_", [smalltalk.send(catSelectors, "_string", [])]);})]);})]);
 smalltalk.send(self, "_sortList_", [self['@selectorsSelect']]);
 smalltalk.send(self['@selectorsSelect'], "_onChange_", [(function(){return smalltalk.send(self, "_renderSourceCode", []);})]);
 return self;},
 args: [],
-source: unescape('renderSelectors%0A%09%7Chtml%20selectedCategory%20currentSelectors%7C%0A%09selectorsSelect%20asJQuery%20empty.%0A%09html%20%3A%3D%20HTMLCanvas%20onJQuery%3A%20selectorsSelect%20asJQuery.%0A%09selectedCategory%20%3A%3D%20categoryNamesSelect%20asJQuery%20val.%0A%09selectedCategory%20%3D%20%27%28all%29%27%0A%09%09ifTrue%3A%20%5BcurrentSelectors%20%3A%3D%20Array%20new.%0A%09%09%09selectors%20valuesDo%3A%20%5B%3AselGroup%20%7C%20currentSelectors%20addAll%3A%20selGroup%5D%5D%0A%09%09ifFalse%3A%20%5BcurrentSelectors%20%3A%3D%20selectors%20atKeyString%3A%20selectedCategory%5D.%0A%09currentSelectors%20do%3A%20%5B%3AcatSelectors%20%7C%0A%09%09html%20%0A%09%09%09with%3A%20%5Bhtml%20option%0A%09%09%09%09with%3A%20catSelectors%20string%5D%5D.%0A%09self%20sortList%3A%20selectorsSelect.%0A%09selectorsSelect%20onChange%3A%20%5Bself%20renderSourceCode%5D.'),
+source: unescape('renderSelectors%0A%09%7Chtml%20selectedCategory%20currentSelectors%7C%0A%09selectorsSelect%20asJQuery%20empty.%0A%09html%20%3A%3D%20HTMLCanvas%20onJQuery%3A%20selectorsSelect%20asJQuery.%0A%09selectedCategory%20%3A%3D%20categoryNamesSelect%20asJQuery%20val.%0A%09selectedCategory%20%3D%20%27%28all%20Smalltalk%29%27%0A%09%09ifTrue%3A%20%5BcurrentSelectors%20%3A%3D%20Array%20new.%0A%09%09%09selectors%20valuesDo%3A%20%5B%3AselGroup%20%7C%20currentSelectors%20addAll%3A%20selGroup%5D%5D%0A%09%09ifFalse%3A%20%5BselectedCategory%20%3D%20%27%28all%20Ruby%29%27%0A%09%09%09ifTrue%3A%20%5BcurrentSelectors%20%3A%3D%20rubySelectors%5D%0A%09%09%09ifFalse%3A%20%5BcurrentSelectors%20%3A%3D%20selectors%20atKeyString%3A%20selectedCategory%5D%5D.%0A%09currentSelectors%20do%3A%20%5B%3AcatSelectors%20%7C%0A%09%09html%20%0A%09%09%09with%3A%20%5Bhtml%20option%0A%09%09%09%09with%3A%20catSelectors%20string%5D%5D.%0A%09self%20sortList%3A%20selectorsSelect.%0A%09selectorsSelect%20onChange%3A%20%5Bself%20renderSourceCode%5D.'),
 messageSends: ["empty", "asJQuery", "onJQuery:", "val", "ifTrue:ifFalse:", unescape("%3D"), "new", "valuesDo:", "addAll:", "atKeyString:", "do:", "with:", "option", "string", "sortList:", "onChange:", "renderSourceCode"],
 referencedClasses: ["HTMLCanvas", "Array"]
+}),
+smalltalk.MaglevClassWindow);
+
+smalltalk.addMethod(
+unescape('_renderSmalltalkSourceCodeFor_'),
+smalltalk.method({
+selector: unescape('renderSmalltalkSourceCodeFor%3A'),
+category: 'rendering',
+fn: function (selectorString){
+var self=this;
+smalltalk.send(self['@object'], "_smalltalkSourceCodeFor_withCallback_", [selectorString, (function(success, obj){smalltalk.send(self['@editor'], "_setValue_pos_", [smalltalk.send(obj, "_string", []), (-1)]);smalltalk.send(self['@editorContainer'], "_show", []);return smalltalk.send(self['@waitingScreen'], "_hide", []);})]);
+return self;},
+args: ["selectorString"],
+source: unescape('renderSmalltalkSourceCodeFor%3A%20selectorString%0A%09object%20%0A%09%09smalltalkSourceCodeFor%3A%20selectorString%20%0A%09%09withCallback%3A%20%5B%3Asuccess%20%3Aobj%20%7C%0A%09%09%09editor%20setValue%3A%20obj%20string%20pos%3A%20-1.%0A%09%09%09editorContainer%20show.%0A%09%09%09waitingScreen%20hide%5D.'),
+messageSends: ["smalltalkSourceCodeFor:withCallback:", "setValue:pos:", "string", "show", "hide"],
+referencedClasses: []
 }),
 smalltalk.MaglevClassWindow);
 
@@ -2763,14 +2796,16 @@ category: 'rendering',
 fn: function (){
 var self=this;
 var selectorString=nil;
+var selectedCategory=nil;
 smalltalk.send(self['@editorContainer'], "_hide", []);
 smalltalk.send(self['@waitingScreen'], "_show", []);
+(selectedCategory=smalltalk.send(smalltalk.send(self['@categoryNamesSelect'], "_asJQuery", []), "_val", []));
 (selectorString=smalltalk.send(smalltalk.send(self['@selectorsSelect'], "_asJQuery", []), "_val", []));
-smalltalk.send(self['@object'], "_smalltalkSourceCodeFor_withCallback_", [selectorString, (function(success, obj){smalltalk.send(self['@editor'], "_setValue_", [smalltalk.send(obj, "_string", [])]);smalltalk.send(self['@editorContainer'], "_show", []);return smalltalk.send(self['@waitingScreen'], "_hide", []);})]);
+((($receiver = smalltalk.send(selectedCategory, "__eq", [unescape("%28all%20Ruby%29")])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self, "_renderRubySourceCodeFor_", [selectorString]);})() : (function(){return smalltalk.send(self, "_renderSmalltalkSourceCodeFor_", [selectorString]);})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return smalltalk.send(self, "_renderRubySourceCodeFor_", [selectorString]);}), (function(){return smalltalk.send(self, "_renderSmalltalkSourceCodeFor_", [selectorString]);})]));
 return self;},
 args: [],
-source: unescape('renderSourceCode%0A%09%7CselectorString%7C%0A%09editorContainer%20hide.%0A%09waitingScreen%20show.%0A%09selectorString%20%3A%3D%20selectorsSelect%20asJQuery%20val.%0A%09object%20%0A%09%09smalltalkSourceCodeFor%3A%20selectorString%20%0A%09%09withCallback%3A%20%5B%3Asuccess%20%3Aobj%20%7C%0A%09%09%09editor%20setValue%3A%20obj%20string.%0A%09%09%09editorContainer%20show.%0A%09%09%09waitingScreen%20hide%5D.'),
-messageSends: ["hide", "show", "val", "asJQuery", "smalltalkSourceCodeFor:withCallback:", "setValue:", "string"],
+source: unescape('renderSourceCode%0A%09%7CselectorString%20selectedCategory%7C%0A%09editorContainer%20hide.%0A%09waitingScreen%20show.%0A%09selectedCategory%20%3A%3D%20categoryNamesSelect%20asJQuery%20val.%0A%09selectorString%20%3A%3D%20selectorsSelect%20asJQuery%20val.%0A%09selectedCategory%20%3D%20%27%28all%20Ruby%29%27%0A%09%09ifTrue%3A%20%5Bself%20renderRubySourceCodeFor%3A%20selectorString%5D%0A%09%09ifFalse%3A%20%5Bself%20renderSmalltalkSourceCodeFor%3A%20selectorString%5D.%0A'),
+messageSends: ["hide", "show", "val", "asJQuery", "ifTrue:ifFalse:", unescape("%3D"), "renderRubySourceCodeFor:", "renderSmalltalkSourceCodeFor:"],
 referencedClasses: []
 }),
 smalltalk.MaglevClassWindow);

@@ -1195,7 +1195,7 @@ renderIncludedModulesOn: html
 ! !
 
 MaglevModuleWindow subclass: #MaglevClassWindow
-	instanceVariableNames: 'categoryNamesSelect selectorsSelect selectors editorContainer editor waitingScreen errorBox'
+	instanceVariableNames: 'categoryNamesSelect selectorsSelect selectors rubySelectors editorContainer editor waitingScreen errorBox'
 	package: 'Maglev-Database-Explorer'!
 
 !MaglevClassWindow methodsFor: 'initializing'!
@@ -1286,24 +1286,36 @@ renderCodeTabOn: html
 		hide.
 	self object allSmalltalkSelectorsWithCallback: [:success :obj |
 		selectors := obj.
-		self renderSelectorCategories.
-		self renderSelectors.
-		self initializeEditor.
-		waitingScreen hide.
-		categoryNamesSelect show.
-		selectorsSelect show].
+		self object allRubySelectorsWithCallback: [:rSuccess :rObj |
+			rubySelectors := rObj.
+			self renderSelectorCategories.
+			self renderSelectors.
+			self initializeEditor.
+			waitingScreen hide.
+			categoryNamesSelect show.
+			selectorsSelect show]].
+!
+
+renderRubySourceCodeFor: selectorString
+	object 
+		rubySourceCodeFor: selectorString 
+		withCallback: [:success :obj |
+			editor setValue: obj string pos: -1.
+			editorContainer show.
+			waitingScreen hide].
 !
 
 renderSelectorCategories
 	|html|
 	categoryNamesSelect asJQuery empty.
 	html := HTMLCanvas onJQuery: categoryNamesSelect asJQuery.
-	html with: [html option with: '(all)'].
+	html with: [html option with: '(all Ruby)'].
+	html with: [html option with: '(all Smalltalk)'].
 	selectors keysAndValuesDo: [:category :catSelectors |
 		html 
 			with: [html option
 				with: category string]].
-	categoryNamesSelect asJQuery val: '(all)'.
+	categoryNamesSelect asJQuery val: '(all Smalltalk)'.
 	categoryNamesSelect onChange: [self renderSelectors].
 	self sortList: categoryNamesSelect.
 !
@@ -1313,10 +1325,12 @@ renderSelectors
 	selectorsSelect asJQuery empty.
 	html := HTMLCanvas onJQuery: selectorsSelect asJQuery.
 	selectedCategory := categoryNamesSelect asJQuery val.
-	selectedCategory = '(all)'
+	selectedCategory = '(all Smalltalk)'
 		ifTrue: [currentSelectors := Array new.
 			selectors valuesDo: [:selGroup | currentSelectors addAll: selGroup]]
-		ifFalse: [currentSelectors := selectors atKeyString: selectedCategory].
+		ifFalse: [selectedCategory = '(all Ruby)'
+			ifTrue: [currentSelectors := rubySelectors]
+			ifFalse: [currentSelectors := selectors atKeyString: selectedCategory]].
 	currentSelectors do: [:catSelectors |
 		html 
 			with: [html option
@@ -1325,17 +1339,24 @@ renderSelectors
 	selectorsSelect onChange: [self renderSourceCode].
 !
 
-renderSourceCode
-	|selectorString|
-	editorContainer hide.
-	waitingScreen show.
-	selectorString := selectorsSelect asJQuery val.
+renderSmalltalkSourceCodeFor: selectorString
 	object 
 		smalltalkSourceCodeFor: selectorString 
 		withCallback: [:success :obj |
-			editor setValue: obj string.
+			editor setValue: obj string pos: -1.
 			editorContainer show.
 			waitingScreen hide].
+!
+
+renderSourceCode
+	|selectorString selectedCategory|
+	editorContainer hide.
+	waitingScreen show.
+	selectedCategory := categoryNamesSelect asJQuery val.
+	selectorString := selectorsSelect asJQuery val.
+	selectedCategory = '(all Ruby)'
+		ifTrue: [self renderRubySourceCodeFor: selectorString]
+		ifFalse: [self renderSmalltalkSourceCodeFor: selectorString].
 !
 
 renderWindowTitleContentOn: html
