@@ -1171,34 +1171,10 @@ renderHashElementsOn: html
 ! !
 
 MaglevObjectWindow subclass: #MaglevModuleWindow
-	instanceVariableNames: ''
-	package: 'Maglev-Database-Explorer'!
-
-!MaglevModuleWindow methodsFor: 'rendering'!
-
-contentTabs
-	|result|
-	result := super contentTabs.
-	self object hasConstants 
-		ifTrue: [result at: 'Constants' put: #renderConstantsOn:].
-	self object hasIncludedModules
-		ifTrue: [result at: 'Included Modules' put: #renderIncludedModulesOn:].
-	^ result
-!
-
-renderConstantsOn: html
-	html with: (MaglevTable newAssociationDictFor: self object with: #constants).
-!
-
-renderIncludedModulesOn: html
-	html with: (MaglevTable newFor: self object with: #includedModules).
-! !
-
-MaglevModuleWindow subclass: #MaglevClassWindow
 	instanceVariableNames: 'categoryNamesSelect selectorsSelect selectors rubySelectors editorContainer editor waitingScreen errorBox envIdContainer rubyIcon stIcon sourceLocationContainer methodObject'
 	package: 'Maglev-Database-Explorer'!
 
-!MaglevClassWindow methodsFor: 'initializing'!
+!MaglevModuleWindow methodsFor: 'initializing'!
 
 bindCommands
 	|aceEditor|
@@ -1226,7 +1202,7 @@ mouseFix
 	}); >
 ! !
 
-!MaglevClassWindow methodsFor: 'interactions'!
+!MaglevModuleWindow methodsFor: 'interactions'!
 
 commandSave
 	errorBox hide.
@@ -1253,11 +1229,15 @@ signalSuccess
 	editorContainer asJQuery animate: (Object new basicAt: 'backgroundColor' put: '#ffffff'; yourself) timeout: 250.
 ! !
 
-!MaglevClassWindow methodsFor: 'rendering'!
+!MaglevModuleWindow methodsFor: 'rendering'!
 
 contentTabs
 	|result|
 	result := super contentTabs.
+	self object hasConstants 
+		ifTrue: [result at: 'Constants' put: #renderConstantsOn:].
+	self object hasIncludedModules
+		ifTrue: [result at: 'Included Modules' put: #renderIncludedModulesOn:].
 	result at: 'Code' put: #renderCodeTabOn:.
 	^ result
 !
@@ -1297,6 +1277,14 @@ renderCodeTabOn: html
 			waitingScreen hide.
 			categoryNamesSelect show.
 			selectorsSelect show]].
+!
+
+renderConstantsOn: html
+	html with: (MaglevTable newAssociationDictFor: self object with: #constants).
+!
+
+renderIncludedModulesOn: html
+	html with: (MaglevTable newFor: self object with: #includedModules).
 !
 
 renderMethodObject
@@ -1396,6 +1384,20 @@ renderStatusBarOn: html
 					sourceLocationContainer := html span with: '?']]]].
 !
 
+sortList: aListBox
+	|box children|
+	box := aListBox asJQuery.
+	< children = box.children('option').sort(function (a, b) {return a.innerHTML >> b.innerHTML ? 1 : -1}); >.
+	box empty.
+	children appendTo: box.
+! !
+
+MaglevModuleWindow subclass: #MaglevClassWindow
+	instanceVariableNames: 'categoryNamesSelect selectorsSelect selectors rubySelectors editorContainer editor waitingScreen errorBox envIdContainer rubyIcon stIcon sourceLocationContainer methodObject'
+	package: 'Maglev-Database-Explorer'!
+
+!MaglevClassWindow methodsFor: 'rendering'!
+
 renderWindowTitleContentOn: html
 	html 
 		with: object inlineViewComponentShort;
@@ -1409,14 +1411,6 @@ renderWindowTitleContentOn: html
 				with: ' : ';
 				with: classObject inlineViewComponent.
 			self renderCloseButtonOn: html].
-!
-
-sortList: aListBox
-	|box children|
-	box := aListBox asJQuery.
-	< children = box.children('option').sort(function (a, b) {return a.innerHTML >> b.innerHTML ? 1 : -1}); >.
-	box empty.
-	children appendTo: box.
 ! !
 
 MaglevObjectWindow subclass: #MaglevNilClassWindow

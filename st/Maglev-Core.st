@@ -664,11 +664,43 @@ parseJSON: obj
 
 !MaglevModule methodsFor: 'interactions'!
 
+allRubySelectorsWithCallback: aBlock
+	self 
+		evaluateWithoutUpdate: '|set hidden| set := IdentitySet new. hidden := IdentitySet new. self nonBridgeRubySelectorsInto: set hiddenInto: hidden protection: -1 env: 1. set asArray' 
+		language: 'smalltalk'
+		with: self paramsAllElements 
+		withCallback: aBlock.
+!
+
+allSmalltalkSelectorsWithCallback: aBlock
+	self 
+		evaluateWithoutUpdate: '|selectors| selectors := RubyHash new. self categoryNames do: [:category | selectors at: category put: (self selectorsIn: category)]. selectors.' 
+		language: 'smalltalk'
+		with: self paramsAllElements 
+		withCallback: aBlock.
+!
+
 compileSmalltalkSourceCode: aSelectorString withCallback: aBlock
 	self 
 		evaluateWithoutUpdate: 'self compile: ''', aSelectorString escapedString, '''.'
 		language: 'smalltalk'
 		with: Dictionary new
+		withCallback: aBlock.
+!
+
+rubySourceCodeFor: aSelectorString withCallback: aBlock
+	self 
+		evaluateWithoutUpdate: 'self rubyMethodFor: ''', aSelectorString, ''' instanceMethod: true.'
+		language: 'smalltalk'
+		with: self paramsFullString
+		withCallback: aBlock.
+!
+
+smalltalkSourceCodeFor: aSelectorString withCallback: aBlock
+	self 
+		evaluateWithoutUpdate: 'self lookupSelector: ''', aSelectorString, '''.'
+		language: 'smalltalk'
+		with: self paramsFullString
 		withCallback: aBlock.
 ! !
 
@@ -711,40 +743,6 @@ superclassObject
 parseJSON: obj
 	super parseJSON: obj.
 	superclassObject := MaglevObject newObject: obj superclassObject.
-! !
-
-!MaglevClass methodsFor: 'interactions'!
-
-allRubySelectorsWithCallback: aBlock
-	self 
-		evaluateWithoutUpdate: '|set hidden| set := IdentitySet new. hidden := IdentitySet new. self nonBridgeRubySelectorsInto: set hiddenInto: hidden protection: -1 env: 1. set asArray' 
-		language: 'smalltalk'
-		with: self paramsAllElements 
-		withCallback: aBlock.
-!
-
-allSmalltalkSelectorsWithCallback: aBlock
-	self 
-		evaluateWithoutUpdate: '|selectors| selectors := RubyHash new. self categoryNames do: [:category | selectors at: category put: (self selectorsIn: category)]. selectors.' 
-		language: 'smalltalk'
-		with: self paramsAllElements 
-		withCallback: aBlock.
-!
-
-rubySourceCodeFor: aSelectorString withCallback: aBlock
-	self 
-		evaluateWithoutUpdate: 'self rubyMethodFor: ''', aSelectorString, ''' instanceMethod: true.'
-		language: 'smalltalk'
-		with: self paramsFullString
-		withCallback: aBlock.
-!
-
-smalltalkSourceCodeFor: aSelectorString withCallback: aBlock
-	self 
-		evaluateWithoutUpdate: 'self lookupSelector: ''', aSelectorString, '''.'
-		language: 'smalltalk'
-		with: self paramsFullString
-		withCallback: aBlock.
 ! !
 
 !MaglevClass class methodsFor: 'constants'!

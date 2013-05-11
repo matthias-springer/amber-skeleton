@@ -1612,6 +1612,38 @@ smalltalk.MaglevHash.klass);
 
 smalltalk.addClass('MaglevModule', smalltalk.MaglevObject, ['includedModules', 'includedModulesSize', 'constants', 'constantsSize'], 'Maglev-Core');
 smalltalk.addMethod(
+unescape('_allRubySelectorsWithCallback_'),
+smalltalk.method({
+selector: unescape('allRubySelectorsWithCallback%3A'),
+category: 'interactions',
+fn: function (aBlock){
+var self=this;
+smalltalk.send(self, "_evaluateWithoutUpdate_language_with_withCallback_", [unescape("%7Cset%20hidden%7C%20set%20%3A%3D%20IdentitySet%20new.%20hidden%20%3A%3D%20IdentitySet%20new.%20self%20nonBridgeRubySelectorsInto%3A%20set%20hiddenInto%3A%20hidden%20protection%3A%20-1%20env%3A%201.%20set%20asArray"), "smalltalk", smalltalk.send(self, "_paramsAllElements", []), aBlock]);
+return self;},
+args: ["aBlock"],
+source: unescape('allRubySelectorsWithCallback%3A%20aBlock%0A%09self%20%0A%09%09evaluateWithoutUpdate%3A%20%27%7Cset%20hidden%7C%20set%20%3A%3D%20IdentitySet%20new.%20hidden%20%3A%3D%20IdentitySet%20new.%20self%20nonBridgeRubySelectorsInto%3A%20set%20hiddenInto%3A%20hidden%20protection%3A%20-1%20env%3A%201.%20set%20asArray%27%20%0A%09%09language%3A%20%27smalltalk%27%0A%09%09with%3A%20self%20paramsAllElements%20%0A%09%09withCallback%3A%20aBlock.'),
+messageSends: ["evaluateWithoutUpdate:language:with:withCallback:", "paramsAllElements"],
+referencedClasses: []
+}),
+smalltalk.MaglevModule);
+
+smalltalk.addMethod(
+unescape('_allSmalltalkSelectorsWithCallback_'),
+smalltalk.method({
+selector: unescape('allSmalltalkSelectorsWithCallback%3A'),
+category: 'interactions',
+fn: function (aBlock){
+var self=this;
+smalltalk.send(self, "_evaluateWithoutUpdate_language_with_withCallback_", [unescape("%7Cselectors%7C%20selectors%20%3A%3D%20RubyHash%20new.%20self%20categoryNames%20do%3A%20%5B%3Acategory%20%7C%20selectors%20at%3A%20category%20put%3A%20%28self%20selectorsIn%3A%20category%29%5D.%20selectors."), "smalltalk", smalltalk.send(self, "_paramsAllElements", []), aBlock]);
+return self;},
+args: ["aBlock"],
+source: unescape('allSmalltalkSelectorsWithCallback%3A%20aBlock%0A%09self%20%0A%09%09evaluateWithoutUpdate%3A%20%27%7Cselectors%7C%20selectors%20%3A%3D%20RubyHash%20new.%20self%20categoryNames%20do%3A%20%5B%3Acategory%20%7C%20selectors%20at%3A%20category%20put%3A%20%28self%20selectorsIn%3A%20category%29%5D.%20selectors.%27%20%0A%09%09language%3A%20%27smalltalk%27%0A%09%09with%3A%20self%20paramsAllElements%20%0A%09%09withCallback%3A%20aBlock.'),
+messageSends: ["evaluateWithoutUpdate:language:with:withCallback:", "paramsAllElements"],
+referencedClasses: []
+}),
+smalltalk.MaglevModule);
+
+smalltalk.addMethod(
 unescape('_compileSmalltalkSourceCode_withCallback_'),
 smalltalk.method({
 selector: unescape('compileSmalltalkSourceCode%3AwithCallback%3A'),
@@ -1747,6 +1779,38 @@ referencedClasses: ["Dictionary", "MaglevObject"]
 }),
 smalltalk.MaglevModule);
 
+smalltalk.addMethod(
+unescape('_rubySourceCodeFor_withCallback_'),
+smalltalk.method({
+selector: unescape('rubySourceCodeFor%3AwithCallback%3A'),
+category: 'interactions',
+fn: function (aSelectorString, aBlock){
+var self=this;
+smalltalk.send(self, "_evaluateWithoutUpdate_language_with_withCallback_", [smalltalk.send(smalltalk.send(unescape("self%20rubyMethodFor%3A%20%27"), "__comma", [aSelectorString]), "__comma", [unescape("%27%20instanceMethod%3A%20true.")]), "smalltalk", smalltalk.send(self, "_paramsFullString", []), aBlock]);
+return self;},
+args: ["aSelectorString", "aBlock"],
+source: unescape('rubySourceCodeFor%3A%20aSelectorString%20withCallback%3A%20aBlock%0A%09self%20%0A%09%09evaluateWithoutUpdate%3A%20%27self%20rubyMethodFor%3A%20%27%27%27%2C%20aSelectorString%2C%20%27%27%27%20instanceMethod%3A%20true.%27%0A%09%09language%3A%20%27smalltalk%27%0A%09%09with%3A%20self%20paramsFullString%0A%09%09withCallback%3A%20aBlock.'),
+messageSends: ["evaluateWithoutUpdate:language:with:withCallback:", unescape("%2C"), "paramsFullString"],
+referencedClasses: []
+}),
+smalltalk.MaglevModule);
+
+smalltalk.addMethod(
+unescape('_smalltalkSourceCodeFor_withCallback_'),
+smalltalk.method({
+selector: unescape('smalltalkSourceCodeFor%3AwithCallback%3A'),
+category: 'interactions',
+fn: function (aSelectorString, aBlock){
+var self=this;
+smalltalk.send(self, "_evaluateWithoutUpdate_language_with_withCallback_", [smalltalk.send(smalltalk.send(unescape("self%20lookupSelector%3A%20%27"), "__comma", [aSelectorString]), "__comma", [unescape("%27.")]), "smalltalk", smalltalk.send(self, "_paramsFullString", []), aBlock]);
+return self;},
+args: ["aSelectorString", "aBlock"],
+source: unescape('smalltalkSourceCodeFor%3A%20aSelectorString%20withCallback%3A%20aBlock%0A%09self%20%0A%09%09evaluateWithoutUpdate%3A%20%27self%20lookupSelector%3A%20%27%27%27%2C%20aSelectorString%2C%20%27%27%27.%27%0A%09%09language%3A%20%27smalltalk%27%0A%09%09with%3A%20self%20paramsFullString%0A%09%09withCallback%3A%20aBlock.'),
+messageSends: ["evaluateWithoutUpdate:language:with:withCallback:", unescape("%2C"), "paramsFullString"],
+referencedClasses: []
+}),
+smalltalk.MaglevModule);
+
 
 smalltalk.addMethod(
 unescape('_basetype'),
@@ -1799,38 +1863,6 @@ smalltalk.MaglevModule.klass);
 
 smalltalk.addClass('MaglevClass', smalltalk.MaglevModule, ['superclassObject', 'size'], 'Maglev-Core');
 smalltalk.addMethod(
-unescape('_allRubySelectorsWithCallback_'),
-smalltalk.method({
-selector: unescape('allRubySelectorsWithCallback%3A'),
-category: 'interactions',
-fn: function (aBlock){
-var self=this;
-smalltalk.send(self, "_evaluateWithoutUpdate_language_with_withCallback_", [unescape("%7Cset%20hidden%7C%20set%20%3A%3D%20IdentitySet%20new.%20hidden%20%3A%3D%20IdentitySet%20new.%20self%20nonBridgeRubySelectorsInto%3A%20set%20hiddenInto%3A%20hidden%20protection%3A%20-1%20env%3A%201.%20set%20asArray"), "smalltalk", smalltalk.send(self, "_paramsAllElements", []), aBlock]);
-return self;},
-args: ["aBlock"],
-source: unescape('allRubySelectorsWithCallback%3A%20aBlock%0A%09self%20%0A%09%09evaluateWithoutUpdate%3A%20%27%7Cset%20hidden%7C%20set%20%3A%3D%20IdentitySet%20new.%20hidden%20%3A%3D%20IdentitySet%20new.%20self%20nonBridgeRubySelectorsInto%3A%20set%20hiddenInto%3A%20hidden%20protection%3A%20-1%20env%3A%201.%20set%20asArray%27%20%0A%09%09language%3A%20%27smalltalk%27%0A%09%09with%3A%20self%20paramsAllElements%20%0A%09%09withCallback%3A%20aBlock.'),
-messageSends: ["evaluateWithoutUpdate:language:with:withCallback:", "paramsAllElements"],
-referencedClasses: []
-}),
-smalltalk.MaglevClass);
-
-smalltalk.addMethod(
-unescape('_allSmalltalkSelectorsWithCallback_'),
-smalltalk.method({
-selector: unescape('allSmalltalkSelectorsWithCallback%3A'),
-category: 'interactions',
-fn: function (aBlock){
-var self=this;
-smalltalk.send(self, "_evaluateWithoutUpdate_language_with_withCallback_", [unescape("%7Cselectors%7C%20selectors%20%3A%3D%20RubyHash%20new.%20self%20categoryNames%20do%3A%20%5B%3Acategory%20%7C%20selectors%20at%3A%20category%20put%3A%20%28self%20selectorsIn%3A%20category%29%5D.%20selectors."), "smalltalk", smalltalk.send(self, "_paramsAllElements", []), aBlock]);
-return self;},
-args: ["aBlock"],
-source: unescape('allSmalltalkSelectorsWithCallback%3A%20aBlock%0A%09self%20%0A%09%09evaluateWithoutUpdate%3A%20%27%7Cselectors%7C%20selectors%20%3A%3D%20RubyHash%20new.%20self%20categoryNames%20do%3A%20%5B%3Acategory%20%7C%20selectors%20at%3A%20category%20put%3A%20%28self%20selectorsIn%3A%20category%29%5D.%20selectors.%27%20%0A%09%09language%3A%20%27smalltalk%27%0A%09%09with%3A%20self%20paramsAllElements%20%0A%09%09withCallback%3A%20aBlock.'),
-messageSends: ["evaluateWithoutUpdate:language:with:withCallback:", "paramsAllElements"],
-referencedClasses: []
-}),
-smalltalk.MaglevClass);
-
-smalltalk.addMethod(
 unescape('_parseJSON_'),
 smalltalk.method({
 selector: unescape('parseJSON%3A'),
@@ -1844,38 +1876,6 @@ args: ["obj"],
 source: unescape('parseJSON%3A%20obj%0A%09super%20parseJSON%3A%20obj.%0A%09superclassObject%20%3A%3D%20MaglevObject%20newObject%3A%20obj%20superclassObject.'),
 messageSends: ["parseJSON:", "newObject:", "superclassObject"],
 referencedClasses: ["MaglevObject"]
-}),
-smalltalk.MaglevClass);
-
-smalltalk.addMethod(
-unescape('_rubySourceCodeFor_withCallback_'),
-smalltalk.method({
-selector: unescape('rubySourceCodeFor%3AwithCallback%3A'),
-category: 'interactions',
-fn: function (aSelectorString, aBlock){
-var self=this;
-smalltalk.send(self, "_evaluateWithoutUpdate_language_with_withCallback_", [smalltalk.send(smalltalk.send(unescape("self%20rubyMethodFor%3A%20%27"), "__comma", [aSelectorString]), "__comma", [unescape("%27%20instanceMethod%3A%20true.")]), "smalltalk", smalltalk.send(self, "_paramsFullString", []), aBlock]);
-return self;},
-args: ["aSelectorString", "aBlock"],
-source: unescape('rubySourceCodeFor%3A%20aSelectorString%20withCallback%3A%20aBlock%0A%09self%20%0A%09%09evaluateWithoutUpdate%3A%20%27self%20rubyMethodFor%3A%20%27%27%27%2C%20aSelectorString%2C%20%27%27%27%20instanceMethod%3A%20true.%27%0A%09%09language%3A%20%27smalltalk%27%0A%09%09with%3A%20self%20paramsFullString%0A%09%09withCallback%3A%20aBlock.'),
-messageSends: ["evaluateWithoutUpdate:language:with:withCallback:", unescape("%2C"), "paramsFullString"],
-referencedClasses: []
-}),
-smalltalk.MaglevClass);
-
-smalltalk.addMethod(
-unescape('_smalltalkSourceCodeFor_withCallback_'),
-smalltalk.method({
-selector: unescape('smalltalkSourceCodeFor%3AwithCallback%3A'),
-category: 'interactions',
-fn: function (aSelectorString, aBlock){
-var self=this;
-smalltalk.send(self, "_evaluateWithoutUpdate_language_with_withCallback_", [smalltalk.send(smalltalk.send(unescape("self%20lookupSelector%3A%20%27"), "__comma", [aSelectorString]), "__comma", [unescape("%27.")]), "smalltalk", smalltalk.send(self, "_paramsFullString", []), aBlock]);
-return self;},
-args: ["aSelectorString", "aBlock"],
-source: unescape('smalltalkSourceCodeFor%3A%20aSelectorString%20withCallback%3A%20aBlock%0A%09self%20%0A%09%09evaluateWithoutUpdate%3A%20%27self%20lookupSelector%3A%20%27%27%27%2C%20aSelectorString%2C%20%27%27%27.%27%0A%09%09language%3A%20%27smalltalk%27%0A%09%09with%3A%20self%20paramsFullString%0A%09%09withCallback%3A%20aBlock.'),
-messageSends: ["evaluateWithoutUpdate:language:with:withCallback:", unescape("%2C"), "paramsFullString"],
-referencedClasses: []
 }),
 smalltalk.MaglevClass);
 
