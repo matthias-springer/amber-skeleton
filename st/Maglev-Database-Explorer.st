@@ -405,11 +405,18 @@ renderDraggableObjectOn: html
 !
 
 renderLoadedObjectOn: html
-	|text|
+	|text shorted|
+	shorted := false.
 	text := object inspection copyFrom: 1 to: self maxInspection.
 	text size < object inspection size 
-		ifTrue: [text := text, '...'].
-	html with: text.
+		ifTrue: [text := text, '...'. shorted := true].
+	html with: [|tooltip|
+		tooltip := html span
+			data: 'toggle' with: 'tooltip';
+			data: 'placement' with: 'top';
+			data: 'original-title' with: object inspection;
+			with: text.
+		shorted ifTrue: [tooltip asJQuery tooltip]].
 !
 
 renderObjectActionsOn: html
@@ -472,11 +479,18 @@ renderText: text withDropDownOn: html
 !
 
 renderUnloadedObjectOn: html
-	|text|
+	|text shorted|
+	shorted := false.
 	text := object inspection copyFrom: 1 to: self maxInspection.
 	text size < object inspection size 
-		ifTrue: [text := text, '...'].
-	html with: text.
+		ifTrue: [text := text, '...'. shorted := true].
+	html with: [|tooltip|
+		tooltip := html span
+			data: 'toggle' with: 'tooltip';
+			data: 'placement' with: 'top';
+			data: 'original-title' with: object inspection;
+			with: text.
+		shorted ifTrue: [tooltip asJQuery tooltip]].
 ! !
 
 !MaglevObjectInline class methodsFor: 'instance creation'!
@@ -1296,7 +1310,9 @@ renderMethodObject
 	envIdContainer asJQuery empty.
 	envIdContainer with: envId.
 	sourceLocationContainer empty.
-	sourceLocationContainer with: methodObject filename inspection.
+	envId = 1 
+		ifTrue: [sourceLocationContainer with: methodObject filename string]
+		ifFalse: [sourceLocationContainer with: 'n/a'].
 	envId = 0 
 		ifTrue: [stIcon show. rubyIcon hide].
 	envId = 1 
@@ -1379,9 +1395,9 @@ renderStatusBarOn: html
 						src: '/images/smalltalk.png';
 						class: 'icon-language';
 						hide.
-					envIdContainer := html span with: '?'].
+					envIdContainer := html span with: 'Environment ID'].
 				html td with: [
-					sourceLocationContainer := html span with: '?']]]].
+					sourceLocationContainer := html span with: 'Source location']]]].
 !
 
 sortList: aListBox
@@ -1397,6 +1413,11 @@ MaglevModuleWindow subclass: #MaglevClassWindow
 	package: 'Maglev-Database-Explorer'!
 
 !MaglevClassWindow methodsFor: 'rendering'!
+
+checkAddConnectionTo: aWindow
+	super checkAddConnectionTo: aWindow.
+	object superclassObject == aWindow object ifTrue: [self connectTo: aWindow as: #superclass with: nil].
+!
 
 renderWindowTitleContentOn: html
 	html 

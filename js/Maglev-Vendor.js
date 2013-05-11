@@ -49,7 +49,7 @@ smalltalk.MaglevAjax.klass);
 
 smalltalk.addClass('MaglevJsPlumb', smalltalk.Object, [], 'Maglev-Vendor');
 
-smalltalk.MaglevJsPlumb.klass.iVarNames = ['sourceTarget','defaults','referenceConnection','instanceOfConnection','connection'];
+smalltalk.MaglevJsPlumb.klass.iVarNames = ['sourceTarget','defaults','referenceConnection','instanceOfConnection','superclassConnection','connection'];
 smalltalk.addMethod(
 unescape('_connectWindow_to_as_with_'),
 smalltalk.method({
@@ -57,12 +57,13 @@ selector: unescape('connectWindow%3Ato%3Aas%3Awith%3A'),
 category: 'interactions',
 fn: function (sourceWindow, targetWindow, cType, caption){
 var self=this;
-var params=nil;
+try{var params=nil;
 var type=nil;
 var defParams=nil;
 var sourceEl=nil;
 var targetEl=nil;
 var text=nil;
+((($receiver = smalltalk.send(sourceWindow, "__eq", [targetWindow])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (function(){throw({name: 'stReturn', selector: '_connectWindow_to_as_with_', fn: function(){return self}})})();})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return (function(){throw({name: 'stReturn', selector: '_connectWindow_to_as_with_', fn: function(){return self}})})();})]));
 (type=smalltalk.send(smalltalk.send(self, "_connection", []), "_at_", [cType]));
 (sourceEl=smalltalk.send(smalltalk.send(sourceWindow, "_container", []), "_asJQuery", []));
 (targetEl=smalltalk.send(smalltalk.send(targetWindow, "_container", []), "_asJQuery", []));
@@ -73,10 +74,11 @@ var text=nil;
 	params.target = targetEl; 
 	params.overlays[1][1].label = text; ;
 smalltalk.send((typeof jsPlumb == 'undefined' ? nil : jsPlumb), "_connect_", [params]);
-return self;},
+return self;
+} catch(e) {if(e.name === 'stReturn' && e.selector === '_connectWindow_to_as_with_'){return e.fn()} throw(e)}},
 args: ["sourceWindow", "targetWindow", "cType", "caption"],
-source: unescape('connectWindow%3A%20sourceWindow%20to%3A%20targetWindow%20as%3A%20cType%20with%3A%20caption%0A%09%7Cparams%20type%20defParams%20sourceEl%20targetEl%20text%7C%0A%09type%20%3A%3D%20self%20connection%20at%3A%20cType.%0A%09sourceEl%20%3A%3D%20sourceWindow%20container%20asJQuery.%0A%09targetEl%20%3A%3D%20targetWindow%20container%20asJQuery.%0A%09caption%0A%09%09ifNil%3A%20%5Btext%20%3A%3D%20%27%27%5D%0A%09%09ifNotNil%3A%20%5Btext%20%3A%3D%20caption%20asString%5D.%0A%09text%20%3D%20%27%27%0A%09%09ifFalse%3A%20%5Btext%20%3A%3D%20%27%3Cspan%20class%3D%22component%20object-ivname-box%22%20style%3D%22white-space%3A%20nowrap%3B%22%3E%27%2C%20text%2C%20%27%3C/span%3E%27%5D.%0A%09%3C%20params%20%3D%20%24.extend%28true%2C%20%7B%7D%2C%20type%29%3B%20%0A%09params.source%20%3D%20sourceEl%3B%0A%09params.target%20%3D%20targetEl%3B%20%0A%09params.overlays%5B1%5D%5B1%5D.label%20%3D%20text%3B%20%3E.%0A%0A%09jsPlumb%20connect%3A%20params.'),
-messageSends: ["at:", "connection", "asJQuery", "container", "ifNil:ifNotNil:", "asString", "ifFalse:", unescape("%3D"), unescape("%2C"), "connect:"],
+source: unescape('connectWindow%3A%20sourceWindow%20to%3A%20targetWindow%20as%3A%20cType%20with%3A%20caption%0A%09%7Cparams%20type%20defParams%20sourceEl%20targetEl%20text%7C%0A%09sourceWindow%20%3D%20targetWindow%20ifTrue%3A%20%5B%5E%20self%5D.%0A%09type%20%3A%3D%20self%20connection%20at%3A%20cType.%0A%09sourceEl%20%3A%3D%20sourceWindow%20container%20asJQuery.%0A%09targetEl%20%3A%3D%20targetWindow%20container%20asJQuery.%0A%09caption%0A%09%09ifNil%3A%20%5Btext%20%3A%3D%20%27%27%5D%0A%09%09ifNotNil%3A%20%5Btext%20%3A%3D%20caption%20asString%5D.%0A%09text%20%3D%20%27%27%0A%09%09ifFalse%3A%20%5Btext%20%3A%3D%20%27%3Cspan%20class%3D%22component%20object-ivname-box%22%20style%3D%22white-space%3A%20nowrap%3B%22%3E%27%2C%20text%2C%20%27%3C/span%3E%27%5D.%0A%09%3C%20params%20%3D%20%24.extend%28true%2C%20%7B%7D%2C%20type%29%3B%20%0A%09params.source%20%3D%20sourceEl%3B%0A%09params.target%20%3D%20targetEl%3B%20%0A%09params.overlays%5B1%5D%5B1%5D.label%20%3D%20text%3B%20%3E.%0A%0A%09jsPlumb%20connect%3A%20params.'),
+messageSends: ["ifTrue:", unescape("%3D"), "at:", "connection", "asJQuery", "container", "ifNil:ifNotNil:", "asString", "ifFalse:", unescape("%2C"), "connect:"],
 referencedClasses: []
 }),
 smalltalk.MaglevJsPlumb.klass);
@@ -88,17 +90,19 @@ selector: unescape('connectWindow%3Ato%3Awith%3A'),
 category: 'interactions',
 fn: function (sourceWindow, targetWindow, parameters){
 var self=this;
-var params=nil;
+try{var params=nil;
 var type=nil;
 var defParams=nil;
+((($receiver = smalltalk.send(sourceWindow, "__eq", [targetWindow])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (function(){throw({name: 'stReturn', selector: '_connectWindow_to_with_', fn: function(){return self}})})();})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return (function(){throw({name: 'stReturn', selector: '_connectWindow_to_with_', fn: function(){return self}})})();})]));
 (type=smalltalk.send(smalltalk.send(self, "_connection", []), "_at_", [smalltalk.send(parameters, "_at_", [smalltalk.symbolFor("type")])]));
  params = $.extend(true, {}, defParams); ;
 (function($rec){smalltalk.send($rec, "_basicAt_put_", ["source", smalltalk.send(sourceWindow, "_container", [])]);return smalltalk.send($rec, "_basicAt_put_", ["target", smalltalk.send(targetWindow, "_container", [])]);})(params);
 smalltalk.send((typeof jsPlumb == 'undefined' ? nil : jsPlumb), "_connect_", [params]);
-return self;},
+return self;
+} catch(e) {if(e.name === 'stReturn' && e.selector === '_connectWindow_to_with_'){return e.fn()} throw(e)}},
 args: ["sourceWindow", "targetWindow", "parameters"],
-source: unescape('connectWindow%3A%20sourceWindow%20to%3A%20targetWindow%20with%3A%20parameters%0A%09%7Cparams%20type%20defParams%7C%0A%09type%20%3A%3D%20self%20connection%20at%3A%20%28parameters%20at%3A%20%23type%29.%0A%09%3C%20params%20%3D%20%24.extend%28true%2C%20%7B%7D%2C%20defParams%29%3B%20%3E.%0A%09params%0A%09%09basicAt%3A%20%27source%27%20put%3A%20sourceWindow%20container%3B%0A%09%09basicAt%3A%20%27target%27%20put%3A%20targetWindow%20container.%0A%0A%09jsPlumb%20connect%3A%20params.'),
-messageSends: ["at:", "connection", "basicAt:put:", "container", "connect:"],
+source: unescape('connectWindow%3A%20sourceWindow%20to%3A%20targetWindow%20with%3A%20parameters%0A%09%7Cparams%20type%20defParams%7C%0A%09sourceWindow%20%3D%20targetWindow%20ifTrue%3A%20%5B%5E%20self%5D.%0A%09type%20%3A%3D%20self%20connection%20at%3A%20%28parameters%20at%3A%20%23type%29.%0A%09%3C%20params%20%3D%20%24.extend%28true%2C%20%7B%7D%2C%20defParams%29%3B%20%3E.%0A%09params%0A%09%09basicAt%3A%20%27source%27%20put%3A%20sourceWindow%20container%3B%0A%09%09basicAt%3A%20%27target%27%20put%3A%20targetWindow%20container.%0A%0A%09jsPlumb%20connect%3A%20params.'),
+messageSends: ["ifTrue:", unescape("%3D"), "at:", "connection", "basicAt:put:", "container", "connect:"],
 referencedClasses: []
 }),
 smalltalk.MaglevJsPlumb.klass);
@@ -126,10 +130,10 @@ selector: unescape('constConnection'),
 category: 'constants',
 fn: function (){
 var self=this;
-return (function($rec){smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("iv"), self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("hashKey"), self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("hashValue"), self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("arrayElement"), self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("class"), self['@instanceOfConnection']]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []));
+return (function($rec){smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("iv"), self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("hashKey"), self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("hashValue"), self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("arrayElement"), self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("class"), self['@instanceOfConnection']]);smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("superclass"), self['@superclassConnection']]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []));
 return self;},
 args: [],
-source: unescape('constConnection%0A%09%5E%20Dictionary%20new%0A%09%09at%3A%20%23iv%20put%3A%20referenceConnection%3B%0A%09%09at%3A%20%23hashKey%20put%3A%20referenceConnection%3B%0A%09%09at%3A%20%23hashValue%20put%3A%20referenceConnection%3B%0A%09%09at%3A%20%23arrayElement%20put%3A%20referenceConnection%3B%0A%09%09at%3A%20%23class%20put%3A%20instanceOfConnection%3B%0A%09%09yourself'),
+source: unescape('constConnection%0A%09%5E%20Dictionary%20new%0A%09%09at%3A%20%23iv%20put%3A%20referenceConnection%3B%0A%09%09at%3A%20%23hashKey%20put%3A%20referenceConnection%3B%0A%09%09at%3A%20%23hashValue%20put%3A%20referenceConnection%3B%0A%09%09at%3A%20%23arrayElement%20put%3A%20referenceConnection%3B%0A%09%09at%3A%20%23class%20put%3A%20instanceOfConnection%3B%0A%09%09at%3A%20%23superclass%20put%3A%20superclassConnection%3B%0A%09%09yourself'),
 messageSends: ["at:put:", "yourself", "new"],
 referencedClasses: ["Dictionary"]
 }),
@@ -223,6 +227,29 @@ referencedClasses: []
 smalltalk.MaglevJsPlumb.klass);
 
 smalltalk.addMethod(
+unescape('_constSuperclassConnection'),
+smalltalk.method({
+selector: unescape('constSuperclassConnection'),
+category: 'constants',
+fn: function (){
+var self=this;
+ return {
+		overlays: ["PlainArrow", [
+			"Label",
+			{label: "?", location: 0.25, id: "myLabel"}]],
+		paintStyle: {
+			lineWidth: 2,
+			strokeStyle:"#346789",
+			joinstyle:"miter"}}; ;
+return self;},
+args: [],
+source: unescape('constSuperclassConnection%0A%09%3C%20return%20%7B%0A%09%09overlays%3A%20%5B%22PlainArrow%22%2C%20%5B%0A%09%09%09%22Label%22%2C%0A%09%09%09%7Blabel%3A%20%22%3F%22%2C%20location%3A%200.25%2C%20id%3A%20%22myLabel%22%7D%5D%5D%2C%0A%09%09paintStyle%3A%20%7B%0A%09%09%09lineWidth%3A%202%2C%0A%09%09%09strokeStyle%3A%22%23346789%22%2C%0A%09%09%09joinstyle%3A%22miter%22%7D%7D%3B%20%3E'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.MaglevJsPlumb.klass);
+
+smalltalk.addMethod(
 unescape('_defaults'),
 smalltalk.method({
 selector: unescape('defaults'),
@@ -247,11 +274,11 @@ fn: function (anObject){
 var self=this;
 var endpoints=nil;
 (endpoints=smalltalk.send((typeof jsPlumb == 'undefined' ? nil : jsPlumb), "_getEndpoints_", [anObject]));
-smalltalk.send(endpoints, "_do_", [(function(endpoint){return smalltalk.send((typeof jsPlumb == 'undefined' ? nil : jsPlumb), "_deleteEndpoint_", [endpoint]);})]);
+(($receiver = endpoints) != nil && $receiver != undefined) ? (function(){return smalltalk.send(endpoints, "_do_", [(function(endpoint){return smalltalk.send((typeof jsPlumb == 'undefined' ? nil : jsPlumb), "_deleteEndpoint_", [endpoint]);})]);})() : nil;
 return self;},
 args: ["anObject"],
-source: unescape('deleteEndpointsFor%3A%20anObject%0A%09%7Cendpoints%7C%0A%09endpoints%20%3A%3D%20jsPlumb%20getEndpoints%3A%20anObject.%0A%09endpoints%20do%3A%20%5B%3Aendpoint%20%7C%20jsPlumb%20deleteEndpoint%3A%20endpoint%5D.'),
-messageSends: ["getEndpoints:", "do:", "deleteEndpoint:"],
+source: unescape('deleteEndpointsFor%3A%20anObject%0A%09%7Cendpoints%7C%0A%09endpoints%20%3A%3D%20jsPlumb%20getEndpoints%3A%20anObject.%0A%09endpoints%20ifNotNil%3A%20%5Bendpoints%20do%3A%20%5B%3Aendpoint%20%7C%20jsPlumb%20deleteEndpoint%3A%20endpoint%5D%5D.'),
+messageSends: ["getEndpoints:", "ifNotNil:", "do:", "deleteEndpoint:"],
 referencedClasses: []
 }),
 smalltalk.MaglevJsPlumb.klass);
@@ -302,11 +329,12 @@ var self=this;
 (self['@defaults']=smalltalk.send(self, "_constDefaults", []));
 (self['@referenceConnection']=smalltalk.send(self, "_constReferenceConnection", []));
 (self['@instanceOfConnection']=smalltalk.send(self, "_constInstanceOfConnection", []));
+(self['@superclassConnection']=smalltalk.send(self, "_constSuperclassConnection", []));
 (self['@connection']=smalltalk.send(self, "_constConnection", []));
 return self;},
 args: [],
-source: unescape('initializeConstants%0A%09sourceTarget%20%3A%3D%20self%20constSourceTarget.%0A%09defaults%20%3A%3D%20self%20constDefaults.%0A%09referenceConnection%20%3A%3D%20self%20constReferenceConnection.%0A%09instanceOfConnection%20%3A%3D%20self%20constInstanceOfConnection.%0A%09connection%20%3A%3D%20self%20constConnection.'),
-messageSends: ["constSourceTarget", "constDefaults", "constReferenceConnection", "constInstanceOfConnection", "constConnection"],
+source: unescape('initializeConstants%0A%09sourceTarget%20%3A%3D%20self%20constSourceTarget.%0A%09defaults%20%3A%3D%20self%20constDefaults.%0A%09referenceConnection%20%3A%3D%20self%20constReferenceConnection.%0A%09instanceOfConnection%20%3A%3D%20self%20constInstanceOfConnection.%0A%09superclassConnection%20%3A%3D%20self%20constSuperclassConnection.%0A%09connection%20%3A%3D%20self%20constConnection.'),
+messageSends: ["constSourceTarget", "constDefaults", "constReferenceConnection", "constInstanceOfConnection", "constSuperclassConnection", "constConnection"],
 referencedClasses: []
 }),
 smalltalk.MaglevJsPlumb.klass);
