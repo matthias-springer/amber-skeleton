@@ -1583,6 +1583,34 @@ return self;}
 smalltalk.Number);
 
 smalltalk.addMethod(
+unescape('_bitAnd_'),
+smalltalk.method({
+selector: unescape('bitAnd%3A'),
+fn: function (anInteger){
+var self=this;
+ return self & anInteger; ;
+return self;}
+}),
+smalltalk.Number);
+
+smalltalk.addMethod(
+unescape('_bitShift_'),
+smalltalk.method({
+selector: unescape('bitShift%3A'),
+fn: function (anInteger){
+var self=this;
+ if (anInteger > 0) {
+		return self << anInteger;
+	}
+	else {
+		// bitshift might fail with big numbers
+		return bitShiftRight(self, -1 * anInteger);
+	} ;
+return self;}
+}),
+smalltalk.Number);
+
+smalltalk.addMethod(
 unescape('_ceiled'),
 smalltalk.method({
 selector: unescape('ceiled'),

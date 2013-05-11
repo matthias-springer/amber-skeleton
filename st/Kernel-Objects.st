@@ -757,6 +757,20 @@ identityHash
 	<return self % aNumber>
 !
 
+bitAnd: anInteger
+	< return self & anInteger; >
+!
+
+bitShift: anInteger
+	< if (anInteger >> 0) {
+		return self << anInteger;
+	}
+	else {
+		// bitshift might fail with big numbers
+		return bitShiftRight(self, -1 * anInteger);
+	} >
+!
+
 max: aNumber
 	<return Math.max(self, aNumber);>
 !

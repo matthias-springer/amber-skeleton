@@ -2268,6 +2268,44 @@ referencedClasses: ["Random"]
 smalltalk.Number);
 
 smalltalk.addMethod(
+unescape('_bitAnd_'),
+smalltalk.method({
+selector: unescape('bitAnd%3A'),
+category: 'arithmetic',
+fn: function (anInteger){
+var self=this;
+ return self & anInteger; ;
+return self;},
+args: ["anInteger"],
+source: unescape('bitAnd%3A%20anInteger%0A%09%3C%20return%20self%20%26%20anInteger%3B%20%3E'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.Number);
+
+smalltalk.addMethod(
+unescape('_bitShift_'),
+smalltalk.method({
+selector: unescape('bitShift%3A'),
+category: 'arithmetic',
+fn: function (anInteger){
+var self=this;
+ if (anInteger > 0) {
+		return self << anInteger;
+	}
+	else {
+		// bitshift might fail with big numbers
+		return bitShiftRight(self, -1 * anInteger);
+	} ;
+return self;},
+args: ["anInteger"],
+source: unescape('bitShift%3A%20anInteger%0A%09%3C%20if%20%28anInteger%20%3E%3E%200%29%20%7B%0A%09%09return%20self%20%3C%3C%20anInteger%3B%0A%09%7D%0A%09else%20%7B%0A%09%09//%20bitshift%20might%20fail%20with%20big%20numbers%0A%09%09return%20bitShiftRight%28self%2C%20-1%20*%20anInteger%29%3B%0A%09%7D%20%3E'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.Number);
+
+smalltalk.addMethod(
 unescape('_ceiled'),
 smalltalk.method({
 selector: unescape('ceiled'),

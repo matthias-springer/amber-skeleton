@@ -407,6 +407,24 @@ referencedClasses: []
 smalltalk.MaglevObject);
 
 smalltalk.addMethod(
+unescape('_instVarAt_'),
+smalltalk.method({
+selector: unescape('instVarAt%3A'),
+category: 'accessing',
+fn: function (aString){
+var self=this;
+try{smalltalk.send(self['@instVars'], "_keysAndValuesDo_", [(function(index, iv){return ((($receiver = smalltalk.send(smalltalk.send(smalltalk.send(iv, "_key", []), "_string", []), "__eq", [smalltalk.send(aString, "_asString", [])])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (function(){throw({name: 'stReturn', selector: '_instVarAt_', fn: function(){return smalltalk.send(iv, "_value", [])}})})();})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return (function(){throw({name: 'stReturn', selector: '_instVarAt_', fn: function(){return smalltalk.send(iv, "_value", [])}})})();})]));})]);
+smalltalk.send(self, "_error_", [smalltalk.send("instVar not found in forwarder object: ", "__comma", [aString])]);
+return self;
+} catch(e) {if(e.name === 'stReturn' && e.selector === '_instVarAt_'){return e.fn()} throw(e)}},
+args: ["aString"],
+source: unescape('instVarAt%3A%20aString%0A%09instVars%20keysAndValuesDo%3A%20%5B%3Aindex%20%3Aiv%20%7C%20%0A%09%09iv%20key%20string%20%3D%20aString%20asString%0A%09%09%09ifTrue%3A%20%5B%5E%20iv%20value%5D%5D.%0A%09self%20error%3A%20%27instVar%20not%20found%20in%20forwarder%20object%3A%20%27%2C%20aString.'),
+messageSends: ["keysAndValuesDo:", "ifTrue:", unescape("%3D"), "string", "key", "asString", "value", "error:", unescape("%2C")],
+referencedClasses: []
+}),
+smalltalk.MaglevObject);
+
+smalltalk.addMethod(
 unescape('_instVars'),
 smalltalk.method({
 selector: unescape('instVars'),
@@ -1058,6 +1076,22 @@ smalltalk.MaglevArray.klass);
 
 
 smalltalk.addClass('MaglevFixnum', smalltalk.MaglevObject, [], 'Maglev-Core');
+smalltalk.addMethod(
+unescape('_number'),
+smalltalk.method({
+selector: unescape('number'),
+category: 'accessing',
+fn: function (){
+var self=this;
+return smalltalk.send(self['@inspection'], "_asNumber", []);
+return self;},
+args: [],
+source: unescape('number%0A%09%5E%20inspection%20asNumber'),
+messageSends: ["asNumber"],
+referencedClasses: []
+}),
+smalltalk.MaglevFixnum);
+
 
 smalltalk.addMethod(
 unescape('_basetype'),
@@ -1109,6 +1143,22 @@ smalltalk.MaglevFixnum.klass);
 
 
 smalltalk.addClass('MaglevFloat', smalltalk.MaglevObject, [], 'Maglev-Core');
+smalltalk.addMethod(
+unescape('_number'),
+smalltalk.method({
+selector: unescape('number'),
+category: 'accessing',
+fn: function (){
+var self=this;
+return smalltalk.send(self['@inspection'], "_asNumber", []);
+return self;},
+args: [],
+source: unescape('number%0A%09%5E%20inspection%20asNumber'),
+messageSends: ["asNumber"],
+referencedClasses: []
+}),
+smalltalk.MaglevFloat);
+
 
 smalltalk.addMethod(
 unescape('_basetype'),
@@ -1157,6 +1207,169 @@ messageSends: [],
 referencedClasses: ["MaglevFloatWindow"]
 }),
 smalltalk.MaglevFloat.klass);
+
+
+smalltalk.addClass('MaglevGsNMethod', smalltalk.MaglevObject, [], 'Maglev-Core');
+smalltalk.addMethod(
+unescape('_debugInfo'),
+smalltalk.method({
+selector: unescape('debugInfo'),
+category: 'accessing',
+fn: function (){
+var self=this;
+return smalltalk.send(self, "_instVarAt_", [unescape("@_st_debugInfo")]);
+return self;},
+args: [],
+source: unescape('debugInfo%0A%09%5E%20self%20instVarAt%3A%20%27@_st_debugInfo%27'),
+messageSends: ["instVarAt:"],
+referencedClasses: []
+}),
+smalltalk.MaglevGsNMethod);
+
+smalltalk.addMethod(
+unescape('_debugInfoFileNameOffset'),
+smalltalk.method({
+selector: unescape('debugInfoFileNameOffset'),
+category: 'constants',
+fn: function (){
+var self=this;
+return (4);
+return self;},
+args: [],
+source: unescape('debugInfoFileNameOffset%0A%09%5E%204'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.MaglevGsNMethod);
+
+smalltalk.addMethod(
+unescape('_debugInfoSourceOffset'),
+smalltalk.method({
+selector: unescape('debugInfoSourceOffset'),
+category: 'constants',
+fn: function (){
+var self=this;
+return (2);
+return self;},
+args: [],
+source: unescape('debugInfoSourceOffset%0A%09%5E%202'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.MaglevGsNMethod);
+
+smalltalk.addMethod(
+unescape('_environmentId'),
+smalltalk.method({
+selector: unescape('environmentId'),
+category: 'accessing',
+fn: function (){
+var self=this;
+return smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(self, "_selector", []), "_number", []), "_bitShift_", [(0) - smalltalk.send(self, "_siSelectorIdEnvShift", [])]), "_bitAnd_", [smalltalk.send(self, "_selectorIdEnvMask", [])]);
+return self;},
+args: [],
+source: unescape('environmentId%0A%09%5E%20%28self%20selector%20number%20bitShift%3A%200%20-%20self%20siSelectorIdEnvShift%29%20bitAnd%3A%20self%20selectorIdEnvMask'),
+messageSends: ["bitAnd:", "bitShift:", "number", "selector", unescape("-"), "siSelectorIdEnvShift", "selectorIdEnvMask"],
+referencedClasses: []
+}),
+smalltalk.MaglevGsNMethod);
+
+smalltalk.addMethod(
+unescape('_filename'),
+smalltalk.method({
+selector: unescape('filename'),
+category: 'accessing',
+fn: function (){
+var self=this;
+return smalltalk.send(smalltalk.send(self, "_debugInfo", []), "_at_", [smalltalk.send(self, "_debugInfoFileNameOffset", [])]);
+return self;},
+args: [],
+source: unescape('filename%0A%09%5E%20self%20debugInfo%20at%3A%20self%20debugInfoFileNameOffset'),
+messageSends: ["at:", "debugInfo", "debugInfoFileNameOffset"],
+referencedClasses: []
+}),
+smalltalk.MaglevGsNMethod);
+
+smalltalk.addMethod(
+unescape('_selector'),
+smalltalk.method({
+selector: unescape('selector'),
+category: 'accessing',
+fn: function (){
+var self=this;
+return smalltalk.send(self, "_instVarAt_", [unescape("@_st_selector")]);
+return self;},
+args: [],
+source: unescape('selector%0A%09%5E%20self%20instVarAt%3A%20%27@_st_selector%27'),
+messageSends: ["instVarAt:"],
+referencedClasses: []
+}),
+smalltalk.MaglevGsNMethod);
+
+smalltalk.addMethod(
+unescape('_selectorIdEnvMask'),
+smalltalk.method({
+selector: unescape('selectorIdEnvMask'),
+category: 'constants',
+fn: function (){
+var self=this;
+return (255);
+return self;},
+args: [],
+source: unescape('selectorIdEnvMask%0A%09%5E%20255'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.MaglevGsNMethod);
+
+smalltalk.addMethod(
+unescape('_siSelectorIdEnvShift'),
+smalltalk.method({
+selector: unescape('siSelectorIdEnvShift'),
+category: 'constants',
+fn: function (){
+var self=this;
+return (53);
+return self;},
+args: [],
+source: unescape('siSelectorIdEnvShift%0A%09%5E%2053'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.MaglevGsNMethod);
+
+smalltalk.addMethod(
+unescape('_sourceString'),
+smalltalk.method({
+selector: unescape('sourceString'),
+category: 'accessing',
+fn: function (){
+var self=this;
+return smalltalk.send(smalltalk.send(smalltalk.send(self, "_debugInfo", []), "_at_", [smalltalk.send(self, "_debugInfoSourceOffset", [])]), "_string", []);
+return self;},
+args: [],
+source: unescape('sourceString%0A%09%5E%20%28self%20debugInfo%20at%3A%20self%20debugInfoSourceOffset%29%20string'),
+messageSends: ["string", "at:", "debugInfo", "debugInfoSourceOffset"],
+referencedClasses: []
+}),
+smalltalk.MaglevGsNMethod);
+
+
+smalltalk.addMethod(
+unescape('_basetype'),
+smalltalk.method({
+selector: unescape('basetype'),
+category: 'constants',
+fn: function (){
+var self=this;
+return smalltalk.symbolFor("gsnmethod");
+return self;},
+args: [],
+source: unescape('basetype%0A%09%5E%20%23gsnmethod'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.MaglevGsNMethod.klass);
 
 
 smalltalk.addClass('MaglevHash', smalltalk.MaglevObject, ['elements', 'elementsSize'], 'Maglev-Core');
@@ -1641,10 +1854,10 @@ selector: unescape('rubySourceCodeFor%3AwithCallback%3A'),
 category: 'interactions',
 fn: function (aSelectorString, aBlock){
 var self=this;
-smalltalk.send(self, "_evaluateWithoutUpdate_language_with_withCallback_", [smalltalk.send(smalltalk.send(unescape("%28self%20rubyMethodFor%3A%20%27"), "__comma", [aSelectorString]), "__comma", [unescape("%27%20instanceMethod%3A%20true%29%20fullSource.")]), "smalltalk", smalltalk.send(self, "_paramsFullString", []), aBlock]);
+smalltalk.send(self, "_evaluateWithoutUpdate_language_with_withCallback_", [smalltalk.send(smalltalk.send(unescape("self%20rubyMethodFor%3A%20%27"), "__comma", [aSelectorString]), "__comma", [unescape("%27%20instanceMethod%3A%20true.")]), "smalltalk", smalltalk.send(self, "_paramsFullString", []), aBlock]);
 return self;},
 args: ["aSelectorString", "aBlock"],
-source: unescape('rubySourceCodeFor%3A%20aSelectorString%20withCallback%3A%20aBlock%0A%09self%20%0A%09%09evaluateWithoutUpdate%3A%20%27%28self%20rubyMethodFor%3A%20%27%27%27%2C%20aSelectorString%2C%20%27%27%27%20instanceMethod%3A%20true%29%20fullSource.%27%0A%09%09language%3A%20%27smalltalk%27%0A%09%09with%3A%20self%20paramsFullString%0A%09%09withCallback%3A%20aBlock.'),
+source: unescape('rubySourceCodeFor%3A%20aSelectorString%20withCallback%3A%20aBlock%0A%09self%20%0A%09%09evaluateWithoutUpdate%3A%20%27self%20rubyMethodFor%3A%20%27%27%27%2C%20aSelectorString%2C%20%27%27%27%20instanceMethod%3A%20true.%27%0A%09%09language%3A%20%27smalltalk%27%0A%09%09with%3A%20self%20paramsFullString%0A%09%09withCallback%3A%20aBlock.'),
 messageSends: ["evaluateWithoutUpdate:language:with:withCallback:", unescape("%2C"), "paramsFullString"],
 referencedClasses: []
 }),
@@ -1657,10 +1870,10 @@ selector: unescape('smalltalkSourceCodeFor%3AwithCallback%3A'),
 category: 'interactions',
 fn: function (aSelectorString, aBlock){
 var self=this;
-smalltalk.send(self, "_evaluateWithoutUpdate_language_with_withCallback_", [smalltalk.send(smalltalk.send(unescape("self%20sourceCodeAt%3A%20%27"), "__comma", [aSelectorString]), "__comma", [unescape("%27.")]), "smalltalk", smalltalk.send(self, "_paramsFullString", []), aBlock]);
+smalltalk.send(self, "_evaluateWithoutUpdate_language_with_withCallback_", [smalltalk.send(smalltalk.send(unescape("self%20lookupSelector%3A%20%27"), "__comma", [aSelectorString]), "__comma", [unescape("%27.")]), "smalltalk", smalltalk.send(self, "_paramsFullString", []), aBlock]);
 return self;},
 args: ["aSelectorString", "aBlock"],
-source: unescape('smalltalkSourceCodeFor%3A%20aSelectorString%20withCallback%3A%20aBlock%0A%09self%20%0A%09%09evaluateWithoutUpdate%3A%20%27self%20sourceCodeAt%3A%20%27%27%27%2C%20aSelectorString%2C%20%27%27%27.%27%0A%09%09language%3A%20%27smalltalk%27%0A%09%09with%3A%20self%20paramsFullString%0A%09%09withCallback%3A%20aBlock.'),
+source: unescape('smalltalkSourceCodeFor%3A%20aSelectorString%20withCallback%3A%20aBlock%0A%09self%20%0A%09%09evaluateWithoutUpdate%3A%20%27self%20lookupSelector%3A%20%27%27%27%2C%20aSelectorString%2C%20%27%27%27.%27%0A%09%09language%3A%20%27smalltalk%27%0A%09%09with%3A%20self%20paramsFullString%0A%09%09withCallback%3A%20aBlock.'),
 messageSends: ["evaluateWithoutUpdate:language:with:withCallback:", unescape("%2C"), "paramsFullString"],
 referencedClasses: []
 }),

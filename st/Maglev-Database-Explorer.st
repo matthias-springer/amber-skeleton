@@ -1195,7 +1195,7 @@ renderIncludedModulesOn: html
 ! !
 
 MaglevModuleWindow subclass: #MaglevClassWindow
-	instanceVariableNames: 'categoryNamesSelect selectorsSelect selectors rubySelectors editorContainer editor waitingScreen errorBox'
+	instanceVariableNames: 'categoryNamesSelect selectorsSelect selectors rubySelectors editorContainer editor waitingScreen errorBox envIdContainer rubyIcon stIcon sourceLocationContainer methodObject'
 	package: 'Maglev-Database-Explorer'!
 
 !MaglevClassWindow methodsFor: 'initializing'!
@@ -1284,6 +1284,7 @@ renderCodeTabOn: html
 		class: 'alert alert-error';
 		style: 'margin-bottom: 0px;';
 		hide.
+	self renderStatusBarOn: html.
 	self object allSmalltalkSelectorsWithCallback: [:success :obj |
 		selectors := obj.
 		self object allRubySelectorsWithCallback: [:rSuccess :rObj |
@@ -1291,18 +1292,37 @@ renderCodeTabOn: html
 			self renderSelectorCategories.
 			self renderSelectors.
 			self initializeEditor.
+			selectorsSelect onChange: [self renderSourceCode].
+			categoryNamesSelect onChange: [self renderSelectors].
 			waitingScreen hide.
 			categoryNamesSelect show.
 			selectorsSelect show]].
+!
+
+renderMethodObject
+	|envId|
+	editor setValue: methodObject sourceString pos: -1.
+	editorContainer show.
+	waitingScreen hide.
+	envId := methodObject environmentId.
+	envIdContainer asJQuery empty.
+	envIdContainer with: envId.
+	sourceLocationContainer empty.
+	sourceLocationContainer with: methodObject filename inspection.
+	envId = 0 
+		ifTrue: [stIcon show. rubyIcon hide].
+	envId = 1 
+		ifTrue: [stIcon hide. rubyIcon show].
+	envId > 1
+		ifTrue: [stIcon hide. rubyIcon hide].
 !
 
 renderRubySourceCodeFor: selectorString
 	object 
 		rubySourceCodeFor: selectorString 
 		withCallback: [:success :obj |
-			editor setValue: obj string pos: -1.
-			editorContainer show.
-			waitingScreen hide].
+			methodObject := obj.
+			self renderMethodObject].
 !
 
 renderSelectorCategories
@@ -1316,7 +1336,6 @@ renderSelectorCategories
 			with: [html option
 				with: category string]].
 	categoryNamesSelect asJQuery val: '(all Smalltalk)'.
-	categoryNamesSelect onChange: [self renderSelectors].
 	self sortList: categoryNamesSelect.
 !
 
@@ -1336,16 +1355,14 @@ renderSelectors
 			with: [html option
 				with: catSelectors string]].
 	self sortList: selectorsSelect.
-	selectorsSelect onChange: [self renderSourceCode].
 !
 
 renderSmalltalkSourceCodeFor: selectorString
 	object 
 		smalltalkSourceCodeFor: selectorString 
 		withCallback: [:success :obj |
-			editor setValue: obj string pos: -1.
-			editorContainer show.
-			waitingScreen hide].
+			methodObject := obj.
+			self renderMethodObject].
 !
 
 renderSourceCode
@@ -1357,6 +1374,26 @@ renderSourceCode
 	selectedCategory = '(all Ruby)'
 		ifTrue: [self renderRubySourceCodeFor: selectorString]
 		ifFalse: [self renderSmalltalkSourceCodeFor: selectorString].
+!
+
+renderStatusBarOn: html
+	html table
+		class: 'table-bordered';
+		style: 'margin-top: 5px;';
+		with: [html tbody with: [
+			html tr with: [
+				html td with: [
+					rubyIcon := html img
+						src: '/images/ruby.png';
+						class: 'icon-language';
+						hide.
+					stIcon := html img
+						src: '/images/smalltalk.png';
+						class: 'icon-language';
+						hide.
+					envIdContainer := html span with: '?'].
+				html td with: [
+					sourceLocationContainer := html span with: '?']]]].
 !
 
 renderWindowTitleContentOn: html

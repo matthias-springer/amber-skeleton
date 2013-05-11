@@ -85,6 +85,13 @@ inspection
 	^ inspection
 !
 
+instVarAt: aString
+	instVars keysAndValuesDo: [:index :iv | 
+		iv key string = aString asString
+			ifTrue: [^ iv value]].
+	self error: 'instVar not found in forwarder object: ', aString.
+!
+
 instVars
 	^ instVars
 !
@@ -439,6 +446,12 @@ MaglevObject subclass: #MaglevFixnum
 	instanceVariableNames: ''
 	package: 'Maglev-Core'!
 
+!MaglevFixnum methodsFor: 'accessing'!
+
+number
+	^ inspection asNumber
+! !
+
 !MaglevFixnum class methodsFor: 'constants'!
 
 basetype
@@ -457,6 +470,12 @@ MaglevObject subclass: #MaglevFloat
 	instanceVariableNames: ''
 	package: 'Maglev-Core'!
 
+!MaglevFloat methodsFor: 'accessing'!
+
+number
+	^ inspection asNumber
+! !
+
 !MaglevFloat class methodsFor: 'constants'!
 
 basetype
@@ -469,6 +488,56 @@ inlineViewClass
 
 windowViewClass
 	^ MaglevFloatWindow
+! !
+
+MaglevObject subclass: #MaglevGsNMethod
+	instanceVariableNames: ''
+	package: 'Maglev-Core'!
+
+!MaglevGsNMethod methodsFor: 'accessing'!
+
+debugInfo
+	^ self instVarAt: '@_st_debugInfo'
+!
+
+environmentId
+	^ (self selector number bitShift: 0 - self siSelectorIdEnvShift) bitAnd: self selectorIdEnvMask
+!
+
+filename
+	^ self debugInfo at: self debugInfoFileNameOffset
+!
+
+selector
+	^ self instVarAt: '@_st_selector'
+!
+
+sourceString
+	^ (self debugInfo at: self debugInfoSourceOffset) string
+! !
+
+!MaglevGsNMethod methodsFor: 'constants'!
+
+debugInfoFileNameOffset
+	^ 4
+!
+
+debugInfoSourceOffset
+	^ 2
+!
+
+selectorIdEnvMask
+	^ 255
+!
+
+siSelectorIdEnvShift
+	^ 53
+! !
+
+!MaglevGsNMethod class methodsFor: 'constants'!
+
+basetype
+	^ #gsnmethod
 ! !
 
 MaglevObject subclass: #MaglevHash
@@ -664,7 +733,7 @@ allSmalltalkSelectorsWithCallback: aBlock
 
 rubySourceCodeFor: aSelectorString withCallback: aBlock
 	self 
-		evaluateWithoutUpdate: '(self rubyMethodFor: ''', aSelectorString, ''' instanceMethod: true) fullSource.'
+		evaluateWithoutUpdate: 'self rubyMethodFor: ''', aSelectorString, ''' instanceMethod: true.'
 		language: 'smalltalk'
 		with: self paramsFullString
 		withCallback: aBlock.
@@ -672,7 +741,7 @@ rubySourceCodeFor: aSelectorString withCallback: aBlock
 
 smalltalkSourceCodeFor: aSelectorString withCallback: aBlock
 	self 
-		evaluateWithoutUpdate: 'self sourceCodeAt: ''', aSelectorString, '''.'
+		evaluateWithoutUpdate: 'self lookupSelector: ''', aSelectorString, '''.'
 		language: 'smalltalk'
 		with: self paramsFullString
 		withCallback: aBlock.
