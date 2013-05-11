@@ -1070,8 +1070,10 @@ showTab: caption
 checkAddConnectionTo: aWindow
 	object instVarsDo: [:ivName :ivValue |
 		ivValue == aWindow object ifTrue: [self connectTo: aWindow as: #iv with: ivName inspection]].
-	object classObject == aWindow object 
+	(object classObject == aWindow object and: [object virtualClassObject ~~ aWindow object]) 
 		ifTrue: [self connectTo: aWindow as: #class with: nil].
+	object virtualClassObject == aWindow object 
+		ifTrue: [self connectTo: aWindow as: #virtualClass with: nil].
 !
 
 contentTabs
@@ -1084,6 +1086,16 @@ contentTabs
 
 renderInstanceVariablesOn: html
 	html with: (MaglevTable newAssociationDictFor: self object with: #instVars).
+!
+
+renderVirtualClassAndClassOn: html
+	classObject = object virtualClassObject ifFalse: [
+		html
+			with: ' : ';
+			with: object virtualClassObject inlineViewComponent].
+	html 
+		with: ' :: ';
+		with: classObject inlineViewComponent.
 !
 
 renderWindowContentOn: html
@@ -1112,9 +1124,7 @@ renderWindowTitleContentOn: html
 	html div
 		class: 'right-inline-block';
 		with: [
-			html 
-				with: ' : ';
-				with: classObject inlineViewComponent.
+			self renderVirtualClassAndClassOn: html.
 			self renderCloseButtonOn: html].
 ! !
 
@@ -1428,9 +1438,7 @@ renderWindowTitleContentOn: html
 	html div
 		class: 'right-inline-block';
 		with: [
-			html 
-				with: ' : ';
-				with: classObject inlineViewComponent.
+			self renderVirtualClassAndClassOn: html.
 			self renderCloseButtonOn: html].
 ! !
 

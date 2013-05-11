@@ -49,7 +49,7 @@ smalltalk.MaglevAjax.klass);
 
 smalltalk.addClass('MaglevJsPlumb', smalltalk.Object, [], 'Maglev-Vendor');
 
-smalltalk.MaglevJsPlumb.klass.iVarNames = ['sourceTarget','defaults','referenceConnection','instanceOfConnection','superclassConnection','connection'];
+smalltalk.MaglevJsPlumb.klass.iVarNames = ['sourceTarget','defaults','referenceConnection','instanceOfConnection','virtualClassConnection','superclassConnection','connection'];
 smalltalk.addMethod(
 unescape('_connectWindow_to_as_with_'),
 smalltalk.method({
@@ -130,10 +130,10 @@ selector: unescape('constConnection'),
 category: 'constants',
 fn: function (){
 var self=this;
-return (function($rec){smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("iv"), self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("hashKey"), self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("hashValue"), self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("arrayElement"), self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("class"), self['@instanceOfConnection']]);smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("superclass"), self['@superclassConnection']]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []));
+return (function($rec){smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("iv"), self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("hashKey"), self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("hashValue"), self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("arrayElement"), self['@referenceConnection']]);smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("class"), self['@instanceOfConnection']]);smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("virtualClass"), self['@virtualClassConnection']]);smalltalk.send($rec, "_at_put_", [smalltalk.symbolFor("superclass"), self['@superclassConnection']]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []));
 return self;},
 args: [],
-source: unescape('constConnection%0A%09%5E%20Dictionary%20new%0A%09%09at%3A%20%23iv%20put%3A%20referenceConnection%3B%0A%09%09at%3A%20%23hashKey%20put%3A%20referenceConnection%3B%0A%09%09at%3A%20%23hashValue%20put%3A%20referenceConnection%3B%0A%09%09at%3A%20%23arrayElement%20put%3A%20referenceConnection%3B%0A%09%09at%3A%20%23class%20put%3A%20instanceOfConnection%3B%0A%09%09at%3A%20%23superclass%20put%3A%20superclassConnection%3B%0A%09%09yourself'),
+source: unescape('constConnection%0A%09%5E%20Dictionary%20new%0A%09%09at%3A%20%23iv%20put%3A%20referenceConnection%3B%0A%09%09at%3A%20%23hashKey%20put%3A%20referenceConnection%3B%0A%09%09at%3A%20%23hashValue%20put%3A%20referenceConnection%3B%0A%09%09at%3A%20%23arrayElement%20put%3A%20referenceConnection%3B%0A%09%09at%3A%20%23class%20put%3A%20instanceOfConnection%3B%0A%09%09at%3A%20%23virtualClass%20put%3A%20virtualClassConnection%3B%0A%09%09at%3A%20%23superclass%20put%3A%20superclassConnection%3B%0A%09%09yourself'),
 messageSends: ["at:put:", "yourself", "new"],
 referencedClasses: ["Dictionary"]
 }),
@@ -250,6 +250,30 @@ referencedClasses: []
 smalltalk.MaglevJsPlumb.klass);
 
 smalltalk.addMethod(
+unescape('_constVirtualClassConnection'),
+smalltalk.method({
+selector: unescape('constVirtualClassConnection'),
+category: 'constants',
+fn: function (){
+var self=this;
+ return {
+		overlays: ["Arrow", [
+			"Label",
+			{label: "?", location: 0.25, id: "myLabel"}]],
+		paintStyle: {
+			lineWidth: 2,
+			strokeStyle:"#c50b0b",
+			dashstyle:"4 2",
+			joinstyle:"miter"}}; ;
+return self;},
+args: [],
+source: unescape('constVirtualClassConnection%0A%09%3C%20return%20%7B%0A%09%09overlays%3A%20%5B%22Arrow%22%2C%20%5B%0A%09%09%09%22Label%22%2C%0A%09%09%09%7Blabel%3A%20%22%3F%22%2C%20location%3A%200.25%2C%20id%3A%20%22myLabel%22%7D%5D%5D%2C%0A%09%09paintStyle%3A%20%7B%0A%09%09%09lineWidth%3A%202%2C%0A%09%09%09strokeStyle%3A%22%23c50b0b%22%2C%0A%09%09%09dashstyle%3A%224%202%22%2C%0A%09%09%09joinstyle%3A%22miter%22%7D%7D%3B%20%3E'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.MaglevJsPlumb.klass);
+
+smalltalk.addMethod(
 unescape('_defaults'),
 smalltalk.method({
 selector: unescape('defaults'),
@@ -329,12 +353,13 @@ var self=this;
 (self['@defaults']=smalltalk.send(self, "_constDefaults", []));
 (self['@referenceConnection']=smalltalk.send(self, "_constReferenceConnection", []));
 (self['@instanceOfConnection']=smalltalk.send(self, "_constInstanceOfConnection", []));
+(self['@virtualClassConnection']=smalltalk.send(self, "_constVirtualClassConnection", []));
 (self['@superclassConnection']=smalltalk.send(self, "_constSuperclassConnection", []));
 (self['@connection']=smalltalk.send(self, "_constConnection", []));
 return self;},
 args: [],
-source: unescape('initializeConstants%0A%09sourceTarget%20%3A%3D%20self%20constSourceTarget.%0A%09defaults%20%3A%3D%20self%20constDefaults.%0A%09referenceConnection%20%3A%3D%20self%20constReferenceConnection.%0A%09instanceOfConnection%20%3A%3D%20self%20constInstanceOfConnection.%0A%09superclassConnection%20%3A%3D%20self%20constSuperclassConnection.%0A%09connection%20%3A%3D%20self%20constConnection.'),
-messageSends: ["constSourceTarget", "constDefaults", "constReferenceConnection", "constInstanceOfConnection", "constSuperclassConnection", "constConnection"],
+source: unescape('initializeConstants%0A%09sourceTarget%20%3A%3D%20self%20constSourceTarget.%0A%09defaults%20%3A%3D%20self%20constDefaults.%0A%09referenceConnection%20%3A%3D%20self%20constReferenceConnection.%0A%09instanceOfConnection%20%3A%3D%20self%20constInstanceOfConnection.%0A%09virtualClassConnection%20%3A%3D%20self%20constVirtualClassConnection.%0A%09superclassConnection%20%3A%3D%20self%20constSuperclassConnection.%0A%09connection%20%3A%3D%20self%20constConnection.'),
+messageSends: ["constSourceTarget", "constDefaults", "constReferenceConnection", "constInstanceOfConnection", "constVirtualClassConnection", "constSuperclassConnection", "constConnection"],
 referencedClasses: []
 }),
 smalltalk.MaglevJsPlumb.klass);
@@ -416,6 +441,22 @@ return self['@sourceTarget'];
 return self;},
 args: [],
 source: unescape('sourceTarget%0A%09%5E%20sourceTarget'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.MaglevJsPlumb.klass);
+
+smalltalk.addMethod(
+unescape('_virtualClassConnection'),
+smalltalk.method({
+selector: unescape('virtualClassConnection'),
+category: 'accessing',
+fn: function (){
+var self=this;
+return self['@virtualClassConnection'];
+return self;},
+args: [],
+source: unescape('virtualClassConnection%0A%09%5E%20virtualClassConnection'),
 messageSends: [],
 referencedClasses: []
 }),

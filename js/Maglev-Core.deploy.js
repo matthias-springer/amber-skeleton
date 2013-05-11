@@ -115,7 +115,7 @@ return self;}
 smalltalk.Maglev.klass);
 
 
-smalltalk.addClass('MaglevObject', smalltalk.Object, ['oop', 'instVars', 'instVarsSize', 'classObject', 'inspection', 'isLoaded', 'isException', 'windows'], 'Maglev-Core');
+smalltalk.addClass('MaglevObject', smalltalk.Object, ['oop', 'instVars', 'instVarsSize', 'virtualClassObject', 'classObject', 'inspection', 'isLoaded', 'isException', 'windows'], 'Maglev-Core');
 smalltalk.addMethod(
 unescape('__eq'),
 smalltalk.method({
@@ -418,6 +418,7 @@ var self=this;
 (self['@oop']=smalltalk.send(obj, "_oop", []));
 (self['@isException']=smalltalk.send(obj, "_exception", []));
 (self['@classObject']=smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObject_", [smalltalk.send(obj, "_classObject", [])]));
+(self['@virtualClassObject']=smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObject_", [smalltalk.send(obj, "_virtualClassObject", [])]));
 (self['@inspection']=smalltalk.send(obj, "_inspection", []));
 (self['@instVarsSize']=smalltalk.send(obj, "_instVarsSize", []));
 smalltalk.send(smalltalk.send(obj, "_instVars", []), "_keysAndValuesDo_", [(function(index, assoc){var key=nil;
@@ -462,6 +463,17 @@ var self=this;
 try{((($receiver = ((($receiver = smalltalk.send(self['@inspection'], "_size", [])).klass === smalltalk.Number) ? $receiver >(10) : smalltalk.send($receiver, "__gt", [(10)]))).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (function(){throw({name: 'stReturn', selector: '_shortInspection', fn: function(){return smalltalk.send(smalltalk.send(self['@inspection'], "_copyFrom_to_", [(1), (10)]), "__comma", ["..."])}})})();})() : (function(){return (function(){throw({name: 'stReturn', selector: '_shortInspection', fn: function(){return self['@inspection']}})})();})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return (function(){throw({name: 'stReturn', selector: '_shortInspection', fn: function(){return smalltalk.send(smalltalk.send(self['@inspection'], "_copyFrom_to_", [(1), (10)]), "__comma", ["..."])}})})();}), (function(){return (function(){throw({name: 'stReturn', selector: '_shortInspection', fn: function(){return self['@inspection']}})})();})]));
 return self;
 } catch(e) {if(e.name === 'stReturn' && e.selector === '_shortInspection'){return e.fn()} throw(e)}}
+}),
+smalltalk.MaglevObject);
+
+smalltalk.addMethod(
+unescape('_virtualClassObject'),
+smalltalk.method({
+selector: unescape('virtualClassObject'),
+fn: function (){
+var self=this;
+return self['@virtualClassObject'];
+return self;}
 }),
 smalltalk.MaglevObject);
 

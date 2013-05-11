@@ -2174,11 +2174,12 @@ category: 'rendering',
 fn: function (aWindow){
 var self=this;
 smalltalk.send(self['@object'], "_instVarsDo_", [(function(ivName, ivValue){return ((($receiver = smalltalk.send(ivValue, "__eq_eq", [smalltalk.send(aWindow, "_object", [])])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self, "_connectTo_as_with_", [aWindow, smalltalk.symbolFor("iv"), smalltalk.send(ivName, "_inspection", [])]);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(self, "_connectTo_as_with_", [aWindow, smalltalk.symbolFor("iv"), smalltalk.send(ivName, "_inspection", [])]);})]));})]);
-((($receiver = smalltalk.send(smalltalk.send(self['@object'], "_classObject", []), "__eq_eq", [smalltalk.send(aWindow, "_object", [])])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self, "_connectTo_as_with_", [aWindow, smalltalk.symbolFor("class"), nil]);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(self, "_connectTo_as_with_", [aWindow, smalltalk.symbolFor("class"), nil]);})]));
+((($receiver = smalltalk.send(smalltalk.send(smalltalk.send(self['@object'], "_classObject", []), "__eq_eq", [smalltalk.send(aWindow, "_object", [])]), "_and_", [(function(){return smalltalk.send(smalltalk.send(self['@object'], "_virtualClassObject", []), "_~~", [smalltalk.send(aWindow, "_object", [])]);})])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self, "_connectTo_as_with_", [aWindow, smalltalk.symbolFor("class"), nil]);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(self, "_connectTo_as_with_", [aWindow, smalltalk.symbolFor("class"), nil]);})]));
+((($receiver = smalltalk.send(smalltalk.send(self['@object'], "_virtualClassObject", []), "__eq_eq", [smalltalk.send(aWindow, "_object", [])])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self, "_connectTo_as_with_", [aWindow, smalltalk.symbolFor("virtualClass"), nil]);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(self, "_connectTo_as_with_", [aWindow, smalltalk.symbolFor("virtualClass"), nil]);})]));
 return self;},
 args: ["aWindow"],
-source: unescape('checkAddConnectionTo%3A%20aWindow%0A%09object%20instVarsDo%3A%20%5B%3AivName%20%3AivValue%20%7C%0A%09%09ivValue%20%3D%3D%20aWindow%20object%20ifTrue%3A%20%5Bself%20connectTo%3A%20aWindow%20as%3A%20%23iv%20with%3A%20ivName%20inspection%5D%5D.%0A%09object%20classObject%20%3D%3D%20aWindow%20object%20%0A%09%09ifTrue%3A%20%5Bself%20connectTo%3A%20aWindow%20as%3A%20%23class%20with%3A%20nil%5D.'),
-messageSends: ["instVarsDo:", "ifTrue:", unescape("%3D%3D"), "object", "connectTo:as:with:", "inspection", "classObject"],
+source: unescape('checkAddConnectionTo%3A%20aWindow%0A%09object%20instVarsDo%3A%20%5B%3AivName%20%3AivValue%20%7C%0A%09%09ivValue%20%3D%3D%20aWindow%20object%20ifTrue%3A%20%5Bself%20connectTo%3A%20aWindow%20as%3A%20%23iv%20with%3A%20ivName%20inspection%5D%5D.%0A%09%28object%20classObject%20%3D%3D%20aWindow%20object%20and%3A%20%5Bobject%20virtualClassObject%20%7E%7E%20aWindow%20object%5D%29%20%0A%09%09ifTrue%3A%20%5Bself%20connectTo%3A%20aWindow%20as%3A%20%23class%20with%3A%20nil%5D.%0A%09object%20virtualClassObject%20%3D%3D%20aWindow%20object%20%0A%09%09ifTrue%3A%20%5Bself%20connectTo%3A%20aWindow%20as%3A%20%23virtualClass%20with%3A%20nil%5D.'),
+messageSends: ["instVarsDo:", "ifTrue:", unescape("%3D%3D"), "object", "connectTo:as:with:", "inspection", "and:", "classObject", unescape("%7E%7E"), "virtualClassObject"],
 referencedClasses: []
 }),
 smalltalk.MaglevObjectWindow);
@@ -2301,6 +2302,23 @@ referencedClasses: ["MaglevTable"]
 smalltalk.MaglevObjectWindow);
 
 smalltalk.addMethod(
+unescape('_renderVirtualClassAndClassOn_'),
+smalltalk.method({
+selector: unescape('renderVirtualClassAndClassOn%3A'),
+category: 'rendering',
+fn: function (html){
+var self=this;
+((($receiver = smalltalk.send(self['@classObject'], "__eq", [smalltalk.send(self['@object'], "_virtualClassObject", [])])).klass === smalltalk.Boolean) ? (! $receiver ? (function(){return (function($rec){smalltalk.send($rec, "_with_", [" : "]);return smalltalk.send($rec, "_with_", [smalltalk.send(smalltalk.send(self['@object'], "_virtualClassObject", []), "_inlineViewComponent", [])]);})(html);})() : nil) : smalltalk.send($receiver, "_ifFalse_", [(function(){return (function($rec){smalltalk.send($rec, "_with_", [" : "]);return smalltalk.send($rec, "_with_", [smalltalk.send(smalltalk.send(self['@object'], "_virtualClassObject", []), "_inlineViewComponent", [])]);})(html);})]));
+(function($rec){smalltalk.send($rec, "_with_", [" :: "]);return smalltalk.send($rec, "_with_", [smalltalk.send(self['@classObject'], "_inlineViewComponent", [])]);})(html);
+return self;},
+args: ["html"],
+source: unescape('renderVirtualClassAndClassOn%3A%20html%0A%09classObject%20%3D%20object%20virtualClassObject%20ifFalse%3A%20%5B%0A%09%09html%0A%09%09%09with%3A%20%27%20%3A%20%27%3B%0A%09%09%09with%3A%20object%20virtualClassObject%20inlineViewComponent%5D.%0A%09html%20%0A%09%09with%3A%20%27%20%3A%3A%20%27%3B%0A%09%09with%3A%20classObject%20inlineViewComponent.'),
+messageSends: ["ifFalse:", unescape("%3D"), "virtualClassObject", "with:", "inlineViewComponent"],
+referencedClasses: []
+}),
+smalltalk.MaglevObjectWindow);
+
+smalltalk.addMethod(
 unescape('_renderWindowContentOn_'),
 smalltalk.method({
 selector: unescape('renderWindowContentOn%3A'),
@@ -2332,11 +2350,11 @@ fn: function (html){
 var self=this;
 smalltalk.send(html, "_with_", [smalltalk.send(self['@object'], "_inlineViewComponentShort", [])]);
 smalltalk.send(self, "_renderHeightPlaceholderOn_", [html]);
-(function($rec){smalltalk.send($rec, "_class_", [unescape("right-inline-block")]);return smalltalk.send($rec, "_with_", [(function(){(function($rec){smalltalk.send($rec, "_with_", [" : "]);return smalltalk.send($rec, "_with_", [smalltalk.send(self['@classObject'], "_inlineViewComponent", [])]);})(html);return smalltalk.send(self, "_renderCloseButtonOn_", [html]);})]);})(smalltalk.send(html, "_div", []));
+(function($rec){smalltalk.send($rec, "_class_", [unescape("right-inline-block")]);return smalltalk.send($rec, "_with_", [(function(){smalltalk.send(self, "_renderVirtualClassAndClassOn_", [html]);return smalltalk.send(self, "_renderCloseButtonOn_", [html]);})]);})(smalltalk.send(html, "_div", []));
 return self;},
 args: ["html"],
-source: unescape('renderWindowTitleContentOn%3A%20html%0A%09html%20with%3A%20object%20inlineViewComponentShort.%0A%09self%20renderHeightPlaceholderOn%3A%20html.%0A%09html%20div%0A%09%09class%3A%20%27right-inline-block%27%3B%0A%09%09with%3A%20%5B%0A%09%09%09html%20%0A%09%09%09%09with%3A%20%27%20%3A%20%27%3B%0A%09%09%09%09with%3A%20classObject%20inlineViewComponent.%0A%09%09%09self%20renderCloseButtonOn%3A%20html%5D.'),
-messageSends: ["with:", "inlineViewComponentShort", "renderHeightPlaceholderOn:", "class:", "inlineViewComponent", "renderCloseButtonOn:", "div"],
+source: unescape('renderWindowTitleContentOn%3A%20html%0A%09html%20with%3A%20object%20inlineViewComponentShort.%0A%09self%20renderHeightPlaceholderOn%3A%20html.%0A%09html%20div%0A%09%09class%3A%20%27right-inline-block%27%3B%0A%09%09with%3A%20%5B%0A%09%09%09self%20renderVirtualClassAndClassOn%3A%20html.%0A%09%09%09self%20renderCloseButtonOn%3A%20html%5D.'),
+messageSends: ["with:", "inlineViewComponentShort", "renderHeightPlaceholderOn:", "class:", "renderVirtualClassAndClassOn:", "renderCloseButtonOn:", "div"],
 referencedClasses: []
 }),
 smalltalk.MaglevObjectWindow);
@@ -2925,11 +2943,11 @@ fn: function (html){
 var self=this;
 (function($rec){smalltalk.send($rec, "_with_", [smalltalk.send(self['@object'], "_inlineViewComponentShort", [])]);smalltalk.send($rec, "_with_", [unescape("%20%3C%20")]);return smalltalk.send($rec, "_with_", [smalltalk.send(smalltalk.send(self['@object'], "_superclassObject", []), "_inlineViewComponent", [])]);})(html);
 smalltalk.send(self, "_renderHeightPlaceholderOn_", [html]);
-(function($rec){smalltalk.send($rec, "_class_", [unescape("right-inline-block")]);return smalltalk.send($rec, "_with_", [(function(){(function($rec){smalltalk.send($rec, "_with_", [" : "]);return smalltalk.send($rec, "_with_", [smalltalk.send(self['@classObject'], "_inlineViewComponent", [])]);})(html);return smalltalk.send(self, "_renderCloseButtonOn_", [html]);})]);})(smalltalk.send(html, "_div", []));
+(function($rec){smalltalk.send($rec, "_class_", [unescape("right-inline-block")]);return smalltalk.send($rec, "_with_", [(function(){smalltalk.send(self, "_renderVirtualClassAndClassOn_", [html]);return smalltalk.send(self, "_renderCloseButtonOn_", [html]);})]);})(smalltalk.send(html, "_div", []));
 return self;},
 args: ["html"],
-source: unescape('renderWindowTitleContentOn%3A%20html%0A%09html%20%0A%09%09with%3A%20object%20inlineViewComponentShort%3B%0A%09%09with%3A%20%27%20%3C%20%27%3B%0A%09%09with%3A%20object%20superclassObject%20inlineViewComponent.%0A%09self%20renderHeightPlaceholderOn%3A%20html.%0A%09html%20div%0A%09%09class%3A%20%27right-inline-block%27%3B%0A%09%09with%3A%20%5B%0A%09%09%09html%20%0A%09%09%09%09with%3A%20%27%20%3A%20%27%3B%0A%09%09%09%09with%3A%20classObject%20inlineViewComponent.%0A%09%09%09self%20renderCloseButtonOn%3A%20html%5D.'),
-messageSends: ["with:", "inlineViewComponentShort", "inlineViewComponent", "superclassObject", "renderHeightPlaceholderOn:", "class:", "renderCloseButtonOn:", "div"],
+source: unescape('renderWindowTitleContentOn%3A%20html%0A%09html%20%0A%09%09with%3A%20object%20inlineViewComponentShort%3B%0A%09%09with%3A%20%27%20%3C%20%27%3B%0A%09%09with%3A%20object%20superclassObject%20inlineViewComponent.%0A%09self%20renderHeightPlaceholderOn%3A%20html.%0A%09html%20div%0A%09%09class%3A%20%27right-inline-block%27%3B%0A%09%09with%3A%20%5B%0A%09%09%09self%20renderVirtualClassAndClassOn%3A%20html.%0A%09%09%09self%20renderCloseButtonOn%3A%20html%5D.'),
+messageSends: ["with:", "inlineViewComponentShort", "inlineViewComponent", "superclassObject", "renderHeightPlaceholderOn:", "class:", "renderVirtualClassAndClassOn:", "renderCloseButtonOn:", "div"],
 referencedClasses: []
 }),
 smalltalk.MaglevClassWindow);

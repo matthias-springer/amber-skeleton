@@ -30,7 +30,7 @@ Object subclass: #MaglevJsPlumb
 	instanceVariableNames: ''
 	package: 'Maglev-Vendor'!
 
-MaglevJsPlumb class instanceVariableNames: 'sourceTarget defaults referenceConnection instanceOfConnection superclassConnection connection'!
+MaglevJsPlumb class instanceVariableNames: 'sourceTarget defaults referenceConnection instanceOfConnection virtualClassConnection superclassConnection connection'!
 
 !MaglevJsPlumb class methodsFor: 'accessing'!
 
@@ -52,6 +52,10 @@ referenceConnection
 
 sourceTarget
 	^ sourceTarget
+!
+
+virtualClassConnection
+	^ virtualClassConnection
 ! !
 
 !MaglevJsPlumb class methodsFor: 'constants'!
@@ -63,6 +67,7 @@ constConnection
 		at: #hashValue put: referenceConnection;
 		at: #arrayElement put: referenceConnection;
 		at: #class put: instanceOfConnection;
+		at: #virtualClass put: virtualClassConnection;
 		at: #superclass put: superclassConnection;
 		yourself
 !
@@ -115,6 +120,18 @@ constSuperclassConnection
 			lineWidth: 2,
 			strokeStyle:"#346789",
 			joinstyle:"miter"}}; >
+!
+
+constVirtualClassConnection
+	< return {
+		overlays: ["Arrow", [
+			"Label",
+			{label: "?", location: 0.25, id: "myLabel"}]],
+		paintStyle: {
+			lineWidth: 2,
+			strokeStyle:"#c50b0b",
+			dashstyle:"4 2",
+			joinstyle:"miter"}}; >
 ! !
 
 !MaglevJsPlumb class methodsFor: 'initializing'!
@@ -135,6 +152,7 @@ initializeConstants
 	defaults := self constDefaults.
 	referenceConnection := self constReferenceConnection.
 	instanceOfConnection := self constInstanceOfConnection.
+	virtualClassConnection := self constVirtualClassConnection.
 	superclassConnection := self constSuperclassConnection.
 	connection := self constConnection.
 !

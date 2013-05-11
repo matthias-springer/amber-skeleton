@@ -72,7 +72,7 @@ instance
 ! !
 
 Object subclass: #MaglevObject
-	instanceVariableNames: 'oop instVars instVarsSize classObject inspection isLoaded isException windows'
+	instanceVariableNames: 'oop instVars instVarsSize virtualClassObject classObject inspection isLoaded isException windows'
 	package: 'Maglev-Core'!
 
 !MaglevObject methodsFor: 'accessing'!
@@ -118,6 +118,10 @@ shortInspection
 		ifFalse: [^ inspection].
 !
 
+virtualClassObject
+	^ virtualClassObject
+!
+
 windows
 	windows ifNil: [windows := OrderedCollection new].
 	^ windows
@@ -141,6 +145,7 @@ parseJSON: obj
 	oop := obj oop.
 	isException := obj exception.
 	classObject := MaglevObject newObject: obj classObject.
+	virtualClassObject := MaglevObject newObject: obj virtualClassObject.
 	inspection := obj inspection.
 	instVarsSize := obj instVarsSize.
 	obj instVars keysAndValuesDo: [:index :assoc | |key value|

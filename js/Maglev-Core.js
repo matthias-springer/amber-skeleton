@@ -160,7 +160,7 @@ referencedClasses: ["Maglev"]
 smalltalk.Maglev.klass);
 
 
-smalltalk.addClass('MaglevObject', smalltalk.Object, ['oop', 'instVars', 'instVarsSize', 'classObject', 'inspection', 'isLoaded', 'isException', 'windows'], 'Maglev-Core');
+smalltalk.addClass('MaglevObject', smalltalk.Object, ['oop', 'instVars', 'instVarsSize', 'virtualClassObject', 'classObject', 'inspection', 'isLoaded', 'isException', 'windows'], 'Maglev-Core');
 smalltalk.addMethod(
 unescape('__eq'),
 smalltalk.method({
@@ -584,6 +584,7 @@ var self=this;
 (self['@oop']=smalltalk.send(obj, "_oop", []));
 (self['@isException']=smalltalk.send(obj, "_exception", []));
 (self['@classObject']=smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObject_", [smalltalk.send(obj, "_classObject", [])]));
+(self['@virtualClassObject']=smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObject_", [smalltalk.send(obj, "_virtualClassObject", [])]));
 (self['@inspection']=smalltalk.send(obj, "_inspection", []));
 (self['@instVarsSize']=smalltalk.send(obj, "_instVarsSize", []));
 smalltalk.send(smalltalk.send(obj, "_instVars", []), "_keysAndValuesDo_", [(function(index, assoc){var key=nil;
@@ -591,8 +592,8 @@ var value=nil;
 (key=smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObject_", [smalltalk.send(assoc, "_at_", [(1)])]));(value=smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObject_", [smalltalk.send(assoc, "_at_", [(2)])]));return smalltalk.send(self['@instVars'], "_at_put_", [smalltalk.send(index, "_asNumber", []), smalltalk.send(key, "__minus_gt", [value])]);})]);
 return self;},
 args: ["obj"],
-source: unescape('parseJSON%3A%20obj%0A%09isLoaded%20%3A%3D%20true.%0A%09instVars%20ifNil%3A%20%5BinstVars%20%3A%3D%20Dictionary%20new%5D.%0A%09oop%20%3A%3D%20obj%20oop.%0A%09isException%20%3A%3D%20obj%20exception.%0A%09classObject%20%3A%3D%20MaglevObject%20newObject%3A%20obj%20classObject.%0A%09inspection%20%3A%3D%20obj%20inspection.%0A%09instVarsSize%20%3A%3D%20obj%20instVarsSize.%0A%09obj%20instVars%20keysAndValuesDo%3A%20%5B%3Aindex%20%3Aassoc%20%7C%20%7Ckey%20value%7C%0A%09%09key%20%3A%3D%20MaglevObject%20newObject%3A%20%28assoc%20at%3A%201%29.%0A%09%09value%20%3A%3D%20MaglevObject%20newObject%3A%20%28assoc%20at%3A%202%29.%0A%09%09instVars%20at%3A%20index%20asNumber%20put%3A%20key%20-%3E%20value%5D.'),
-messageSends: ["ifNil:", "new", "oop", "exception", "newObject:", "classObject", "inspection", "instVarsSize", "keysAndValuesDo:", "instVars", "at:", "at:put:", "asNumber", unescape("-%3E")],
+source: unescape('parseJSON%3A%20obj%0A%09isLoaded%20%3A%3D%20true.%0A%09instVars%20ifNil%3A%20%5BinstVars%20%3A%3D%20Dictionary%20new%5D.%0A%09oop%20%3A%3D%20obj%20oop.%0A%09isException%20%3A%3D%20obj%20exception.%0A%09classObject%20%3A%3D%20MaglevObject%20newObject%3A%20obj%20classObject.%0A%09virtualClassObject%20%3A%3D%20MaglevObject%20newObject%3A%20obj%20virtualClassObject.%0A%09inspection%20%3A%3D%20obj%20inspection.%0A%09instVarsSize%20%3A%3D%20obj%20instVarsSize.%0A%09obj%20instVars%20keysAndValuesDo%3A%20%5B%3Aindex%20%3Aassoc%20%7C%20%7Ckey%20value%7C%0A%09%09key%20%3A%3D%20MaglevObject%20newObject%3A%20%28assoc%20at%3A%201%29.%0A%09%09value%20%3A%3D%20MaglevObject%20newObject%3A%20%28assoc%20at%3A%202%29.%0A%09%09instVars%20at%3A%20index%20asNumber%20put%3A%20key%20-%3E%20value%5D.'),
+messageSends: ["ifNil:", "new", "oop", "exception", "newObject:", "classObject", "virtualClassObject", "inspection", "instVarsSize", "keysAndValuesDo:", "instVars", "at:", "at:put:", "asNumber", unescape("-%3E")],
 referencedClasses: ["Dictionary", "MaglevObject"]
 }),
 smalltalk.MaglevObject);
@@ -646,6 +647,22 @@ return self;
 args: [],
 source: unescape('shortInspection%0A%09inspection%20size%20%3E%2010%20%0A%09%09ifTrue%3A%20%5B%5E%20%28inspection%20copyFrom%3A%201%20to%3A%2010%29%2C%20%27...%27%5D%0A%09%09ifFalse%3A%20%5B%5E%20inspection%5D.'),
 messageSends: ["ifTrue:ifFalse:", unescape("%3E"), "size", unescape("%2C"), "copyFrom:to:"],
+referencedClasses: []
+}),
+smalltalk.MaglevObject);
+
+smalltalk.addMethod(
+unescape('_virtualClassObject'),
+smalltalk.method({
+selector: unescape('virtualClassObject'),
+category: 'accessing',
+fn: function (){
+var self=this;
+return self['@virtualClassObject'];
+return self;},
+args: [],
+source: unescape('virtualClassObject%0A%09%5E%20virtualClassObject'),
+messageSends: [],
 referencedClasses: []
 }),
 smalltalk.MaglevObject);
