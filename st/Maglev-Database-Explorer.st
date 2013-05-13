@@ -41,6 +41,146 @@ with: anObject
 		yourself
 ! !
 
+Widget subclass: #MaglevGsNMethodEditor
+	instanceVariableNames: 'object editorContainer errorBox rubyIcon stIcon envIdContainer sourceLocationContainer editor'
+	package: 'Maglev-Database-Explorer'!
+
+!MaglevGsNMethodEditor methodsFor: 'accessing'!
+
+object
+	^ object
+!
+
+object: anObject
+	object := anObject
+! !
+
+!MaglevGsNMethodEditor methodsFor: 'initializing'!
+
+bindCommands
+	|aceEditor|
+	aceEditor := editor.
+	< var commands = aceEditor.commands;
+	commands.addCommand({
+    		name: "save",
+    		bindKey: {win: "Ctrl-S", mac: "Command-S"},
+		exec: function() {self._commandSave();}}); >.
+!
+
+initializeEditor
+	editor := ace edit: (editorContainer asJQuery at: 0).
+	editor setTheme: 'ace/theme/clouds'.
+	editor getSession setMode: 'ace/mode/ruby'.
+	self mouseFix.
+	self bindCommands.
+!
+
+mouseFix
+	< var editor = self['@editorContainer'];
+	editor._asJQuery().mousedown(function (event) {
+		event.preventDefault();
+		return false;
+	}); >
+! !
+
+!MaglevGsNMethodEditor methodsFor: 'interactions'!
+
+commandSave
+	|selectedCategory|
+	errorBox hide.
+	errorBox asJQuery empty.
+	object environmentId = 1
+		ifTrue: [object
+			compileRubySourceCode: editor getValue 
+			withCallback: [:success :obj |
+				obj isException
+					ifTrue: [self signalFailure: obj]
+					ifFalse: [self signalSuccess]]]
+		ifFalse: [object 
+			compileSmalltalkSourceCode: editor getValue 
+			withCallback: [:success :obj |
+				obj isException
+					ifTrue: [self signalFailure: obj]
+					ifFalse: [self signalSuccess]]].
+!
+
+signalFailure: aDescription
+	|html|
+	html := HTMLCanvas onJQuery: errorBox asJQuery.
+	html with: aDescription inlineViewComponent.
+	errorBox show.
+	editorContainer asJQuery css: 'background-color' with: '#ff0039'.
+	editorContainer asJQuery animate: (Object new basicAt: 'backgroundColor' put: '#ffffff'; yourself) timeout: 250.
+!
+
+signalSuccess
+	editorContainer asJQuery css: 'background-color' with: '#3fb618'.
+	editorContainer asJQuery animate: (Object new basicAt: 'backgroundColor' put: '#ffffff'; yourself) timeout: 250.
+! !
+
+!MaglevGsNMethodEditor methodsFor: 'rendering'!
+
+renderMethodObject
+	|envId|
+	editor setValue: object sourceString pos: -1.
+	editorContainer show.
+	envId := object environmentId.
+	envIdContainer asJQuery empty.
+	envIdContainer with: envId.
+	sourceLocationContainer empty.
+	envId = 1 
+		ifTrue: [sourceLocationContainer with: object filename string]
+		ifFalse: [sourceLocationContainer with: 'n/a'].
+	envId = 0 
+		ifTrue: [stIcon show. rubyIcon hide].
+	envId = 1 
+		ifTrue: [stIcon hide. rubyIcon show].
+	envId > 1
+		ifTrue: [stIcon hide. rubyIcon hide].
+!
+
+renderOn: html
+	editorContainer := html span
+		class: 'pull-left code-area'.
+	html div style: 'clear: both;'.
+	errorBox := html div
+		class: 'alert alert-error';
+		style: 'margin-bottom: 0px;';
+		hide.
+	self renderStatusBarOn: html.
+	self initializeEditor.
+	self renderMethodObject.
+!
+
+renderStatusBarOn: html
+	html table
+		class: 'table-bordered';
+		style: 'margin-top: 5px;';
+		with: [html tbody with: [
+			html tr with: [
+				html td with: [
+					rubyIcon := html img
+						src: '/images/ruby.png';
+						class: 'icon-language';
+						hide.
+					stIcon := html img
+						src: '/images/smalltalk.png';
+						class: 'icon-language';
+						hide.
+					envIdContainer := html span with: 'Environment ID'].
+				html td with: [
+					sourceLocationContainer := html span with: 'Source location']]]].
+! !
+
+!MaglevGsNMethodEditor class methodsFor: 'instance creation'!
+
+for: anObject
+	^ self basicNew
+		object: anObject;
+		initialize;
+		yourself
+! !
+
 Widget subclass: #MaglevIcon
 	instanceVariableNames: 'b icon spin'
 	package: 'Maglev-Database-Explorer'!
@@ -957,6 +1097,8 @@ renderOn: html
 				with: [
 					self renderWindowTitleOn: html.
 					self renderWindowContentOn: html]].
+	container onMouseDown: [
+		container asJQuery css: 'z-index' data: self class highestZIndex + 1].
 !
 
 renderReplace
@@ -992,6 +1134,19 @@ newReplace: aWindow
 	^ self new
 		replace: aWindow;
 		yourself
+! !
+
+!MaglevWindow class methodsFor: 'interactions'!
+
+highestZIndex
+	< var indexHighest = 0;
+	$('.window').each(function(){
+		var indexCurrent = parseInt($(this).css("z-index"), 10);
+		if(indexCurrent >> indexHighest) {
+			indexHighest = indexCurrent;
+		}
+	});
+	return indexHighest; >.
 ! !
 
 MaglevWindow subclass: #MaglevObjectWindow
@@ -1161,6 +1316,52 @@ renderArrayElementsOn: html
 	html with: (MaglevTable newFor: self object with: #elements).
 ! !
 
+MaglevObjectWindow subclass: #MaglevExceptionWindow
+	instanceVariableNames: 'methodList methodSelect methodContainer waitingScreen'
+	package: 'Maglev-Database-Explorer'!
+
+!MaglevExceptionWindow methodsFor: 'rendering'!
+
+contentTabs
+	|result|
+	result := super contentTabs.
+	result at: 'Stack Trace' put: #renderStackTraceOn:.
+	^ result
+!
+
+renderMethodObject
+	|method|
+	method := methodList at: (methodSelect asJQuery val).
+	waitingScreen show.
+	method fullReloadWithCallback: [:obj |
+		self renderMethodObject: obj].
+!
+
+renderMethodObject: obj
+	methodContainer asJQuery empty.
+	methodContainer with: (MaglevGsNMethodEditor for: obj).
+	waitingScreen hide.
+!
+
+renderStackTraceOn: html
+	methodList := Dictionary new.
+	html with: [
+		methodSelect := html select
+			with: [object methodsDo: [:method | |methodName|
+				methodName := method inClass smalltalkFullName, ' [', method inClass rubyFullName, '] >> ', method selectorString string.
+				html option with: methodName.
+				methodList at: methodName put: method]];
+			size: 10;
+			style: 'width: 100%;';
+			onChange: [self renderMethodObject].
+		methodContainer := html div.
+		waitingScreen := html div
+			with: [html
+				with: MaglevIcon wait;
+				with: ' loading...'];
+			hide].
+! !
+
 MaglevObjectWindow subclass: #MaglevFixnumWindow
 	instanceVariableNames: ''
 	package: 'Maglev-Database-Explorer'!
@@ -1195,63 +1396,8 @@ renderHashElementsOn: html
 ! !
 
 MaglevObjectWindow subclass: #MaglevModuleWindow
-	instanceVariableNames: 'categoryNamesSelect selectorsSelect selectors rubySelectors editorContainer editor waitingScreen errorBox envIdContainer rubyIcon stIcon sourceLocationContainer methodObject'
+	instanceVariableNames: 'categoryNamesSelect selectorsSelect selectors rubySelectors methodContainer waitingScreen'
 	package: 'Maglev-Database-Explorer'!
-
-!MaglevModuleWindow methodsFor: 'initializing'!
-
-bindCommands
-	|aceEditor|
-	aceEditor := editor.
-	< var commands = aceEditor.commands;
-	commands.addCommand({
-    		name: "save",
-    		bindKey: {win: "Ctrl-S", mac: "Command-S"},
-		exec: function() {self._commandSave();}}); >.
-!
-
-initializeEditor
-	editor := ace edit: (editorContainer asJQuery at: 0).
-	editor setTheme: 'ace/theme/clouds'.
-	editor getSession setMode: 'ace/mode/ruby'.
-	self mouseFix.
-	self bindCommands.
-!
-
-mouseFix
-	< var editor = self['@editorContainer'];
-	editor._asJQuery().mousedown(function (event) {
-		event.preventDefault();
-		return false;
-	}); >
-! !
-
-!MaglevModuleWindow methodsFor: 'interactions'!
-
-commandSave
-	errorBox hide.
-	errorBox asJQuery empty.
-	object 
-		compileSmalltalkSourceCode: editor getValue 
-		withCallback: [:success :obj |
-			obj isException
-				ifTrue: [self signalFailure: obj]
-				ifFalse: [self signalSuccess]].
-!
-
-signalFailure: aDescription
-	|html|
-	html := HTMLCanvas onJQuery: errorBox asJQuery.
-	html with: aDescription inlineViewComponent.
-	errorBox show.
-	editorContainer asJQuery css: 'background-color' with: '#ff0039'.
-	editorContainer asJQuery animate: (Object new basicAt: 'backgroundColor' put: '#ffffff'; yourself) timeout: 250.
-!
-
-signalSuccess
-	editorContainer asJQuery css: 'background-color' with: '#3fb618'.
-	editorContainer asJQuery animate: (Object new basicAt: 'backgroundColor' put: '#ffffff'; yourself) timeout: 250.
-! !
 
 !MaglevModuleWindow methodsFor: 'rendering'!
 
@@ -1281,21 +1427,13 @@ renderCodeTabOn: html
 		with: [html
 			with: MaglevIcon wait;
 			with: ' loading...'].
-	editorContainer := html span
-		class: 'pull-left code-area'.
-	html div style: 'clear: both;'.
-	errorBox := html div
-		class: 'alert alert-error';
-		style: 'margin-bottom: 0px;';
-		hide.
-	self renderStatusBarOn: html.
+	methodContainer := html div.
 	self object allSmalltalkSelectorsWithCallback: [:success :obj |
 		selectors := obj.
 		self object allRubySelectorsWithCallback: [:rSuccess :rObj |
 			rubySelectors := rObj.
 			self renderSelectorCategories.
 			self renderSelectors.
-			self initializeEditor.
 			selectorsSelect onChange: [self renderSourceCode].
 			categoryNamesSelect onChange: [self renderSelectors].
 			waitingScreen hide.
@@ -1311,32 +1449,15 @@ renderIncludedModulesOn: html
 	html with: (MaglevTable newFor: self object with: #includedModules).
 !
 
-renderMethodObject
-	|envId|
-	editor setValue: methodObject sourceString pos: -1.
-	editorContainer show.
+renderMethodObject: obj
+	methodContainer with: (MaglevGsNMethodEditor for: obj).
 	waitingScreen hide.
-	envId := methodObject environmentId.
-	envIdContainer asJQuery empty.
-	envIdContainer with: envId.
-	sourceLocationContainer empty.
-	envId = 1 
-		ifTrue: [sourceLocationContainer with: methodObject filename string]
-		ifFalse: [sourceLocationContainer with: 'n/a'].
-	envId = 0 
-		ifTrue: [stIcon show. rubyIcon hide].
-	envId = 1 
-		ifTrue: [stIcon hide. rubyIcon show].
-	envId > 1
-		ifTrue: [stIcon hide. rubyIcon hide].
 !
 
 renderRubySourceCodeFor: selectorString
 	object 
 		rubySourceCodeFor: selectorString 
-		withCallback: [:success :obj |
-			methodObject := obj.
-			self renderMethodObject].
+		withCallback: [:success :obj | self renderMethodObject: obj].
 !
 
 renderSelectorCategories
@@ -1374,40 +1495,18 @@ renderSelectors
 renderSmalltalkSourceCodeFor: selectorString
 	object 
 		smalltalkSourceCodeFor: selectorString 
-		withCallback: [:success :obj |
-			methodObject := obj.
-			self renderMethodObject].
+		withCallback: [:success :obj | self renderMethodObject: obj].
 !
 
 renderSourceCode
 	|selectorString selectedCategory|
-	editorContainer hide.
+	methodContainer asJQuery empty.
 	waitingScreen show.
 	selectedCategory := categoryNamesSelect asJQuery val.
 	selectorString := selectorsSelect asJQuery val.
 	selectedCategory = '(all Ruby)'
 		ifTrue: [self renderRubySourceCodeFor: selectorString]
 		ifFalse: [self renderSmalltalkSourceCodeFor: selectorString].
-!
-
-renderStatusBarOn: html
-	html table
-		class: 'table-bordered';
-		style: 'margin-top: 5px;';
-		with: [html tbody with: [
-			html tr with: [
-				html td with: [
-					rubyIcon := html img
-						src: '/images/ruby.png';
-						class: 'icon-language';
-						hide.
-					stIcon := html img
-						src: '/images/smalltalk.png';
-						class: 'icon-language';
-						hide.
-					envIdContainer := html span with: 'Environment ID'].
-				html td with: [
-					sourceLocationContainer := html span with: 'Source location']]]].
 !
 
 sortList: aListBox

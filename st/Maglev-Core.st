@@ -212,6 +212,11 @@ evaluateWithoutUpdate: code language: aString withCallback: aBlock
 			aBlock value: parsedObj isException not value: parsedObj].
 !
 
+fullReloadWithCallback: aBlock
+	MaglevObjectSpace instance
+		reloadObject: oop withCallback: aBlock.
+!
+
 paramsAllElements
 	^ Dictionary new
 		at: 'allElements' put: true;
@@ -298,6 +303,10 @@ windowViewComponentReplace: aWindow
 
 hasInstVars
 	^ instVars size > 0
+!
+
+isGsNMethod
+	^ false
 !
 
 isLoaded
@@ -447,6 +456,40 @@ windowViewClass
 	^ MaglevArrayWindow
 ! !
 
+MaglevObject subclass: #MaglevException
+	instanceVariableNames: 'gsResumable gsStack gsReason gsTrappable currGsHandler gsDetails'
+	package: 'Maglev-Core'!
+
+!MaglevException methodsFor: 'accessing'!
+
+methodsDo: aBlock
+	gsStack do: [:obj |
+		obj isGsNMethod 
+			ifTrue: [aBlock value: obj]].
+! !
+
+!MaglevException methodsFor: 'instance creation'!
+
+parseJSON: obj
+	super parseJSON: obj.
+	gsResumable := MaglevObject newObject: obj gsResumable.
+	gsStack := MaglevObject newObject: obj gsStack.
+	gsReason := MaglevObject newObject: obj gsReason.
+	gsTrappable := MaglevObject newObject: obj gsTrappable.
+	currGsHandler := MaglevObject newObject: obj currGsHandler.
+	gsDetails := MaglevObject newObject: obj gsDetails.
+! !
+
+!MaglevException class methodsFor: 'constants'!
+
+basetype
+	^ #exception
+!
+
+windowViewClass
+	^ MaglevExceptionWindow
+! !
+
 MaglevObject subclass: #MaglevFixnum
 	instanceVariableNames: ''
 	package: 'Maglev-Core'!
@@ -496,7 +539,7 @@ windowViewClass
 ! !
 
 MaglevObject subclass: #MaglevGsNMethod
-	instanceVariableNames: ''
+	instanceVariableNames: 'selectorString'
 	package: 'Maglev-Core'!
 
 !MaglevGsNMethod methodsFor: 'accessing'!
@@ -513,8 +556,24 @@ filename
 	^ self debugInfo at: self debugInfoFileNameOffset
 !
 
+inClass
+	^ self instVarAt: '@_st_inClass'
+!
+
+rubyFullName
+	^ 'a GsNMethod'
+!
+
 selector
 	^ self instVarAt: '@_st_selector'
+!
+
+selectorString
+	^ selectorString
+!
+
+smalltalkFullName
+	^ 'a GsNMethod'
 !
 
 sourceString
@@ -537,6 +596,44 @@ selectorIdEnvMask
 
 siSelectorIdEnvShift
 	^ 53
+! !
+
+!MaglevGsNMethod methodsFor: 'instance creation'!
+
+parseJSON: obj
+	super parseJSON: obj.
+	selectorString := MaglevObject newObject: obj selectorString.
+! !
+
+!MaglevGsNMethod methodsFor: 'interactions'!
+
+compileRubySourceCode: sourceCode withCallback: aBlock
+	self inClass
+		evaluateWithoutUpdate: sourceCode
+		language: 'rubyClass'
+		with: Dictionary new
+		withCallback: aBlock.
+!
+
+compileSmalltalkSourceCode: sourceCode withCallback: aBlock
+	self inClass
+		evaluateWithoutUpdate: 'self compile: ''', sourceCode escapedString, '''.'
+		language: 'smalltalk'
+		with: Dictionary new
+		withCallback: aBlock.
+!
+
+fullReloadWithCallback: aBlock
+	MaglevObjectSpace instance
+		reloadObject: oop 
+		withCallback: aBlock 
+		params: self paramsFullString.
+! !
+
+!MaglevGsNMethod methodsFor: 'testing'!
+
+isGsNMethod
+	^ true
 ! !
 
 !MaglevGsNMethod class methodsFor: 'constants'!
@@ -630,7 +727,7 @@ windowViewClass
 ! !
 
 MaglevObject subclass: #MaglevModule
-	instanceVariableNames: 'includedModules includedModulesSize constants constantsSize'
+	instanceVariableNames: 'includedModules includedModulesSize constants constantsSize rubyFullName smalltalkFullName'
 	package: 'Maglev-Core'!
 
 !MaglevModule methodsFor: 'accessing'!
@@ -649,6 +746,14 @@ includedModules
 
 includedModulesSize
 	^ includedModulesSize
+!
+
+rubyFullName
+	^ rubyFullName string
+!
+
+smalltalkFullName
+	^ smalltalkFullName string
 ! !
 
 !MaglevModule methodsFor: 'instance creation'!
@@ -665,6 +770,14 @@ parseJSON: obj
 		key := MaglevObject newObject: (assoc at: 1).
 		value := MaglevObject newObject: (assoc at: 2).
 		constants at: index asNumber put: key -> value].
+	rubyFullName := MaglevObject newObject: obj rubyFullName.
+	smalltalkFullName := MaglevObject newObject: obj smalltalkFullName.
+!
+
+parseJSONNotLoaded: obj
+	super parseJSONNotLoaded: obj.
+	rubyFullName := MaglevObject newObject: obj rubyFullName.
+	smalltalkFullName := MaglevObject newObject: obj smalltalkFullName.
 ! !
 
 !MaglevModule methodsFor: 'interactions'!
@@ -682,14 +795,6 @@ allSmalltalkSelectorsWithCallback: aBlock
 		evaluateWithoutUpdate: '|selectors| selectors := RubyHash new. self categoryNames do: [:category | selectors at: category put: (self selectorsIn: category)]. selectors.' 
 		language: 'smalltalk'
 		with: self paramsAllElements 
-		withCallback: aBlock.
-!
-
-compileSmalltalkSourceCode: aSelectorString withCallback: aBlock
-	self 
-		evaluateWithoutUpdate: 'self compile: ''', aSelectorString escapedString, '''.'
-		language: 'smalltalk'
-		with: Dictionary new
 		withCallback: aBlock.
 !
 
@@ -767,6 +872,12 @@ windowViewClass
 MaglevObject subclass: #MaglevNilClass
 	instanceVariableNames: ''
 	package: 'Maglev-Core'!
+
+!MaglevNilClass methodsFor: 'accessing'!
+
+string
+	^ '(nil)'
+! !
 
 !MaglevNilClass class methodsFor: 'constants'!
 
@@ -914,6 +1025,14 @@ reloadObject: anOop withCallback: aBlock
 	MaglevAjax 
 		ajax: '/object/index/', anOop asString
 		data: Dictionary new
+		withCallback: [:obj | 
+			aBlock value: (MaglevObject newObject: obj)].
+!
+
+reloadObject: anOop withCallback: aBlock params: aParamsDict
+	MaglevAjax 
+		ajax: '/object/index/', anOop asString
+		data: aParamsDict
 		withCallback: [:obj | 
 			aBlock value: (MaglevObject newObject: obj)].
 !
