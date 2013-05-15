@@ -85,8 +85,11 @@ Maglev class instanceVariableNames: 'instance'!
 
 !Maglev class methodsFor: 'initializing'!
 
+openWindow: anInteger
+	Maglev instance showObjectWindow: anInteger.
+!
+
 ready
-	Maglev instance showObjectWindow: 159055361.
 ! !
 
 !Maglev class methodsFor: 'singleton'!
@@ -254,6 +257,22 @@ paramsFullString
 		yourself
 !
 
+paramsFullStringAndElements
+	^ Dictionary new
+		at: 'allElements' put: true;
+		at: 'fullString' put: true;
+		yourself
+!
+
+paramsThreadFrame
+	^ Dictionary new
+		at: 'allElements' put: true;
+		at: 'fullString' put: true;
+		at: 'fullMethod' put: true;
+		at: 'noBehavior' put: true;
+		yourself
+!
+
 removeWindow: aWindow
 	self windows remove: aWindow.
 	Maglev instance removeWindow: aWindow.
@@ -344,6 +363,10 @@ isLoaded: collectionName from: from to: to
 	(from to: to) do: [:index |
 		(collection includesKey: index) ifFalse: [^ false]].
 	^ true
+!
+
+isMaglevNil
+	^ false
 ! !
 
 MaglevObject class instanceVariableNames: 'basetypes doesUpdateObjectSpace'!
@@ -482,27 +505,26 @@ windowViewClass
 ! !
 
 MaglevObject subclass: #MaglevException
-	instanceVariableNames: 'gsResumable gsStack gsReason gsTrappable currGsHandler gsDetails'
+	instanceVariableNames: 'thread'
 	package: 'Maglev-Core'!
 
 !MaglevException methodsFor: 'accessing'!
 
-methodsDo: aBlock
-	gsStack do: [:obj |
-		obj isGsNMethod 
-			ifTrue: [aBlock value: obj]].
+thread
+	^ thread
 ! !
 
 !MaglevException methodsFor: 'instance creation'!
 
 parseJSON: obj
 	super parseJSON: obj.
-	gsResumable := MaglevObject newObject: obj gsResumable.
-	gsStack := MaglevObject newObject: obj gsStack.
-	gsReason := MaglevObject newObject: obj gsReason.
-	gsTrappable := MaglevObject newObject: obj gsTrappable.
-	currGsHandler := MaglevObject newObject: obj currGsHandler.
-	gsDetails := MaglevObject newObject: obj gsDetails.
+	thread := MaglevObject newObject: obj thread.
+! !
+
+!MaglevException methodsFor: 'testing'!
+
+hasThread
+	^ thread isMaglevNil not
 ! !
 
 !MaglevException class methodsFor: 'constants'!
@@ -564,13 +586,21 @@ windowViewClass
 ! !
 
 MaglevObject subclass: #MaglevGsNMethod
-	instanceVariableNames: 'selectorString'
+	instanceVariableNames: 'selectorString argsAndTemps descrForStack'
 	package: 'Maglev-Core'!
 
 !MaglevGsNMethod methodsFor: 'accessing'!
 
+argsAndTemps
+	^ argsAndTemps
+!
+
 debugInfo
 	^ self instVarAt: '@_st_debugInfo'
+!
+
+descrForStack
+	^ descrForStack
 !
 
 environmentId
@@ -628,6 +658,14 @@ siSelectorIdEnvShift
 parseJSON: obj
 	super parseJSON: obj.
 	selectorString := MaglevObject newObject: obj selectorString.
+	argsAndTemps := MaglevObject newObject: obj argsAndTemps.
+	descrForStack := MaglevObject newObject: obj descrForStack.
+!
+
+parseJSONNotLoaded: obj
+	super parseJSONNotLoaded: obj.
+	selectorString := MaglevObject newObject: obj selectorString.
+	descrForStack := MaglevObject newObject: obj descrForStack.
 ! !
 
 !MaglevGsNMethod methodsFor: 'interactions'!
@@ -801,41 +839,26 @@ parseJSON: obj
 
 parseJSONNotLoaded: obj
 	super parseJSONNotLoaded: obj.
-	rubyFullName := MaglevObject newObject: obj rubyFullName.
-	smalltalkFullName := MaglevObject newObject: obj smalltalkFullName.
 ! !
 
 !MaglevModule methodsFor: 'interactions'!
 
-allRubySelectorsWithCallback: aBlock
-	self 
-		evaluateWithoutUpdate: '|set hidden| set := IdentitySet new. hidden := IdentitySet new. self nonBridgeRubySelectorsInto: set hiddenInto: hidden protection: -1 env: 1. set asArray' 
-		language: 'smalltalk'
-		with: self paramsAllElements 
+allSelectorsWithCallback: aBlock
+	MaglevAjax 
+		ajax: '/code/selectors/', oop asString
+		data: Dictionary new
 		withCallback: aBlock.
 !
 
-allSmalltalkSelectorsWithCallback: aBlock
-	self 
-		evaluateWithoutUpdate: '|selectors| selectors := RubyHash new. self categoryNames do: [:category | selectors at: category put: (self selectorsIn: category)]. selectors.' 
-		language: 'smalltalk'
-		with: self paramsAllElements 
-		withCallback: aBlock.
-!
-
-rubySourceCodeFor: aSelectorString withCallback: aBlock
-	self 
-		evaluateWithoutUpdate: 'self rubyMethodFor: ''', aSelectorString, ''' instanceMethod: true.'
-		language: 'smalltalk'
-		with: self paramsFullString
-		withCallback: aBlock.
-!
-
-smalltalkSourceCodeFor: aSelectorString withCallback: aBlock
-	self 
-		evaluateWithoutUpdate: 'self lookupSelector: ''', aSelectorString, '''.'
-		language: 'smalltalk'
-		with: self paramsFullString
+sourceCodeFor: selectorString language: lang withCallback: aBlock
+	|params|
+	params := Dictionary new
+		at: 'language' put: lang;
+		at: 'selector' put: selectorString;
+		yourself.
+	MaglevAjax 
+		ajax: '/code/code/', oop asString
+		data: params
 		withCallback: aBlock.
 ! !
 
@@ -902,6 +925,12 @@ MaglevObject subclass: #MaglevNilClass
 
 string
 	^ '(nil)'
+! !
+
+!MaglevNilClass methodsFor: 'testing'!
+
+isMaglevNil
+	^ true
 ! !
 
 !MaglevNilClass class methodsFor: 'constants'!
@@ -992,6 +1021,42 @@ inlineViewClass
 
 windowViewClass
 	^ MaglevSymbolWindow
+! !
+
+MaglevObject subclass: #MaglevThread
+	instanceVariableNames: ''
+	package: 'Maglev-Core'!
+
+!MaglevThread methodsFor: 'instance creation'!
+
+parseJSON: obj
+	super parseJSON: obj.
+! !
+
+!MaglevThread methodsFor: 'interactions'!
+
+stackFrame: anInteger withCallback: aBlock
+	|params|
+	params := Dictionary new
+		at: 'index' put: anInteger;
+		yourself.
+	MaglevAjax 
+		ajax: '/code/frame/', oop asString
+		data: params
+		withCallback: aBlock.
+!
+
+stackTraceMethodsWithCallback: aBlock
+	MaglevAjax 
+		ajax: '/code/frames/', oop asString
+		data: Dictionary new
+		withCallback: aBlock.
+! !
+
+!MaglevThread class methodsFor: 'constants'!
+
+basetype
+	^ #thread
 ! !
 
 Object subclass: #MaglevObjectSpace

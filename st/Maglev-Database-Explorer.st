@@ -47,12 +47,32 @@ Widget subclass: #MaglevGsNMethodEditor
 
 !MaglevGsNMethodEditor methodsFor: 'accessing'!
 
+envId
+	^ self methodObject at: 2
+!
+
+filename
+	^ (self methodObject at: 4) at: 1
+!
+
+lineInFile
+	^ (self methodObject at: 4) at: 2
+!
+
+methodObject
+	^ object
+!
+
 object
 	^ object
 !
 
 object: anObject
 	object := anObject
+!
+
+sourceString
+	^ self methodObject at: 1
 ! !
 
 !MaglevGsNMethodEditor methodsFor: 'initializing'!
@@ -120,16 +140,27 @@ signalSuccess
 
 !MaglevGsNMethodEditor methodsFor: 'rendering'!
 
+renderEditorOn: html
+	editorContainer := html span
+		class: 'pull-left code-area'.
+	html div style: 'clear: both;'.
+	errorBox := html div
+		class: 'alert alert-error';
+		style: 'margin-bottom: 0px;';
+		hide.
+	self initializeEditor.
+!
+
 renderMethodObject
 	|envId|
-	editor setValue: object sourceString pos: -1.
+	editor setValue: self sourceString pos: -1.
 	editorContainer show.
-	envId := object environmentId.
+	envId := self envId.
 	envIdContainer asJQuery empty.
 	envIdContainer with: envId.
 	sourceLocationContainer empty.
 	envId = 1 
-		ifTrue: [sourceLocationContainer with: object filename string]
+		ifTrue: [sourceLocationContainer with: self filename]
 		ifFalse: [sourceLocationContainer with: 'n/a'].
 	envId = 0 
 		ifTrue: [stIcon show. rubyIcon hide].
@@ -140,15 +171,8 @@ renderMethodObject
 !
 
 renderOn: html
-	editorContainer := html span
-		class: 'pull-left code-area'.
-	html div style: 'clear: both;'.
-	errorBox := html div
-		class: 'alert alert-error';
-		style: 'margin-bottom: 0px;';
-		hide.
+	self renderEditorOn: html.
 	self renderStatusBarOn: html.
-	self initializeEditor.
 	self renderMethodObject.
 !
 
@@ -179,6 +203,95 @@ for: anObject
 		object: anObject;
 		initialize;
 		yourself
+! !
+
+MaglevGsNMethodEditor subclass: #MaglevGsNMethodDebugEditor
+	instanceVariableNames: 'argValueBox argSelect'
+	package: 'Maglev-Database-Explorer'!
+!MaglevGsNMethodDebugEditor commentStamp!
+Copied from _frameContentsAt:
+
+"Private.  Returns an Array describing the specified level in the receiver. 
+ aLevel == 1 is top of stack.  If aLevel is less than 1 or greater than
+ stackDepth, returns nil.  
+
+ The result Array contains:
+ offset item
+ -----  -----
+   1    gsMethod  (a GsNMethod)
+   2    ipOffset    (zero-based relative to first named instance variable in portable code;
+                     negative means a stack breakpoint is present)
+   3    frameOffset (zero-based)
+   4    varContext
+   5    saveProtectedMode
+   6    markerOrException
+   7    nil    (not used)
+   8    self   (possibly nil in a ComplexBlock)
+   9    argAndTempNames   (an Array of Symbols or Strings)
+  10    receiver
+  11    arguments and temps, if any"!
+
+!MaglevGsNMethodDebugEditor methodsFor: 'accessing'!
+
+argAndTempNames
+	^ object at: 9
+!
+
+argOrTempValue: anInteger
+	^ MaglevObject newObject: (object at: 10 + anInteger)
+!
+
+methodObject
+	^ object at: 1
+!
+
+ownerSelf
+	^ MaglevObject newObject: (object at: 8)
+!
+
+receiver
+	^ MaglevObject newObject: (object at: 10)
+! !
+
+!MaglevGsNMethodDebugEditor methodsFor: 'rendering'!
+
+renderArg
+	|argIndex argValue|
+	argIndex := (argSelect asJQuery at: 0) selectedIndex - 1.
+	argIndex = -1 
+		ifTrue: [argValue := self ownerSelf].
+	argIndex = 0
+		ifTrue: [argValue := self receiver].
+	argIndex  > 0
+		ifTrue: [argValue := self argOrTempValue: argIndex].
+	argValueBox asJQuery empty.
+	argValueBox with: argValue inlineViewComponent.
+!
+
+renderArgsOn: html
+	html table with: [
+		html tbody with: [
+			html tr with: [
+				html td with: [
+					argSelect := html select
+						size: 3;
+						with: [html option with: '(self)'];
+						with: [html option with: '(receiver)'];
+						with: [self argAndTempNames do: [:arg |
+							html option with: arg]];
+						onChange: [self renderArg].
+					argValueBox := html div].
+				html td 
+					with: [argValueBox := html div];
+					style: 'padding-left: 5px;']]];
+	style: 'margin-top: 5px;'.
+!
+
+renderOn: html
+	self renderEditorOn: html.
+	self renderArgsOn: html.
+	self renderStatusBarOn: html.
+	self renderMethodObject.
 ! !
 
 Widget subclass: #MaglevIcon
@@ -1099,6 +1212,7 @@ renderOn: html
 					self renderWindowContentOn: html]].
 	container onMouseDown: [
 		container asJQuery css: 'z-index' data: self class highestZIndex + 1].
+	container asJQuery css: 'z-index' data: self class highestZIndex + 1.
 !
 
 renderReplace
@@ -1317,7 +1431,7 @@ renderArrayElementsOn: html
 ! !
 
 MaglevObjectWindow subclass: #MaglevExceptionWindow
-	instanceVariableNames: 'methodList methodSelect methodContainer waitingScreen'
+	instanceVariableNames: 'methodSelect methodContainer waitingScreen'
 	package: 'Maglev-Database-Explorer'!
 
 !MaglevExceptionWindow methodsFor: 'rendering'!
@@ -1329,37 +1443,40 @@ contentTabs
 	^ result
 !
 
-renderMethodObject
-	|method|
-	method := methodList at: (methodSelect asJQuery val).
-	waitingScreen show.
-	method fullReloadWithCallback: [:obj |
-		self renderMethodObject: obj].
-!
-
-renderMethodObject: obj
+renderFrame
+	|frameIndex|
 	methodContainer asJQuery empty.
-	methodContainer with: (MaglevGsNMethodEditor for: obj).
-	waitingScreen hide.
+	waitingScreen show.
+	frameIndex := (methodSelect asJQuery at: 0) selectedIndex + 1.
+	object thread
+		stackFrame: frameIndex 
+		withCallback: [:obj |
+			methodContainer with: (MaglevGsNMethodDebugEditor for: obj).
+			waitingScreen hide].
 !
 
 renderStackTraceOn: html
-	methodList := Dictionary new.
-	html with: [
-		methodSelect := html select
-			with: [object methodsDo: [:method | |methodName|
-				methodName := method inClass smalltalkFullName, ' [', method inClass rubyFullName, '] >> ', method selectorString string.
-				html option with: methodName.
-				methodList at: methodName put: method]];
-			size: 10;
-			style: 'width: 100%;';
-			onChange: [self renderMethodObject].
-		methodContainer := html div.
-		waitingScreen := html div
-			with: [html
+	|waitForStackTrace|
+	waitForStackTrace := html div
+		with: [html
+				with: MaglevIcon wait;
+				with: ' loading...'].
+	methodSelect := html select.
+	object thread stackTraceMethodsWithCallback: [:obj |
+		html with: [
+			methodSelect
+				with: [obj do: [:method |
+					html option with: method]];
+				size: 10;
+				style: 'width: 100%;';
+				onChange: [self renderFrame].
+			waitForStackTrace hide]].
+	waitingScreen := html div
+		with: [html
 				with: MaglevIcon wait;
 				with: ' loading...'];
-			hide].
+		hide.
+	methodContainer := html div.
 ! !
 
 MaglevObjectWindow subclass: #MaglevFixnumWindow
@@ -1428,17 +1545,15 @@ renderCodeTabOn: html
 			with: MaglevIcon wait;
 			with: ' loading...'].
 	methodContainer := html div.
-	self object allSmalltalkSelectorsWithCallback: [:success :obj |
+	self object allSelectorsWithCallback: [:obj |
 		selectors := obj.
-		self object allRubySelectorsWithCallback: [:rSuccess :rObj |
-			rubySelectors := rObj.
-			self renderSelectorCategories.
-			self renderSelectors.
-			selectorsSelect onChange: [self renderSourceCode].
-			categoryNamesSelect onChange: [self renderSelectors].
-			waitingScreen hide.
-			categoryNamesSelect show.
-			selectorsSelect show]].
+		self renderSelectorCategories.
+		self renderSelectors.
+		selectorsSelect onChange: [self renderSourceCode].
+		categoryNamesSelect onChange: [self renderSelectors].
+		waitingScreen hide.
+		categoryNamesSelect show.
+		selectorsSelect show].
 !
 
 renderConstantsOn: html
@@ -1456,22 +1571,18 @@ renderMethodObject: obj
 
 renderRubySourceCodeFor: selectorString
 	object 
-		rubySourceCodeFor: selectorString 
-		withCallback: [:success :obj | self renderMethodObject: obj].
+		sourceCodeFor: selectorString 
+		language: 'ruby'
+		withCallback: [:obj | self renderMethodObject: obj].
 !
 
 renderSelectorCategories
 	|html|
 	categoryNamesSelect asJQuery empty.
 	html := HTMLCanvas onJQuery: categoryNamesSelect asJQuery.
-	html with: [html option with: '(all Ruby)'].
-	html with: [html option with: '(all Smalltalk)'].
 	selectors keysAndValuesDo: [:category :catSelectors |
-		html 
-			with: [html option
-				with: category string]].
+		html 	with: [html option with: category]].
 	categoryNamesSelect asJQuery val: '(all Smalltalk)'.
-	self sortList: categoryNamesSelect.
 !
 
 renderSelectors
@@ -1479,23 +1590,16 @@ renderSelectors
 	selectorsSelect asJQuery empty.
 	html := HTMLCanvas onJQuery: selectorsSelect asJQuery.
 	selectedCategory := categoryNamesSelect asJQuery val.
-	selectedCategory = '(all Smalltalk)'
-		ifTrue: [currentSelectors := Array new.
-			selectors valuesDo: [:selGroup | currentSelectors addAll: selGroup]]
-		ifFalse: [selectedCategory = '(all Ruby)'
-			ifTrue: [currentSelectors := rubySelectors]
-			ifFalse: [currentSelectors := selectors atKeyString: selectedCategory]].
+	currentSelectors := selectors at: selectedCategory.
 	currentSelectors do: [:catSelectors |
-		html 
-			with: [html option
-				with: catSelectors string]].
-	self sortList: selectorsSelect.
+		html with: [html option with: catSelectors]].
 !
 
 renderSmalltalkSourceCodeFor: selectorString
 	object 
-		smalltalkSourceCodeFor: selectorString 
-		withCallback: [:success :obj | self renderMethodObject: obj].
+		sourceCodeFor: selectorString 
+		language: 'smalltalk'
+		withCallback: [:obj | self renderMethodObject: obj].
 !
 
 renderSourceCode
