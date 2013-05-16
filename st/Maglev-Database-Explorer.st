@@ -946,6 +946,26 @@ isDraggableDefault
 	^ false
 ! !
 
+Widget subclass: #MaglevSearch
+	instanceVariableNames: ''
+	package: 'Maglev-Database-Explorer'!
+
+!MaglevSearch methodsFor: 'not yet classified'!
+
+renderOn: html
+	html div
+		class: 'maglev-search'; 
+		with: [
+		html form
+			class: 'search-form';
+			onSubmit: [:e|e preventDefault. Transcript cr; show: ('.search-input' asJQuery val)]; 
+			with:[
+			html input
+				class: 'search-input'
+			]
+		]
+! !
+
 Widget subclass: #MaglevTable
 	instanceVariableNames: 'object collectionName rangeFrom rangeTo isAssociationDictionary tableBody currentPage pageListItems pagination'
 	package: 'Maglev-Database-Explorer'!

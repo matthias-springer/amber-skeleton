@@ -1892,6 +1892,25 @@ smalltalk.MaglevSymbolInline);
 
 
 
+smalltalk.addClass('MaglevSearch', smalltalk.Widget, [], 'Maglev-Database-Explorer');
+smalltalk.addMethod(
+unescape('_renderOn_'),
+smalltalk.method({
+selector: unescape('renderOn%3A'),
+category: 'not yet classified',
+fn: function (html){
+var self=this;
+(function($rec){smalltalk.send($rec, "_class_", [unescape("maglev-search")]);return smalltalk.send($rec, "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_class_", [unescape("search-form")]);smalltalk.send($rec, "_onSubmit_", [(function(e){smalltalk.send(e, "_preventDefault", []);return (function($rec){smalltalk.send($rec, "_cr", []);return smalltalk.send($rec, "_show_", [smalltalk.send(smalltalk.send(unescape(".search-input"), "_asJQuery", []), "_val", [])]);})((smalltalk.Transcript || Transcript));})]);return smalltalk.send($rec, "_with_", [(function(){return smalltalk.send(smalltalk.send(html, "_input", []), "_class_", [unescape("search-input")]);})]);})(smalltalk.send(html, "_form", []));})]);})(smalltalk.send(html, "_div", []));
+return self;},
+args: ["html"],
+source: unescape('renderOn%3A%20html%0A%09html%20div%0A%09%09class%3A%20%27maglev-search%27%3B%20%0A%09%09with%3A%20%5B%0A%09%09html%20form%0A%09%09%09class%3A%20%27search-form%27%3B%0A%09%09%09onSubmit%3A%20%5B%3Ae%7Ce%20preventDefault.%20Transcript%20cr%3B%20show%3A%20%28%27.search-input%27%20asJQuery%20val%29%5D%3B%20%0A%09%09%09with%3A%5B%0A%09%09%09html%20input%0A%09%09%09%09class%3A%20%27search-input%27%0A%09%09%09%5D%0A%09%09%5D'),
+messageSends: ["class:", "with:", "onSubmit:", "preventDefault", "cr", "show:", "val", "asJQuery", "input", "form", "div"],
+referencedClasses: ["Transcript"]
+}),
+smalltalk.MaglevSearch);
+
+
+
 smalltalk.addClass('MaglevTable', smalltalk.Widget, ['object', 'collectionName', 'rangeFrom', 'rangeTo', 'isAssociationDictionary', 'tableBody', 'currentPage', 'pageListItems', 'pagination'], 'Maglev-Database-Explorer');
 smalltalk.addMethod(
 unescape('_collection'),
@@ -3043,7 +3062,7 @@ smalltalk.send(smalltalk.send(self['@object'], "_thread", []), "_stackTraceMetho
 (self['@methodContainer']=smalltalk.send(html, "_div", []));
 return self;},
 args: ["html"],
-source: unescape('renderStackTraceOn%3A%20html%0A%09%7CwaitForStackTrace%7C%0A%09waitForStackTrace%20%3A%3D%20html%20div%0A%09%09with%3A%20%5Bhtml%0A%09%09%09%09with%3A%20MaglevIcon%20wait%3B%0A%09%09%09%09with%3A%20%27%20loading...%27%5D.%0A%09methodSelect%20%3A%3D%20html%20select.%0A%09object%20thread%20stackTraceMethodsWithCallback%3A%20%5B%3Aobj%20%7C%0A%09%09html%20with%3A%20%5B%0A%09%09%09methodSelect%0A%09%09%09%09with%3A%20%5Bobj%20do%3A%20%5B%3Amethod%20%7C%0A%09%09%09%09%09html%20option%20with%3A%20method%5D%5D%3B%0A%09%09%09%09size%3A%2010%3B%0A%09%09%09%09style%3A%20%27width%3A%20100%25%3B%27%3B%0A%09%09%09%09onChange%3A%20%5Bself%20renderFrame%5D.%0A%09%09%09waitForStackTrace%20hide%5D%5D.%0A%09waitingScreen%20%3A%3D%20html%20div%0A%09%09with%3A%20%5Bhtml%0A%09%09%09%09with%3A%20MaglevIcon%20wait%3B%0A%09%09%09%09with%3A%20%27%20loading...%27%5D%3B%0A%09%09hide.%0A%09methodContainer%20%3A%3D%20html%20div.%0A'),
+source: unescape('renderStackTraceOn%3A%20html%0A%09%7CwaitForStackTrace%7C%0A%09waitForStackTrace%20%3A%3D%20html%20div%0A%09%09with%3A%20%5Bhtml%0A%09%09%09%09with%3A%20MaglevIcon%20wait%3B%0A%09%09%09%09with%3A%20%27%20loading...%27%5D.%0A%09methodSelect%20%3A%3D%20html%20select.%0A%09object%20thread%20stackTraceMethodsWithCallback%3A%20%5B%3Aobj%20%7C%0A%09%09html%20with%3A%20%5B%0A%09%09%09methodSelect%0A%09%09%09%09with%3A%20%5Bobj%20do%3A%20%5B%3Amethod%20%7C%0A%09%09%09%09%09html%20option%20with%3A%20method%5D%5D%3B%0A%09%09%09%09size%3A%2010%3B%0A%09%09%09%09style%3A%20%27width%3A%20100%25%3B%27%3B%0A%09%09%09%09onChange%3A%20%5Bself%20renderFrame%5D.%0A%09%09%09waitForStackTrace%20hide%5D%5D.%0A%09waitingScreen%20%3A%3D%20html%20div%0A%09%09with%3A%20%5Bhtml%0A%09%09%09%09with%3A%20MaglevIcon%20wait%3B%0A%09%09%09%09with%3A%20%27%20loading...%27%5D%3B%0A%09%09hide.%0A%09methodContainer%20%3A%3D%20html%20div.'),
 messageSends: ["with:", "div", "wait", "select", "stackTraceMethodsWithCallback:", "thread", "do:", "option", "size:", "style:", "onChange:", "renderFrame", "hide"],
 referencedClasses: ["MaglevIcon"]
 }),
