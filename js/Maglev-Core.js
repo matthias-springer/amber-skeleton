@@ -37,6 +37,40 @@ referencedClasses: ["Dictionary", "MaglevAjax", "MaglevObject"]
 smalltalk.Maglev);
 
 smalltalk.addMethod(
+unescape('_findClassNamesMatching_with_'),
+smalltalk.method({
+selector: unescape('findClassNamesMatching%3Awith%3A'),
+category: 'interactions',
+fn: function (aSelector, aBlock){
+var self=this;
+((($receiver = smalltalk.send(aSelector, "_isString", [])).klass === smalltalk.Boolean) ? (! $receiver ? (function(){return smalltalk.send(self, "_error_", ["The selector should be a string"]);})() : nil) : smalltalk.send($receiver, "_ifFalse_", [(function(){return smalltalk.send(self, "_error_", ["The selector should be a string"]);})]));
+smalltalk.send(self, "_evaluateWithoutUpdate_language_with_withCallback_", [smalltalk.send(smalltalk.send(unescape("%7Corganizer%7C%20organizer%20%3A%3D%20ClassOrganizer%20new.%20organizer%20findClassNamesMatching%3A%27"), "__comma", [aSelector]), "__comma", [unescape("%27.")]), "smalltalk", smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []), aBlock]);
+return self;},
+args: ["aSelector", "aBlock"],
+source: unescape('findClassNamesMatching%3A%20aSelector%20with%3A%20aBlock%0A%09aSelector%20isString%20ifFalse%3A%5Bself%20error%3A%20%27The%20selector%20should%20be%20a%20string%27%5D.%0A%0A%09self%20%0A%09%09evaluateWithoutUpdate%3A%20%27%7Corganizer%7C%20organizer%20%3A%3D%20ClassOrganizer%20new.%20organizer%20findClassNamesMatching%3A%27%27%27%2C%20aSelector%2C%20%27%27%27.%27%20%0A%09%09language%3A%20%27smalltalk%27%0A%09%09with%3A%20Dictionary%20new%0A%09%09withCallback%3A%20aBlock.'),
+messageSends: ["ifFalse:", "isString", "error:", "evaluateWithoutUpdate:language:with:withCallback:", unescape("%2C"), "new"],
+referencedClasses: ["Dictionary"]
+}),
+smalltalk.Maglev);
+
+smalltalk.addMethod(
+unescape('_findMethodNamesMatching_with_'),
+smalltalk.method({
+selector: unescape('findMethodNamesMatching%3Awith%3A'),
+category: 'interactions',
+fn: function (aSelector, aBlock){
+var self=this;
+((($receiver = smalltalk.send(aSelector, "_isString", [])).klass === smalltalk.Boolean) ? (! $receiver ? (function(){return smalltalk.send(self, "_error_", ["The selector should be a string"]);})() : nil) : smalltalk.send($receiver, "_ifFalse_", [(function(){return smalltalk.send(self, "_error_", ["The selector should be a string"]);})]));
+smalltalk.send(self, "_evaluateWithoutUpdate_language_with_withCallback_", [smalltalk.send(smalltalk.send(unescape("%7Corganizer%7C%20organizer%20%3A%3D%20ClassOrganizer%20new.%20organizer%20findMethodNamesMatching%3A%27"), "__comma", [aSelector]), "__comma", [unescape("%27.")]), "smalltalk", smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []), aBlock]);
+return self;},
+args: ["aSelector", "aBlock"],
+source: unescape('findMethodNamesMatching%3A%20aSelector%20with%3A%20aBlock%0A%09aSelector%20isString%20ifFalse%3A%5Bself%20error%3A%20%27The%20selector%20should%20be%20a%20string%27%5D.%0A%0A%09self%20%0A%09%09evaluateWithoutUpdate%3A%20%27%7Corganizer%7C%20organizer%20%3A%3D%20ClassOrganizer%20new.%20organizer%20findMethodNamesMatching%3A%27%27%27%2C%20aSelector%2C%20%27%27%27.%27%20%0A%09%09language%3A%20%27smalltalk%27%0A%09%09with%3A%20Dictionary%20new%0A%09%09withCallback%3A%20aBlock.'),
+messageSends: ["ifFalse:", "isString", "error:", "evaluateWithoutUpdate:language:with:withCallback:", unescape("%2C"), "new"],
+referencedClasses: ["Dictionary"]
+}),
+smalltalk.Maglev);
+
+smalltalk.addMethod(
 unescape('_implementorsOf_with_'),
 smalltalk.method({
 selector: unescape('implementorsOf%3Awith%3A'),
