@@ -27,6 +27,30 @@ return self;}
 smalltalk.Maglev);
 
 smalltalk.addMethod(
+unescape('_findClassNamesMatching_with_'),
+smalltalk.method({
+selector: unescape('findClassNamesMatching%3Awith%3A'),
+fn: function (aSelector, aBlock){
+var self=this;
+((($receiver = smalltalk.send(aSelector, "_isString", [])).klass === smalltalk.Boolean) ? (! $receiver ? (function(){return smalltalk.send(self, "_error_", ["The selector should be a string"]);})() : nil) : smalltalk.send($receiver, "_ifFalse_", [(function(){return smalltalk.send(self, "_error_", ["The selector should be a string"]);})]));
+smalltalk.send(self, "_evaluateWithoutUpdate_language_with_withCallback_", [smalltalk.send(smalltalk.send(unescape("%7Corganizer%7C%20organizer%20%3A%3D%20ClassOrganizer%20new.%20organizer%20findClassNamesMatching%3A%27"), "__comma", [aSelector]), "__comma", [unescape("%27.")]), "smalltalk", smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []), aBlock]);
+return self;}
+}),
+smalltalk.Maglev);
+
+smalltalk.addMethod(
+unescape('_findMethodNamesMatching_with_'),
+smalltalk.method({
+selector: unescape('findMethodNamesMatching%3Awith%3A'),
+fn: function (aSelector, aBlock){
+var self=this;
+((($receiver = smalltalk.send(aSelector, "_isString", [])).klass === smalltalk.Boolean) ? (! $receiver ? (function(){return smalltalk.send(self, "_error_", ["The selector should be a string"]);})() : nil) : smalltalk.send($receiver, "_ifFalse_", [(function(){return smalltalk.send(self, "_error_", ["The selector should be a string"]);})]));
+smalltalk.send(self, "_evaluateWithoutUpdate_language_with_withCallback_", [smalltalk.send(smalltalk.send(unescape("%7Corganizer%7C%20organizer%20%3A%3D%20ClassOrganizer%20new.%20organizer%20findMethodNamesMatching%3A%27"), "__comma", [aSelector]), "__comma", [unescape("%27.")]), "smalltalk", smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []), aBlock]);
+return self;}
+}),
+smalltalk.Maglev);
+
+smalltalk.addMethod(
 unescape('_implementorsOf_with_'),
 smalltalk.method({
 selector: unescape('implementorsOf%3Awith%3A'),

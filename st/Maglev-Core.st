@@ -38,6 +38,26 @@ evaluateWithoutUpdate: code language: aString with: additionalParams withCallbac
 			aBlock value: parsedObj isException not value: parsedObj].
 !
 
+findClassNamesMatching: aSelector with: aBlock
+	aSelector isString ifFalse:[self error: 'The selector should be a string'].
+
+	self 
+		evaluateWithoutUpdate: '|organizer| organizer := ClassOrganizer new. organizer findClassNamesMatching:''', aSelector, '''.' 
+		language: 'smalltalk'
+		with: Dictionary new
+		withCallback: aBlock.
+!
+
+findMethodNamesMatching: aSelector with: aBlock
+	aSelector isString ifFalse:[self error: 'The selector should be a string'].
+
+	self 
+		evaluateWithoutUpdate: '|organizer| organizer := ClassOrganizer new. organizer findMethodNamesMatching:''', aSelector, '''.' 
+		language: 'smalltalk'
+		with: Dictionary new
+		withCallback: aBlock.
+!
+
 implementorsOf: aSelector with: aBlock
 	aSelector isString ifFalse:[self error: 'The selector should be a string'].
 
