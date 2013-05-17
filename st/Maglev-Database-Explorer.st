@@ -71,28 +71,31 @@ object: anObject
 	object := anObject
 !
 
+sourceOffset
+	^ -1
+!
+
 sourceString
 	^ self methodObject at: 1
 ! !
 
 !MaglevGsNMethodEditor methodsFor: 'initializing'!
 
-bindCommands
-	|aceEditor|
-	aceEditor := editor.
-	< var commands = aceEditor.commands;
-	commands.addCommand({
-    		name: "save",
-    		bindKey: {win: "Ctrl-S", mac: "Command-S"},
-		exec: function() {self._commandSave();}}); >.
-!
-
 initializeEditor
-	editor := ace edit: (editorContainer asJQuery at: 0).
-	editor setTheme: 'ace/theme/clouds'.
-	editor getSession setMode: 'ace/mode/ruby'.
+	|params extraKeys|
+	extraKeys := Object new
+		basicAt: 'Ctrl-S' put: [self commandSave];
+		yourself.
+	params := Object new
+		basicAt: 'mode' put: 'text/x-ruby';
+		basicAt: 'styleActiveLine' put: true;
+		basicAt: 'lineNumbers' put: true;
+		basicAt: 'matchBrackets' put: true;
+		basicAt: 'extraKeys' put: extraKeys;
+		yourself. 
+	editor := CodeMirror value: (editorContainer asJQuery at: 0) value: params.
+	editor setValue: ''.
 	self mouseFix.
-	self bindCommands.
 !
 
 mouseFix
@@ -153,19 +156,21 @@ renderEditorOn: html
 
 renderMethodObject
 	|envId|
-	editor setValue: self sourceString pos: -1.
+	editor setValue: self sourceString. 
 	editorContainer show.
 	envId := self envId.
 	envIdContainer asJQuery empty.
 	envIdContainer with: envId.
 	sourceLocationContainer empty.
 	envId = 1 
-		ifTrue: [sourceLocationContainer with: self filename]
+		ifTrue: [
+			sourceLocationContainer with: self filename.
+			stIcon hide. rubyIcon show.
+			editor setOption: 'mode' data: 'text/x-ruby'.]
 		ifFalse: [sourceLocationContainer with: 'n/a'].
-	envId = 0 
-		ifTrue: [stIcon show. rubyIcon hide].
-	envId = 1 
-		ifTrue: [stIcon hide. rubyIcon show].
+	envId = 0 ifTrue: [
+		stIcon show. rubyIcon hide.
+		editor setOption: 'mode' data: 'text/x-stsrc'].
 	envId > 1
 		ifTrue: [stIcon hide. rubyIcon hide].
 !
@@ -238,7 +243,7 @@ argAndTempNames
 !
 
 argOrTempValue: anInteger
-	^ MaglevObject newObject: (object at: 10 + anInteger)
+	^ MaglevObject newObject: ((object at: 11) at: anInteger)
 !
 
 methodObject
@@ -251,6 +256,18 @@ ownerSelf
 
 receiver
 	^ MaglevObject newObject: (object at: 10)
+!
+
+sourceOffset
+	^ object at: 12
+!
+
+sourceOffsetX
+	^ (object at: 13) at: 1
+!
+
+sourceOffsetY
+	^ (object at: 13) at: 2
 ! !
 
 !MaglevGsNMethodDebugEditor methodsFor: 'rendering'!
@@ -274,17 +291,27 @@ renderArgsOn: html
 			html tr with: [
 				html td with: [
 					argSelect := html select
-						size: 3;
 						with: [html option with: '(self)'];
 						with: [html option with: '(receiver)'];
 						with: [self argAndTempNames do: [:arg |
 							html option with: arg]];
+						style: 'margin-bottom: 0px;';
 						onChange: [self renderArg].
 					argValueBox := html div].
 				html td 
 					with: [argValueBox := html div];
 					style: 'padding-left: 5px;']]];
 	style: 'margin-top: 5px;'.
+	self renderArg.
+!
+
+renderMethodObject
+	|rangeFrom rangeTo|
+	super renderMethodObject.
+	< self['@editor'].setSelection(
+		{line: self._sourceOffsetY(), ch: self._sourceOffsetX()}, 
+		{line: self._sourceOffsetY(), ch: self._sourceOffsetX()}); >.
+	editor replaceSelection: '⚡'.
 !
 
 renderOn: html
@@ -388,9 +415,15 @@ language
 !MaglevObjectDropdown methodsFor: 'initializing'!
 
 initializeEditor
-	editor := ace edit: (editorElement asJQuery at: 0).
-	editor setTheme: 'ace/theme/clouds'.
-	editor getSession setMode: 'ace/mode/ruby'.
+	|params|
+	params := Object new
+		basicAt: 'mode' put: 'text/x-ruby';
+		basicAt: 'styleActiveLine' put: true;
+		basicAt: 'lineNumbers' put: true;
+		basicAt: 'matchBrackets' put: true;
+		yourself. 
+	editor := CodeMirror value: (editorElement asJQuery at: 0) value: params.
+	editor setValue: ''.
 !
 
 mouseFix
@@ -427,8 +460,6 @@ evalPrintIt
 !
 
 executeWithCallback: aBlock
-	|html|
-	html := HTMLCanvas onJQuery: resultContainer asJQuery.
 	resultContainer
 		addClass: 'alert-info';
 		removeClass: 'alert-success';
@@ -448,6 +479,12 @@ executeWithCallback: aBlock
 				ifTrue: [resultContainer addClass: 'alert-success']
 				ifFalse: [resultContainer addClass: 'alert-error'].
 			aBlock value: success value: resultObj]
+!
+
+languageChanged
+	self isRuby
+		ifFalse: [editor setOption: 'mode' data: 'text/x-ruby']
+		ifTrue: [editor setOption: 'mode' data: 'text/x-stsrc'].
 ! !
 
 !MaglevObjectDropdown methodsFor: 'rendering'!
@@ -470,16 +507,19 @@ renderButtonsOn: html
 		onClick: [self evalInspectIt].
 	html div
 		class: 'btn-group';
+		style: 'float: right;';
 		data: 'toggle' with: 'buttons-radio';
 		with: [
 			rubyButton := html button
 				class: 'btn active';
 				data: 'toggle' with: 'buttons-checkbox';
+				onClick: [self languageChanged];
 				type: 'button';
 				with: 'Ruby'.
 			smalltalkButton := html button
 				class: 'btn';
 				data: 'toggle' with: 'buttons-checkbox';
+				onClick: [self languageChanged];
 				type: 'button';
 				with: 'Smalltalk'].
 !
@@ -488,7 +528,7 @@ renderFormOn: html
 	html form
 		style: 'margin: 0px;';
 		with: [
-			editorElement := html span
+			editorElement := html div
 				class: 'pull-left code-area'.
 			html div style: 'clear: both;'.
 			resultContainer := html div
@@ -1431,8 +1471,43 @@ renderArrayElementsOn: html
 ! !
 
 MaglevObjectWindow subclass: #MaglevExceptionWindow
-	instanceVariableNames: 'methodSelect methodContainer waitingScreen'
+	instanceVariableNames: 'methodSelect methodContainer waitingScreen waitForStackTrace'
 	package: 'Maglev-Database-Explorer'!
+
+!MaglevExceptionWindow methodsFor: 'accessing'!
+
+frameIndex
+	^ (methodSelect asJQuery at: 0) selectedIndex + 1
+! !
+
+!MaglevExceptionWindow methodsFor: 'interactions'!
+
+reloadStack
+	|html|
+	waitForStackTrace show.
+	html := HTMLCanvas onJQuery: methodSelect asJQuery.
+	object thread stackTraceMethodsWithCallback: [:obj |
+		methodSelect
+			with: [obj do: [:method |
+				html option with: method]];
+			size: 10;
+			style: 'width: 100%;';
+			onChange: [self renderFrame].
+		waitForStackTrace hide.
+		self renderFrame].
+!
+
+stepInto
+	object thread 
+		stepInto: self frameIndex 
+		withCallback: [:obj | self reloadStack].
+!
+
+stepOver
+	object thread 
+		stepOver: self frameIndex 
+		withCallback: [:obj | self reloadStack].
+! !
 
 !MaglevExceptionWindow methodsFor: 'rendering'!
 
@@ -1443,40 +1518,55 @@ contentTabs
 	^ result
 !
 
+renderButtonsOn: html
+	html div
+		class: 'button-area';
+		style: 'margin-top: 0px; margin-bottom: 10px;';
+		with: [
+			html input
+				type: 'button';
+				class: 'btn btn-primary';
+				value: 'Step into';
+				onClick: [self stepInto].
+			html input
+				type: 'button';
+				class: 'btn btn-primary';
+				value: 'Step over';
+				onClick: [self stepOver]].
+!
+
 renderFrame
 	|frameIndex|
 	methodContainer asJQuery empty.
 	waitingScreen show.
-	frameIndex := (methodSelect asJQuery at: 0) selectedIndex + 1.
-	object thread
-		stackFrame: frameIndex 
-		withCallback: [:obj |
-			methodContainer with: (MaglevGsNMethodDebugEditor for: obj).
-			waitingScreen hide].
+	frameIndex := self frameIndex.
+	frameIndex > 0
+		ifTrue: [object thread
+			stackFrame: frameIndex 
+			withCallback: [:obj |
+				methodContainer asJQuery empty.
+				methodContainer with: (MaglevGsNMethodDebugEditor for: obj).
+				waitingScreen hide]]
+		ifFalse: [waitingScreen hide].
 !
 
 renderStackTraceOn: html
-	|waitForStackTrace|
 	waitForStackTrace := html div
 		with: [html
 				with: MaglevIcon wait;
 				with: ' loading...'].
-	methodSelect := html select.
-	object thread stackTraceMethodsWithCallback: [:obj |
-		html with: [
-			methodSelect
-				with: [obj do: [:method |
-					html option with: method]];
-				size: 10;
-				style: 'width: 100%;';
-				onChange: [self renderFrame].
-			waitForStackTrace hide]].
+	methodSelect := html select
+			size: 10;
+			style: 'width: 100%;';
+			onChange: [self renderFrame].
+	self renderButtonsOn: html.
 	waitingScreen := html div
 		with: [html
 				with: MaglevIcon wait;
 				with: ' loading...'];
 		hide.
 	methodContainer := html div.
+	self reloadStack.
 ! !
 
 MaglevObjectWindow subclass: #MaglevFixnumWindow

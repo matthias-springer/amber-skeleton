@@ -23,31 +23,6 @@ addWindow: aWindow
 	self showConnectionsFor: aWindow.
 !
 
-evaluateWithoutUpdate: code language: aString with: additionalParams withCallback: aBlock
-	|params|
-	params := Dictionary new
-		at: 'language' put: aString;
-		at: 'code' put: code;
-		addAll: additionalParams;
-		yourself.
-	MaglevAjax 
-		ajax: '/object/evaluate/72193'
-		data: params
-		withCallback: [:obj | |parsedObj|
-			parsedObj := MaglevObject newObjectWithoutUpdate: obj.
-			aBlock value: parsedObj isException not value: parsedObj].
-!
-
-implementorsOf: aSelector with: aBlock
-	aSelector isString ifFalse:[self error: 'The selector should be a string'].
-
-	self 
-		evaluateWithoutUpdate: '|organizer dict| organizer := ClassOrganizer new. dict := organizer implementorsOf:''', aSelector, ''' asSymbol. dict addAll:(organizer rubyImplementorsOf:''', aSelector, ''' asSymbol). dict' 
-		language: 'smalltalk'
-		with: Dictionary new
-		withCallback: aBlock.
-!
-
 removeWindow: aWindow
 	windows remove: aWindow.
 ! !
@@ -107,6 +82,12 @@ Object subclass: #MaglevObject
 
 classObject
 	^ classObject
+!
+
+hasInstVar: instVarName
+	self instVarsDo: [:ivName :ivValue |
+		ivName = instVarName ifTrue: [^ true]].
+	^ false
 !
 
 inspection
@@ -206,9 +187,10 @@ evaluate: code language: aString withCallback: aBlock
 	MaglevAjax 
 		ajax: '/object/evaluate/', oop asString
 		data: params
-		withCallback: [:obj | |parsedObj|
-			parsedObj := MaglevObject newObject: obj.
-			aBlock value: parsedObj isException not value: parsedObj].
+		withCallback: [:obj | |isException parsedObj|
+			isException := obj at: 1.
+			parsedObj := MaglevObject newObject: (obj at: 2).
+			aBlock value: isException not value: parsedObj].
 !
 
 evaluateWithoutUpdate: code language: aString with: additionalParams withCallback: aBlock
@@ -221,9 +203,10 @@ evaluateWithoutUpdate: code language: aString with: additionalParams withCallbac
 	MaglevAjax 
 		ajax: '/object/evaluate/', oop asString
 		data: params
-		withCallback: [:obj | |parsedObj|
-			parsedObj := MaglevObject newObjectWithoutUpdate: obj.
-			aBlock value: parsedObj isException not value: parsedObj].
+		withCallback: [:obj | |isException parsedObj|
+			isException := obj at: 1.
+			parsedObj := MaglevObject newObjectWithoutUpdate: (obj at: 2).
+			aBlock value: isException not value: parsedObj].
 !
 
 evaluateWithoutUpdate: code language: aString withCallback: aBlock
@@ -235,9 +218,10 @@ evaluateWithoutUpdate: code language: aString withCallback: aBlock
 	MaglevAjax 
 		ajax: '/object/evaluate/', oop asString
 		data: params
-		withCallback: [:obj | |parsedObj|
-			parsedObj := MaglevObject newObjectWithoutUpdate: obj.
-			aBlock value: parsedObj isException not value: parsedObj].
+		withCallback: [:obj | |isException parsedObj|
+			isException := obj at: 1.
+			parsedObj := MaglevObject newObject: (obj at: 2).
+			aBlock value: isException not value: parsedObj].
 !
 
 fullReloadWithCallback: aBlock
@@ -505,26 +489,19 @@ windowViewClass
 ! !
 
 MaglevObject subclass: #MaglevException
-	instanceVariableNames: 'thread'
+	instanceVariableNames: ''
 	package: 'Maglev-Core'!
 
 !MaglevException methodsFor: 'accessing'!
 
 thread
-	^ thread
-! !
-
-!MaglevException methodsFor: 'instance creation'!
-
-parseJSON: obj
-	super parseJSON: obj.
-	thread := MaglevObject newObject: obj thread.
+	^ self instVarAt: '@thread'
 ! !
 
 !MaglevException methodsFor: 'testing'!
 
 hasThread
-	^ thread isMaglevNil not
+	^ self hasInstVar: '@thread'
 ! !
 
 !MaglevException class methodsFor: 'constants'!
@@ -1050,6 +1027,28 @@ stackTraceMethodsWithCallback: aBlock
 	MaglevAjax 
 		ajax: '/code/frames/', oop asString
 		data: Dictionary new
+		withCallback: aBlock.
+!
+
+stepInto: frameIndex withCallback: aBlock
+	|params|
+	params := Dictionary new
+		at: 'index' put: frameIndex;
+		yourself.
+	MaglevAjax 
+		ajax: '/code/stepInto/', oop asString
+		data: params
+		withCallback: aBlock.
+!
+
+stepOver: frameIndex withCallback: aBlock
+	|params|
+	params := Dictionary new
+		at: 'index' put: frameIndex;
+		yourself.
+	MaglevAjax 
+		ajax: '/code/stepOver/', oop asString
+		data: params
 		withCallback: aBlock.
 ! !
 
