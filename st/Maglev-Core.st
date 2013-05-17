@@ -23,6 +23,51 @@ addWindow: aWindow
 	self showConnectionsFor: aWindow.
 !
 
+evaluateWithoutUpdate: code language: aString with: additionalParams withCallback: aBlock
+	|params|
+	params := Dictionary new
+		at: 'language' put: aString;
+		at: 'code' put: code;
+		addAll: additionalParams;
+		yourself.
+	MaglevAjax 
+		ajax: '/object/evaluate/72193'
+		data: params
+		withCallback: [:obj | |parsedObj|
+			parsedObj := MaglevObject newObjectWithoutUpdate: obj.
+			aBlock value: parsedObj isException not value: parsedObj].
+!
+
+findClassNamesMatching: aSelector with: aBlock
+	aSelector isString ifFalse:[self error: 'The selector should be a string'].
+
+	self 
+		evaluateWithoutUpdate: '|organizer| organizer := ClassOrganizer new. organizer findClassNamesMatching:''', aSelector, '''.' 
+		language: 'smalltalk'
+		with: Dictionary new
+		withCallback: aBlock.
+!
+
+findMethodNamesMatching: aSelector with: aBlock
+	aSelector isString ifFalse:[self error: 'The selector should be a string'].
+
+	self 
+		evaluateWithoutUpdate: '|organizer| organizer := ClassOrganizer new. organizer findMethodNamesMatching:''', aSelector, '''.' 
+		language: 'smalltalk'
+		with: Dictionary new
+		withCallback: aBlock.
+!
+
+implementorsOf: aSelector with: aBlock
+	aSelector isString ifFalse:[self error: 'The selector should be a string'].
+
+	self 
+		evaluateWithoutUpdate: '|organizer dict| organizer := ClassOrganizer new. dict := organizer implementorsOf:''', aSelector, ''' asSymbol. dict addAll:(organizer rubyImplementorsOf:''', aSelector, ''' asSymbol). dict' 
+		language: 'smalltalk'
+		with: Dictionary new
+		withCallback: aBlock.
+!
+
 removeWindow: aWindow
 	windows remove: aWindow.
 ! !
