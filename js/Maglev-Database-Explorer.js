@@ -1973,6 +1973,25 @@ smalltalk.MaglevSymbolInline);
 
 
 
+smalltalk.addClass('MaglevSearch', smalltalk.Widget, [], 'Maglev-Database-Explorer');
+smalltalk.addMethod(
+unescape('_renderOn_'),
+smalltalk.method({
+selector: unescape('renderOn%3A'),
+category: 'not yet classified',
+fn: function (html){
+var self=this;
+(function($rec){smalltalk.send($rec, "_class_", [unescape("maglev-search")]);return smalltalk.send($rec, "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_class_", [unescape("search-form")]);smalltalk.send($rec, "_onSubmit_", [(function(e){smalltalk.send(e, "_preventDefault", []);return (function($rec){smalltalk.send($rec, "_cr", []);return smalltalk.send($rec, "_show_", [smalltalk.send(smalltalk.send(unescape(".search-input"), "_asJQuery", []), "_val", [])]);})((smalltalk.Transcript || Transcript));})]);return smalltalk.send($rec, "_with_", [(function(){return smalltalk.send(smalltalk.send(html, "_input", []), "_class_", [unescape("search-input")]);})]);})(smalltalk.send(html, "_form", []));})]);})(smalltalk.send(html, "_div", []));
+return self;},
+args: ["html"],
+source: unescape('renderOn%3A%20html%0A%09html%20div%0A%09%09class%3A%20%27maglev-search%27%3B%20%0A%09%09with%3A%20%5B%0A%09%09html%20form%0A%09%09%09class%3A%20%27search-form%27%3B%0A%09%09%09onSubmit%3A%20%5B%3Ae%7Ce%20preventDefault.%20Transcript%20cr%3B%20show%3A%20%28%27.search-input%27%20asJQuery%20val%29%5D%3B%20%0A%09%09%09with%3A%5B%0A%09%09%09html%20input%0A%09%09%09%09class%3A%20%27search-input%27%0A%09%09%09%5D%0A%09%09%5D'),
+messageSends: ["class:", "with:", "onSubmit:", "preventDefault", "cr", "show:", "val", "asJQuery", "input", "form", "div"],
+referencedClasses: ["Transcript"]
+}),
+smalltalk.MaglevSearch);
+
+
+
 smalltalk.addClass('MaglevTable', smalltalk.Widget, ['object', 'collectionName', 'rangeFrom', 'rangeTo', 'isAssociationDictionary', 'tableBody', 'currentPage', 'pageListItems', 'pagination'], 'Maglev-Database-Explorer');
 smalltalk.addMethod(
 unescape('_collection'),
