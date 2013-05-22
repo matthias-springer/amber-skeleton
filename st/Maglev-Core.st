@@ -23,6 +23,51 @@ addWindow: aWindow
 	self showConnectionsFor: aWindow.
 !
 
+evaluateWithoutUpdate: code language: aString with: additionalParams withCallback: aBlock
+	|params|
+	params := Dictionary new
+		at: 'language' put: aString;
+		at: 'code' put: code;
+		addAll: additionalParams;
+		yourself.
+	MaglevAjax 
+		ajax: '/object/evaluate/72193'
+		data: params
+		withCallback: [:obj | |parsedObj|
+			parsedObj := MaglevObject newObjectWithoutUpdate: obj.
+			aBlock value: parsedObj isException not value: parsedObj].
+!
+
+findClassNamesMatching: aSelector with: aBlock
+	aSelector isString ifFalse:[self error: 'The selector should be a string'].
+
+	self 
+		evaluateWithoutUpdate: '|organizer| organizer := ClassOrganizer new. organizer findClassNamesMatching:''', aSelector, '''.' 
+		language: 'smalltalk'
+		with: Dictionary new
+		withCallback: aBlock.
+!
+
+findMethodNamesMatching: aSelector with: aBlock
+	aSelector isString ifFalse:[self error: 'The selector should be a string'].
+
+	self 
+		evaluateWithoutUpdate: '|organizer| organizer := ClassOrganizer new. organizer findMethodNamesMatching:''', aSelector, '''.' 
+		language: 'smalltalk'
+		with: Dictionary new
+		withCallback: aBlock.
+!
+
+implementersOf: aSelector withCallback: aBlock
+	aSelector isString ifFalse:[self error: 'The selector should be a string'].
+
+	self 
+		evaluateWithoutUpdate: '|organizer dict ruby smalltalk| organizer := ClassOrganizer new. dict := Array new. smalltalk := organizer implementorsOf:''', aSelector, ''' asSymbol. smalltalk do:[:cls| dict addLast:{cls. 0.}]. ruby := organizer rubyImplementorsOf:''', aSelector, ''' asSymbol. ruby do:[:cls| dict addLast:{cls. 1.}]. 1 to: dict size do:[:i||cls| cls:= (dict at: i) at:1. (cls class == GsNMethod) ifTrue:[(dict at:i) at:1 put: cls inClass]]. dict' 
+		language: 'smalltalk'
+		with: Dictionary new
+		withCallback: aBlock.
+!
+
 removeWindow: aWindow
 	windows remove: aWindow.
 ! !

@@ -18,6 +18,76 @@ referencedClasses: []
 smalltalk.Maglev);
 
 smalltalk.addMethod(
+unescape('_evaluateWithoutUpdate_language_with_withCallback_'),
+smalltalk.method({
+selector: unescape('evaluateWithoutUpdate%3Alanguage%3Awith%3AwithCallback%3A'),
+category: 'interactions',
+fn: function (code, aString, additionalParams, aBlock){
+var self=this;
+var params=nil;
+(params=(function($rec){smalltalk.send($rec, "_at_put_", ["language", aString]);smalltalk.send($rec, "_at_put_", ["code", code]);smalltalk.send($rec, "_addAll_", [additionalParams]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", [])));
+smalltalk.send((smalltalk.MaglevAjax || MaglevAjax), "_ajax_data_withCallback_", [unescape("/object/evaluate/72193"), params, (function(obj){var parsedObj=nil;
+(parsedObj=smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObjectWithoutUpdate_", [obj]));return smalltalk.send(aBlock, "_value_value_", [smalltalk.send(smalltalk.send(parsedObj, "_isException", []), "_not", []), parsedObj]);})]);
+return self;},
+args: ["code", "aString", "additionalParams", "aBlock"],
+source: unescape('evaluateWithoutUpdate%3A%20code%20language%3A%20aString%20with%3A%20additionalParams%20withCallback%3A%20aBlock%0A%09%7Cparams%7C%0A%09params%20%3A%3D%20Dictionary%20new%0A%09%09at%3A%20%27language%27%20put%3A%20aString%3B%0A%09%09at%3A%20%27code%27%20put%3A%20code%3B%0A%09%09addAll%3A%20additionalParams%3B%0A%09%09yourself.%0A%09MaglevAjax%20%0A%09%09ajax%3A%20%27/object/evaluate/72193%27%0A%09%09data%3A%20params%0A%09%09withCallback%3A%20%5B%3Aobj%20%7C%20%7CparsedObj%7C%0A%09%09%09parsedObj%20%3A%3D%20MaglevObject%20newObjectWithoutUpdate%3A%20obj.%0A%09%09%09aBlock%20value%3A%20parsedObj%20isException%20not%20value%3A%20parsedObj%5D.'),
+messageSends: ["at:put:", "addAll:", "yourself", "new", "ajax:data:withCallback:", "newObjectWithoutUpdate:", "value:value:", "not", "isException"],
+referencedClasses: ["Dictionary", "MaglevAjax", "MaglevObject"]
+}),
+smalltalk.Maglev);
+
+smalltalk.addMethod(
+unescape('_findClassNamesMatching_with_'),
+smalltalk.method({
+selector: unescape('findClassNamesMatching%3Awith%3A'),
+category: 'interactions',
+fn: function (aSelector, aBlock){
+var self=this;
+((($receiver = smalltalk.send(aSelector, "_isString", [])).klass === smalltalk.Boolean) ? (! $receiver ? (function(){return smalltalk.send(self, "_error_", ["The selector should be a string"]);})() : nil) : smalltalk.send($receiver, "_ifFalse_", [(function(){return smalltalk.send(self, "_error_", ["The selector should be a string"]);})]));
+smalltalk.send(self, "_evaluateWithoutUpdate_language_with_withCallback_", [smalltalk.send(smalltalk.send(unescape("%7Corganizer%7C%20organizer%20%3A%3D%20ClassOrganizer%20new.%20organizer%20findClassNamesMatching%3A%27"), "__comma", [aSelector]), "__comma", [unescape("%27.")]), "smalltalk", smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []), aBlock]);
+return self;},
+args: ["aSelector", "aBlock"],
+source: unescape('findClassNamesMatching%3A%20aSelector%20with%3A%20aBlock%0A%09aSelector%20isString%20ifFalse%3A%5Bself%20error%3A%20%27The%20selector%20should%20be%20a%20string%27%5D.%0A%0A%09self%20%0A%09%09evaluateWithoutUpdate%3A%20%27%7Corganizer%7C%20organizer%20%3A%3D%20ClassOrganizer%20new.%20organizer%20findClassNamesMatching%3A%27%27%27%2C%20aSelector%2C%20%27%27%27.%27%20%0A%09%09language%3A%20%27smalltalk%27%0A%09%09with%3A%20Dictionary%20new%0A%09%09withCallback%3A%20aBlock.'),
+messageSends: ["ifFalse:", "isString", "error:", "evaluateWithoutUpdate:language:with:withCallback:", unescape("%2C"), "new"],
+referencedClasses: ["Dictionary"]
+}),
+smalltalk.Maglev);
+
+smalltalk.addMethod(
+unescape('_findMethodNamesMatching_with_'),
+smalltalk.method({
+selector: unescape('findMethodNamesMatching%3Awith%3A'),
+category: 'interactions',
+fn: function (aSelector, aBlock){
+var self=this;
+((($receiver = smalltalk.send(aSelector, "_isString", [])).klass === smalltalk.Boolean) ? (! $receiver ? (function(){return smalltalk.send(self, "_error_", ["The selector should be a string"]);})() : nil) : smalltalk.send($receiver, "_ifFalse_", [(function(){return smalltalk.send(self, "_error_", ["The selector should be a string"]);})]));
+smalltalk.send(self, "_evaluateWithoutUpdate_language_with_withCallback_", [smalltalk.send(smalltalk.send(unescape("%7Corganizer%7C%20organizer%20%3A%3D%20ClassOrganizer%20new.%20organizer%20findMethodNamesMatching%3A%27"), "__comma", [aSelector]), "__comma", [unescape("%27.")]), "smalltalk", smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []), aBlock]);
+return self;},
+args: ["aSelector", "aBlock"],
+source: unescape('findMethodNamesMatching%3A%20aSelector%20with%3A%20aBlock%0A%09aSelector%20isString%20ifFalse%3A%5Bself%20error%3A%20%27The%20selector%20should%20be%20a%20string%27%5D.%0A%0A%09self%20%0A%09%09evaluateWithoutUpdate%3A%20%27%7Corganizer%7C%20organizer%20%3A%3D%20ClassOrganizer%20new.%20organizer%20findMethodNamesMatching%3A%27%27%27%2C%20aSelector%2C%20%27%27%27.%27%20%0A%09%09language%3A%20%27smalltalk%27%0A%09%09with%3A%20Dictionary%20new%0A%09%09withCallback%3A%20aBlock.'),
+messageSends: ["ifFalse:", "isString", "error:", "evaluateWithoutUpdate:language:with:withCallback:", unescape("%2C"), "new"],
+referencedClasses: ["Dictionary"]
+}),
+smalltalk.Maglev);
+
+smalltalk.addMethod(
+unescape('_implementersOf_withCallback_'),
+smalltalk.method({
+selector: unescape('implementersOf%3AwithCallback%3A'),
+category: 'interactions',
+fn: function (aSelector, aBlock){
+var self=this;
+((($receiver = smalltalk.send(aSelector, "_isString", [])).klass === smalltalk.Boolean) ? (! $receiver ? (function(){return smalltalk.send(self, "_error_", ["The selector should be a string"]);})() : nil) : smalltalk.send($receiver, "_ifFalse_", [(function(){return smalltalk.send(self, "_error_", ["The selector should be a string"]);})]));
+smalltalk.send(self, "_evaluateWithoutUpdate_language_with_withCallback_", [smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(unescape("%7Corganizer%20dict%20ruby%20smalltalk%7C%20organizer%20%3A%3D%20ClassOrganizer%20new.%20dict%20%3A%3D%20Array%20new.%20smalltalk%20%3A%3D%20organizer%20implementorsOf%3A%27"), "__comma", [aSelector]), "__comma", [unescape("%27%20asSymbol.%20smalltalk%20do%3A%5B%3Acls%7C%20dict%20addLast%3A%7Bcls.%200.%7D%5D.%20ruby%20%3A%3D%20organizer%20rubyImplementorsOf%3A%27")]), "__comma", [aSelector]), "__comma", [unescape("%27%20asSymbol.%20ruby%20do%3A%5B%3Acls%7C%20dict%20addLast%3A%7Bcls.%201.%7D%5D.%201%20to%3A%20dict%20size%20do%3A%5B%3Ai%7C%7Ccls%7C%20cls%3A%3D%20%28dict%20at%3A%20i%29%20at%3A1.%20%28cls%20class%20%3D%3D%20GsNMethod%29%20ifTrue%3A%5B%28dict%20at%3Ai%29%20at%3A1%20put%3A%20cls%20inClass%5D%5D.%20dict")]), "smalltalk", smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []), aBlock]);
+return self;},
+args: ["aSelector", "aBlock"],
+source: unescape('implementersOf%3A%20aSelector%20withCallback%3A%20aBlock%0A%09aSelector%20isString%20ifFalse%3A%5Bself%20error%3A%20%27The%20selector%20should%20be%20a%20string%27%5D.%0A%0A%09self%20%0A%09%09evaluateWithoutUpdate%3A%20%27%7Corganizer%20dict%20ruby%20smalltalk%7C%20organizer%20%3A%3D%20ClassOrganizer%20new.%20dict%20%3A%3D%20Array%20new.%20smalltalk%20%3A%3D%20organizer%20implementorsOf%3A%27%27%27%2C%20aSelector%2C%20%27%27%27%20asSymbol.%20smalltalk%20do%3A%5B%3Acls%7C%20dict%20addLast%3A%7Bcls.%200.%7D%5D.%20ruby%20%3A%3D%20organizer%20rubyImplementorsOf%3A%27%27%27%2C%20aSelector%2C%20%27%27%27%20asSymbol.%20ruby%20do%3A%5B%3Acls%7C%20dict%20addLast%3A%7Bcls.%201.%7D%5D.%201%20to%3A%20dict%20size%20do%3A%5B%3Ai%7C%7Ccls%7C%20cls%3A%3D%20%28dict%20at%3A%20i%29%20at%3A1.%20%28cls%20class%20%3D%3D%20GsNMethod%29%20ifTrue%3A%5B%28dict%20at%3Ai%29%20at%3A1%20put%3A%20cls%20inClass%5D%5D.%20dict%27%20%0A%09%09language%3A%20%27smalltalk%27%0A%09%09with%3A%20Dictionary%20new%0A%09%09withCallback%3A%20aBlock.'),
+messageSends: ["ifFalse:", "isString", "error:", "evaluateWithoutUpdate:language:with:withCallback:", unescape("%2C"), "new"],
+referencedClasses: ["Dictionary"]
+}),
+smalltalk.Maglev);
+
+smalltalk.addMethod(
 unescape('_initialize'),
 smalltalk.method({
 selector: unescape('initialize'),
@@ -2940,7 +3010,7 @@ var self=this;
 smalltalk.send((smalltalk.MaglevAjax || MaglevAjax), "_ajax_data_withCallback_", [smalltalk.send(unescape("/code/proceed/"), "__comma", [smalltalk.send(self['@oop'], "_asString", [])]), smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []), aBlock]);
 return self;},
 args: ["aBlock"],
-source: unescape('proceedWithCallback%3A%20aBlock%0A%09MaglevAjax%20%0A%09%09ajax%3A%20%27/code/proceed/%27%2C%20oop%20asString%0A%09%09data%3A%20Dictionary%20new%0A%09%09withCallback%3A%20aBlock.%20'),
+source: unescape('proceedWithCallback%3A%20aBlock%0A%09MaglevAjax%20%0A%09%09ajax%3A%20%27/code/proceed/%27%2C%20oop%20asString%0A%09%09data%3A%20Dictionary%20new%0A%09%09withCallback%3A%20aBlock.'),
 messageSends: ["ajax:data:withCallback:", unescape("%2C"), "asString", "new"],
 referencedClasses: ["MaglevAjax", "Dictionary"]
 }),
@@ -2958,7 +3028,7 @@ var params=nil;
 smalltalk.send((smalltalk.MaglevAjax || MaglevAjax), "_ajax_data_withCallback_", [smalltalk.send(unescape("/code/frame/"), "__comma", [smalltalk.send(self['@oop'], "_asString", [])]), params, aBlock]);
 return self;},
 args: ["anInteger", "aBlock"],
-source: unescape('stackFrame%3A%20anInteger%20withCallback%3A%20aBlock%0A%09%7Cparams%7C%0A%09params%20%3A%3D%20Dictionary%20new%0A%09%09at%3A%20%27index%27%20put%3A%20anInteger%3B%0A%09%09yourself.%0A%09MaglevAjax%20%0A%09%09ajax%3A%20%27/code/frame/%27%2C%20oop%20asString%0A%09%09data%3A%20params%0A%09%09withCallback%3A%20aBlock.%20'),
+source: unescape('stackFrame%3A%20anInteger%20withCallback%3A%20aBlock%0A%09%7Cparams%7C%0A%09params%20%3A%3D%20Dictionary%20new%0A%09%09at%3A%20%27index%27%20put%3A%20anInteger%3B%0A%09%09yourself.%0A%09MaglevAjax%20%0A%09%09ajax%3A%20%27/code/frame/%27%2C%20oop%20asString%0A%09%09data%3A%20params%0A%09%09withCallback%3A%20aBlock.'),
 messageSends: ["at:put:", "yourself", "new", "ajax:data:withCallback:", unescape("%2C"), "asString"],
 referencedClasses: ["Dictionary", "MaglevAjax"]
 }),
@@ -2974,7 +3044,7 @@ var self=this;
 smalltalk.send((smalltalk.MaglevAjax || MaglevAjax), "_ajax_data_withCallback_", [smalltalk.send(unescape("/code/frames/"), "__comma", [smalltalk.send(self['@oop'], "_asString", [])]), smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []), aBlock]);
 return self;},
 args: ["aBlock"],
-source: unescape('stackTraceMethodsWithCallback%3A%20aBlock%0A%09MaglevAjax%20%0A%09%09ajax%3A%20%27/code/frames/%27%2C%20oop%20asString%0A%09%09data%3A%20Dictionary%20new%0A%09%09withCallback%3A%20aBlock.%20'),
+source: unescape('stackTraceMethodsWithCallback%3A%20aBlock%0A%09MaglevAjax%20%0A%09%09ajax%3A%20%27/code/frames/%27%2C%20oop%20asString%0A%09%09data%3A%20Dictionary%20new%0A%09%09withCallback%3A%20aBlock.'),
 messageSends: ["ajax:data:withCallback:", unescape("%2C"), "asString", "new"],
 referencedClasses: ["MaglevAjax", "Dictionary"]
 }),
@@ -2992,7 +3062,7 @@ var params=nil;
 smalltalk.send((smalltalk.MaglevAjax || MaglevAjax), "_ajax_data_withCallback_", [smalltalk.send(unescape("/code/stepInto/"), "__comma", [smalltalk.send(self['@oop'], "_asString", [])]), params, aBlock]);
 return self;},
 args: ["frameIndex", "aBlock"],
-source: unescape('stepInto%3A%20frameIndex%20withCallback%3A%20aBlock%0A%09%7Cparams%7C%0A%09params%20%3A%3D%20Dictionary%20new%0A%09%09at%3A%20%27index%27%20put%3A%20frameIndex%3B%0A%09%09yourself.%0A%09MaglevAjax%20%0A%09%09ajax%3A%20%27/code/stepInto/%27%2C%20oop%20asString%0A%09%09data%3A%20params%0A%09%09withCallback%3A%20aBlock.%20'),
+source: unescape('stepInto%3A%20frameIndex%20withCallback%3A%20aBlock%0A%09%7Cparams%7C%0A%09params%20%3A%3D%20Dictionary%20new%0A%09%09at%3A%20%27index%27%20put%3A%20frameIndex%3B%0A%09%09yourself.%0A%09MaglevAjax%20%0A%09%09ajax%3A%20%27/code/stepInto/%27%2C%20oop%20asString%0A%09%09data%3A%20params%0A%09%09withCallback%3A%20aBlock.'),
 messageSends: ["at:put:", "yourself", "new", "ajax:data:withCallback:", unescape("%2C"), "asString"],
 referencedClasses: ["Dictionary", "MaglevAjax"]
 }),
@@ -3010,7 +3080,7 @@ var params=nil;
 smalltalk.send((smalltalk.MaglevAjax || MaglevAjax), "_ajax_data_withCallback_", [smalltalk.send(unescape("/code/stepOver/"), "__comma", [smalltalk.send(self['@oop'], "_asString", [])]), params, aBlock]);
 return self;},
 args: ["frameIndex", "aBlock"],
-source: unescape('stepOver%3A%20frameIndex%20withCallback%3A%20aBlock%0A%09%7Cparams%7C%0A%09params%20%3A%3D%20Dictionary%20new%0A%09%09at%3A%20%27index%27%20put%3A%20frameIndex%3B%0A%09%09yourself.%0A%09MaglevAjax%20%0A%09%09ajax%3A%20%27/code/stepOver/%27%2C%20oop%20asString%0A%09%09data%3A%20params%0A%09%09withCallback%3A%20aBlock.%20'),
+source: unescape('stepOver%3A%20frameIndex%20withCallback%3A%20aBlock%0A%09%7Cparams%7C%0A%09params%20%3A%3D%20Dictionary%20new%0A%09%09at%3A%20%27index%27%20put%3A%20frameIndex%3B%0A%09%09yourself.%0A%09MaglevAjax%20%0A%09%09ajax%3A%20%27/code/stepOver/%27%2C%20oop%20asString%0A%09%09data%3A%20params%0A%09%09withCallback%3A%20aBlock.'),
 messageSends: ["at:put:", "yourself", "new", "ajax:data:withCallback:", unescape("%2C"), "asString"],
 referencedClasses: ["Dictionary", "MaglevAjax"]
 }),
@@ -3028,7 +3098,7 @@ var params=nil;
 smalltalk.send((smalltalk.MaglevAjax || MaglevAjax), "_ajax_data_withCallback_", [smalltalk.send(unescape("/code/trim/"), "__comma", [smalltalk.send(self['@oop'], "_asString", [])]), params, aBlock]);
 return self;},
 args: ["frameIndex", "aBlock"],
-source: unescape('trimTo%3A%20frameIndex%20withCallback%3A%20aBlock%0A%09%7Cparams%7C%0A%09params%20%3A%3D%20Dictionary%20new%0A%09%09at%3A%20%27index%27%20put%3A%20frameIndex%3B%0A%09%09yourself.%0A%09MaglevAjax%20%0A%09%09ajax%3A%20%27/code/trim/%27%2C%20oop%20asString%0A%09%09data%3A%20params%0A%09%09withCallback%3A%20aBlock.%20'),
+source: unescape('trimTo%3A%20frameIndex%20withCallback%3A%20aBlock%0A%09%7Cparams%7C%0A%09params%20%3A%3D%20Dictionary%20new%0A%09%09at%3A%20%27index%27%20put%3A%20frameIndex%3B%0A%09%09yourself.%0A%09MaglevAjax%20%0A%09%09ajax%3A%20%27/code/trim/%27%2C%20oop%20asString%0A%09%09data%3A%20params%0A%09%09withCallback%3A%20aBlock.'),
 messageSends: ["at:put:", "yourself", "new", "ajax:data:withCallback:", unescape("%2C"), "asString"],
 referencedClasses: ["Dictionary", "MaglevAjax"]
 }),
