@@ -986,26 +986,6 @@ isDraggableDefault
 	^ false
 ! !
 
-Widget subclass: #MaglevSearch
-	instanceVariableNames: ''
-	package: 'Maglev-Database-Explorer'!
-
-!MaglevSearch methodsFor: 'not yet classified'!
-
-renderOn: html
-	html div
-		class: 'maglev-search'; 
-		with: [
-		html form
-			class: 'search-form';
-			onSubmit: [:e|e preventDefault. Transcript cr; show: ('.search-input' asJQuery val)]; 
-			with:[
-			html input
-				class: 'search-input'
-			]
-		]
-! !
-
 Widget subclass: #MaglevTable
 	instanceVariableNames: 'object collectionName rangeFrom rangeTo isAssociationDictionary tableBody currentPage pageListItems pagination'
 	package: 'Maglev-Database-Explorer'!
@@ -1766,6 +1746,108 @@ MaglevObjectWindow subclass: #MaglevStringWindow
 MaglevObjectWindow subclass: #MaglevSymbolWindow
 	instanceVariableNames: ''
 	package: 'Maglev-Database-Explorer'!
+
+MaglevWindow subclass: #MaglevSearchWindow
+	instanceVariableNames: 'maglev selectBox waitForResult listContents methodContainer waitingScreen'
+	package: 'Maglev-Database-Explorer'!
+
+!MaglevSearchWindow methodsFor: 'not yet classified'!
+
+listIndex
+	^ (selectBox asJQuery at: 0) selectedIndex + 1
+!
+
+maglev
+	maglev ifNil: [maglev := Maglev instance].
+	^maglev
+!
+
+renderClass
+	|listElement cls selector envId|
+	waitingScreen show.
+	listElement := listContents at: self listIndex.
+	cls := (listElement at: 1) at:1.
+	envId :=  ((listElement at: 1) at:2) inspection asNumber.
+	selector := listElement at: 2.
+	envId = 0 ifTrue:[
+		cls sourceCodeFor: selector language: 'smalltalk' withCallback: [:obj| 
+			self renderMethodObject: obj.]			
+	]
+	ifFalse:[
+		cls sourceCodeFor: selector language: 'ruby' withCallback: [:obj|
+			self renderMethodObject: obj]
+	]
+!
+
+renderListOf: selectors
+	|html|
+	html := HTMLCanvas onJQuery: selectBox asJQuery.
+	selectBox asJQuery empty.
+	listContents := Array new.
+	selectors do:[:selector| 
+		self maglev implementersOf: selector withCallback:[:success :obj|
+			obj hasElements ifTrue:[
+				selectBox
+				with: [obj do: [:cls |
+					listContents add: {cls. selector}.
+					html option with: (cls at:1) inspection, '>>' , selector]];
+				size: 10;
+				style: 'width: 100%;';
+				show
+				"onChange: [self renderClass]"
+			].
+			waitForResult hide.
+		]
+	]
+!
+
+renderMethodObject: obj
+	methodContainer asJQuery empty.
+	methodContainer with: (MaglevGsNMethodEditor for: obj).
+	waitingScreen hide.
+!
+
+renderWindowContentOn: html
+	html div
+		class: 'maglev-search'; 
+		with: [
+		html form
+			class: 'search-form';
+			onSubmit: [:e|e preventDefault. self searchSelectorsAndClasses.]; 
+			with:[
+			html input
+				class: 'search-input'
+			]
+		].
+	selectBox := html select
+			size: 10;
+			style: 'width: 100%;';
+			onChange: [self renderClass];
+			hide.
+	waitForResult := html div
+		with: [html
+				with: MaglevIcon wait;
+				with: ' loading...'];
+		hide.
+	waitingScreen := html div
+			with: [html
+				with: MaglevIcon wait;
+				with: ' loading...'];
+			hide.
+	methodContainer := html div.
+!
+
+searchSelectorsAndClasses
+	|input maglev selectors|
+	input := '.search-input' asJQuery val.
+	selectors := Array new.
+	waitForResult show.
+	self maglev findMethodNamesMatching: input with:[:success :obj| 
+		success ifTrue: [selectors addAll: (obj string tokenize: ' ').
+		self renderListOf: selectors]. 
+		
+	].
+! !
 
 MaglevWindow subclass: #MaglevWaitingWindow
 	instanceVariableNames: ''

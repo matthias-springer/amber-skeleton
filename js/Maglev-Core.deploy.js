@@ -51,13 +51,13 @@ return self;}
 smalltalk.Maglev);
 
 smalltalk.addMethod(
-unescape('_implementorsOf_with_'),
+unescape('_implementersOf_withCallback_'),
 smalltalk.method({
-selector: unescape('implementorsOf%3Awith%3A'),
+selector: unescape('implementersOf%3AwithCallback%3A'),
 fn: function (aSelector, aBlock){
 var self=this;
 ((($receiver = smalltalk.send(aSelector, "_isString", [])).klass === smalltalk.Boolean) ? (! $receiver ? (function(){return smalltalk.send(self, "_error_", ["The selector should be a string"]);})() : nil) : smalltalk.send($receiver, "_ifFalse_", [(function(){return smalltalk.send(self, "_error_", ["The selector should be a string"]);})]));
-smalltalk.send(self, "_evaluateWithoutUpdate_language_with_withCallback_", [smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(unescape("%7Corganizer%20dict%7C%20organizer%20%3A%3D%20ClassOrganizer%20new.%20dict%20%3A%3D%20organizer%20implementorsOf%3A%27"), "__comma", [aSelector]), "__comma", [unescape("%27%20asSymbol.%20dict%20addAll%3A%28organizer%20rubyImplementorsOf%3A%27")]), "__comma", [aSelector]), "__comma", [unescape("%27%20asSymbol%29.%20dict")]), "smalltalk", smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []), aBlock]);
+smalltalk.send(self, "_evaluateWithoutUpdate_language_with_withCallback_", [smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(unescape("%7Corganizer%20dict%20ruby%20smalltalk%7C%20organizer%20%3A%3D%20ClassOrganizer%20new.%20dict%20%3A%3D%20Array%20new.%20smalltalk%20%3A%3D%20organizer%20implementorsOf%3A%27"), "__comma", [aSelector]), "__comma", [unescape("%27%20asSymbol.%20smalltalk%20do%3A%5B%3Acls%7C%20dict%20addLast%3A%7Bcls.%200.%7D%5D.%20ruby%20%3A%3D%20organizer%20rubyImplementorsOf%3A%27")]), "__comma", [aSelector]), "__comma", [unescape("%27%20asSymbol.%20ruby%20do%3A%5B%3Acls%7C%20dict%20addLast%3A%7Bcls.%201.%7D%5D.%201%20to%3A%20dict%20size%20do%3A%5B%3Ai%7C%7Ccls%7C%20cls%3A%3D%20%28dict%20at%3A%20i%29%20at%3A1.%20%28cls%20class%20%3D%3D%20GsNMethod%29%20ifTrue%3A%5B%28dict%20at%3Ai%29%20at%3A1%20put%3A%20cls%20inClass%5D%5D.%20dict")]), "smalltalk", smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", []), aBlock]);
 return self;}
 }),
 smalltalk.Maglev);

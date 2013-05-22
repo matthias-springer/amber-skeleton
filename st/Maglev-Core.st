@@ -58,11 +58,11 @@ findMethodNamesMatching: aSelector with: aBlock
 		withCallback: aBlock.
 !
 
-implementorsOf: aSelector with: aBlock
+implementersOf: aSelector withCallback: aBlock
 	aSelector isString ifFalse:[self error: 'The selector should be a string'].
 
 	self 
-		evaluateWithoutUpdate: '|organizer dict| organizer := ClassOrganizer new. dict := organizer implementorsOf:''', aSelector, ''' asSymbol. dict addAll:(organizer rubyImplementorsOf:''', aSelector, ''' asSymbol). dict' 
+		evaluateWithoutUpdate: '|organizer dict ruby smalltalk| organizer := ClassOrganizer new. dict := Array new. smalltalk := organizer implementorsOf:''', aSelector, ''' asSymbol. smalltalk do:[:cls| dict addLast:{cls. 0.}]. ruby := organizer rubyImplementorsOf:''', aSelector, ''' asSymbol. ruby do:[:cls| dict addLast:{cls. 1.}]. 1 to: dict size do:[:i||cls| cls:= (dict at: i) at:1. (cls class == GsNMethod) ifTrue:[(dict at:i) at:1 put: cls inClass]]. dict' 
 		language: 'smalltalk'
 		with: Dictionary new
 		withCallback: aBlock.
