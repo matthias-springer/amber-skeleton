@@ -359,6 +359,12 @@ renderOn: html
 
 !MaglevIcon class methodsFor: 'instance creation'!
 
+flag
+	^ self new
+		icon: 'flag';
+		yourself
+!
+
 move
 	^ self new
 		icon: 'move';
@@ -368,6 +374,12 @@ move
 pencil
 	^ self new
 		icon: 'pencil';
+		yourself
+!
+
+playCircle
+	^ self new
+		icon: 'play-circle';
 		yourself
 !
 
@@ -386,6 +398,12 @@ search
 star
 	^ self new
 		icon: 'star';
+		yourself
+!
+
+terminal
+	^ self new
+		icon: 'terminal';
 		yourself
 !
 
@@ -701,8 +719,10 @@ renderLoadedObjectOn: html
 	|text shorted|
 	shorted := false.
 	text := object inspection copyFrom: 1 to: self maxInspection.
-	text size < object inspection size 
-		ifTrue: [text := text, '...'. shorted := true].
+	text size < object inspection size ifTrue: [
+		text := text, '...'. 
+		shorted := true.
+		(text at: 2) = '<' ifTrue: [text := text, '>']].
 	html with: [|tooltip|
 		tooltip := html span
 			data: 'toggle' with: 'tooltip';
@@ -775,8 +795,10 @@ renderUnloadedObjectOn: html
 	|text shorted|
 	shorted := false.
 	text := object inspection copyFrom: 1 to: self maxInspection.
-	text size < object inspection size 
-		ifTrue: [text := text, '...'. shorted := true].
+	text size < object inspection size ifTrue: [
+		text := text, '...'. 
+		shorted := true.
+		(text at: 2) = '<' ifTrue: [text := text, '>']].
 	html with: [|tooltip|
 		tooltip := html span
 			data: 'toggle' with: 'tooltip';
@@ -839,6 +861,21 @@ renderUnloadedObjectOn: html
 	self renderText: '[' withDropDownOn: html.
 	html with: '...'.
 	self renderText: ']' withDropDownOn: html.
+! !
+
+MaglevObjectInline subclass: #MaglevExceptionInline
+	instanceVariableNames: ''
+	package: 'Maglev-Database-Explorer'!
+
+!MaglevExceptionInline methodsFor: 'rendering'!
+
+renderObjectActionsOn: html
+	object isTrappable
+		ifFalse: [html with: MaglevIcon terminal].
+	object isResumable
+		ifTrue: [html with: MaglevIcon playCircle].
+	object isDBEHalt
+		ifTrue: [html with: MaglevIcon flag].
 ! !
 
 MaglevObjectInline subclass: #MaglevFixnumInline
@@ -984,6 +1021,16 @@ hasDropDownDefault
 
 isDraggableDefault
 	^ false
+! !
+
+MaglevObjectInline subclass: #MaglevThreadInline
+	instanceVariableNames: ''
+	package: 'Maglev-Database-Explorer'!
+
+!MaglevThreadInline methodsFor: 'constants'!
+
+maxInspection
+	^ 25
 ! !
 
 Widget subclass: #MaglevTable
@@ -1471,103 +1518,8 @@ renderArrayElementsOn: html
 ! !
 
 MaglevObjectWindow subclass: #MaglevExceptionWindow
-	instanceVariableNames: 'methodSelect methodContainer waitingScreen waitForStackTrace'
+	instanceVariableNames: ''
 	package: 'Maglev-Database-Explorer'!
-
-!MaglevExceptionWindow methodsFor: 'accessing'!
-
-frameIndex
-	^ (methodSelect asJQuery at: 0) selectedIndex + 1
-! !
-
-!MaglevExceptionWindow methodsFor: 'interactions'!
-
-reloadStack
-	|html|
-	waitForStackTrace show.
-	html := HTMLCanvas onJQuery: methodSelect asJQuery.
-	object thread stackTraceMethodsWithCallback: [:obj |
-		methodSelect
-			with: [obj do: [:method |
-				html option with: method]];
-			size: 10;
-			style: 'width: 100%;';
-			onChange: [self renderFrame].
-		waitForStackTrace hide.
-		self renderFrame].
-!
-
-stepInto
-	object thread 
-		stepInto: self frameIndex 
-		withCallback: [:obj | self reloadStack].
-!
-
-stepOver
-	object thread 
-		stepOver: self frameIndex 
-		withCallback: [:obj | self reloadStack].
-! !
-
-!MaglevExceptionWindow methodsFor: 'rendering'!
-
-contentTabs
-	|result|
-	result := super contentTabs.
-	result at: 'Stack Trace' put: #renderStackTraceOn:.
-	^ result
-!
-
-renderButtonsOn: html
-	html div
-		class: 'button-area';
-		style: 'margin-top: 0px; margin-bottom: 10px;';
-		with: [
-			html input
-				type: 'button';
-				class: 'btn btn-primary';
-				value: 'Step into';
-				onClick: [self stepInto].
-			html input
-				type: 'button';
-				class: 'btn btn-primary';
-				value: 'Step over';
-				onClick: [self stepOver]].
-!
-
-renderFrame
-	|frameIndex|
-	methodContainer asJQuery empty.
-	waitingScreen show.
-	frameIndex := self frameIndex.
-	frameIndex > 0
-		ifTrue: [object thread
-			stackFrame: frameIndex 
-			withCallback: [:obj |
-				methodContainer asJQuery empty.
-				methodContainer with: (MaglevGsNMethodDebugEditor for: obj).
-				waitingScreen hide]]
-		ifFalse: [waitingScreen hide].
-!
-
-renderStackTraceOn: html
-	waitForStackTrace := html div
-		with: [html
-				with: MaglevIcon wait;
-				with: ' loading...'].
-	methodSelect := html select
-			size: 10;
-			style: 'width: 100%;';
-			onChange: [self renderFrame].
-	self renderButtonsOn: html.
-	waitingScreen := html div
-		with: [html
-				with: MaglevIcon wait;
-				with: ' loading...'];
-		hide.
-	methodContainer := html div.
-	self reloadStack.
-! !
 
 MaglevObjectWindow subclass: #MaglevFixnumWindow
 	instanceVariableNames: ''
@@ -1746,6 +1698,147 @@ MaglevObjectWindow subclass: #MaglevStringWindow
 MaglevObjectWindow subclass: #MaglevSymbolWindow
 	instanceVariableNames: ''
 	package: 'Maglev-Database-Explorer'!
+
+MaglevObjectWindow subclass: #MaglevThreadWindow
+	instanceVariableNames: 'methodSelect methodContainer waitingScreen waitForStackTrace'
+	package: 'Maglev-Database-Explorer'!
+
+!MaglevThreadWindow methodsFor: 'accessing'!
+
+frameIndex
+	^ (methodSelect asJQuery at: 0) selectedIndex + 1
+! !
+
+!MaglevThreadWindow methodsFor: 'interactions'!
+
+proceed
+	object 
+		proceedWithCallback: [:obj | 
+			object fullReloadWithCallback: [:threadReloaded |
+				(threadReloaded windowViewComponentReplace: self) renderReplace]].
+!
+
+reloadStackWithCallback: aBlock
+	|html|
+	waitForStackTrace show.
+	methodSelect asJQuery empty.
+	html := HTMLCanvas onJQuery: methodSelect asJQuery.
+	object stackTraceMethodsWithCallback: [:obj |
+		methodSelect
+			with: [obj do: [:method |
+				html option with: method]].
+		waitForStackTrace hide.
+		aBlock = nil
+			ifFalse: [aBlock value]].
+!
+
+selectStackFrame: anInteger
+	< self['@methodSelect']._asJQuery()[0].selectedIndex = anInteger - 1; >.
+	self renderFrame.
+!
+
+stepInto
+	|frameIndex|
+	frameIndex := self frameIndex.
+	object 
+		stepInto: frameIndex
+		withCallback: [:obj | 
+			self reloadStackWithCallback: [
+				self selectStackFrame: frameIndex]].
+!
+
+stepOver
+	|frameIndex|
+	frameIndex := self frameIndex.
+	object 
+		stepOver: frameIndex
+		withCallback: [:obj | self reloadStackWithCallback: [
+			self selectStackFrame: frameIndex]].
+!
+
+trimStack
+	|frameIndex|
+	frameIndex := self frameIndex.
+	object 
+		trimTo: frameIndex
+		withCallback: [:obj | self reloadStackWithCallback: [
+			self selectStackFrame: frameIndex]].
+! !
+
+!MaglevThreadWindow methodsFor: 'rendering'!
+
+contentTabs
+	|result|
+	result := super contentTabs.
+	result at: 'Stack Trace' put: #renderStackTraceOn:.
+	result at: 'Thread Local Storage' put: #renderLocalStorageOn:.
+	^ result
+!
+
+renderButtonsOn: html
+	html div
+		class: 'button-area';
+		style: 'margin-top: 0px; margin-bottom: 10px;';
+		with: [
+			html input
+				type: 'button';
+				class: 'btn btn-primary';
+				value: 'Proceed';
+				onClick: [self proceed].
+			html input
+				type: 'button';
+				class: 'btn btn-primary';
+				value: 'Step into';
+				onClick: [self stepInto].
+			html input
+				type: 'button';
+				class: 'btn btn-primary';
+				value: 'Step over';
+				onClick: [self stepOver].
+			html input
+				type: 'button';
+				class: 'btn btn-primary';
+				value: 'Trim stack';
+				onClick: [self trimStack]].
+!
+
+renderFrame
+	|frameIndex|
+	methodContainer asJQuery empty.
+	waitingScreen show.
+	frameIndex := self frameIndex.
+	frameIndex > 0
+		ifTrue: [object
+			stackFrame: frameIndex 
+			withCallback: [:obj |
+				methodContainer asJQuery empty.
+				methodContainer with: (MaglevGsNMethodDebugEditor for: obj).
+				waitingScreen hide]]
+		ifFalse: [waitingScreen hide].
+!
+
+renderLocalStorageOn: html
+	html with: (MaglevTable newAssociationDictFor: object localStorage with: #elements).
+!
+
+renderStackTraceOn: html
+	waitForStackTrace := html div
+		with: [html
+				with: MaglevIcon wait;
+				with: ' loading...'].
+	methodSelect := html select
+			size: 10;
+			style: 'width: 100%;';
+			onChange: [self renderFrame].
+	self renderButtonsOn: html.
+	waitingScreen := html div
+		with: [html
+				with: MaglevIcon wait;
+				with: ' loading...'];
+		hide.
+	methodContainer := html div.
+	self reloadStackWithCallback: nil.
+! !
 
 MaglevWindow subclass: #MaglevWaitingWindow
 	instanceVariableNames: ''

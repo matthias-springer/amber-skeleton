@@ -23,51 +23,6 @@ addWindow: aWindow
 	self showConnectionsFor: aWindow.
 !
 
-evaluateWithoutUpdate: code language: aString with: additionalParams withCallback: aBlock
-	|params|
-	params := Dictionary new
-		at: 'language' put: aString;
-		at: 'code' put: code;
-		addAll: additionalParams;
-		yourself.
-	MaglevAjax 
-		ajax: '/object/evaluate/72193'
-		data: params
-		withCallback: [:obj | |parsedObj|
-			parsedObj := MaglevObject newObjectWithoutUpdate: obj.
-			aBlock value: parsedObj isException not value: parsedObj].
-!
-
-findClassNamesMatching: aSelector with: aBlock
-	aSelector isString ifFalse:[self error: 'The selector should be a string'].
-
-	self 
-		evaluateWithoutUpdate: '|organizer| organizer := ClassOrganizer new. organizer findClassNamesMatching:''', aSelector, '''.' 
-		language: 'smalltalk'
-		with: Dictionary new
-		withCallback: aBlock.
-!
-
-findMethodNamesMatching: aSelector with: aBlock
-	aSelector isString ifFalse:[self error: 'The selector should be a string'].
-
-	self 
-		evaluateWithoutUpdate: '|organizer| organizer := ClassOrganizer new. organizer findMethodNamesMatching:''', aSelector, '''.' 
-		language: 'smalltalk'
-		with: Dictionary new
-		withCallback: aBlock.
-!
-
-implementorsOf: aSelector with: aBlock
-	aSelector isString ifFalse:[self error: 'The selector should be a string'].
-
-	self 
-		evaluateWithoutUpdate: '|organizer dict| organizer := ClassOrganizer new. dict := organizer implementorsOf:''', aSelector, ''' asSymbol. dict addAll:(organizer rubyImplementorsOf:''', aSelector, ''' asSymbol). dict' 
-		language: 'smalltalk'
-		with: Dictionary new
-		withCallback: aBlock.
-!
-
 removeWindow: aWindow
 	windows remove: aWindow.
 ! !
@@ -378,6 +333,10 @@ hasInstVars
 	^ instVars size > 0
 !
 
+ifNotMaglevNil: aBlock
+	^ aBlock value
+!
+
 isGsNMethod
 	^ false
 !
@@ -533,26 +492,178 @@ windowViewClass
 	^ MaglevArrayWindow
 ! !
 
+MaglevObject subclass: #MaglevBoolean
+	instanceVariableNames: 'value'
+	package: 'Maglev-Core'!
+
+!MaglevBoolean methodsFor: 'accessing'!
+
+value
+	^ value
+! !
+
+!MaglevBoolean methodsFor: 'instance creation'!
+
+parseJSON: obj
+	super parseJSON: obj.
+	value := obj value.
+!
+
+parseJSONNotLoaded: obj
+	super parseJSONNotLoaded: obj.
+	value := obj value.
+! !
+
+!MaglevBoolean class methodsFor: 'constants'!
+
+basetype
+	^ #boolean
+! !
+
+MaglevObject subclass: #MaglevDictionary
+	instanceVariableNames: 'elements elementsSize'
+	package: 'Maglev-Core'!
+
+!MaglevDictionary methodsFor: 'accessing'!
+
+at: anInteger
+	^ self elements at: anInteger
+!
+
+atKey: anObject
+	self elements do: [:assoc |
+		anObject = assoc key
+			ifTrue: [^ assoc value]].
+	self error: 'Object is not in the collection'.
+!
+
+atKeyInspection: anObject
+	self elements do: [:assoc |
+		anObject = assoc key inspection
+			ifTrue: [^ assoc value]].
+	self error: 'Object is not in the collection'.
+!
+
+atKeyString: anObject
+	self elements do: [:assoc |
+		anObject = assoc key string
+			ifTrue: [^ assoc value]].
+	self error: 'Object is not in the collection'.
+!
+
+elements
+	^ elements
+!
+
+elementsSize
+	^ elementsSize
+!
+
+keysAndValuesDo: aBlock
+	elements keysAndValuesDo: [:index :kv | aBlock value: kv key value: kv value].
+!
+
+valuesDo: aBlock
+	self elements do: [:assoc |
+		aBlock value: assoc value].
+! !
+
+!MaglevDictionary methodsFor: 'instance creation'!
+
+parseJSON: obj
+	super parseJSON: obj.
+	elements ifNil: [elements := Dictionary new].
+	elementsSize := obj elementsSize.
+	obj elements keysAndValuesDo: [:index :assoc | |key value|
+		key := MaglevObject newObject: (assoc at: 1).
+		value := MaglevObject newObject: (assoc at: 2).
+		elements at: index asNumber put: key -> value].
+! !
+
+!MaglevDictionary methodsFor: 'testing'!
+
+hasElements
+	^ self elementsSize > 0
+!
+
+isFullyLoaded
+	^ self elementsSize == self elements size
+! !
+
+!MaglevDictionary class methodsFor: 'constants'!
+
+basetype
+	^ #dictionary
+!
+
+inlineViewClass
+	^ MaglevHashInline
+!
+
+windowViewClass
+	^ MaglevHashWindow
+! !
+
+MaglevDictionary subclass: #MaglevHash
+	instanceVariableNames: 'elements elementsSize'
+	package: 'Maglev-Core'!
+
+!MaglevHash class methodsFor: 'constants'!
+
+basetype
+	^ #hash
+! !
+
 MaglevObject subclass: #MaglevException
-	instanceVariableNames: ''
+	instanceVariableNames: 'gsResumable gsTrappable gsNumber isDBEHalt'
 	package: 'Maglev-Core'!
 
 !MaglevException methodsFor: 'accessing'!
 
-thread
-	^ self instVarAt: '@thread'
+isResumable
+	^ gsResumable
+!
+
+isTrappable
+	^ gsTrappable
+!
+
+number
+	^ gsNumber
+! !
+
+!MaglevException methodsFor: 'instance creation'!
+
+parseJSON: obj
+	super parseJSON: obj.
+	gsTrappable := obj gsTrappable.
+	gsResumable := obj gsResumable.
+	gsNumber := obj at: 'gsNumber'. "gsNumber might be nil"
+	isDBEHalt := obj isDBEHalt.
+!
+
+parseJSONNotLoaded: obj
+	super parseJSONNotLoaded: obj.
+	gsTrappable := obj gsTrappable.
+	gsResumable := obj gsResumable.
+	gsNumber := obj at: 'gsNumber'. "gsNumber might be nil"
+	isDBEHalt := obj isDBEHalt.
 ! !
 
 !MaglevException methodsFor: 'testing'!
 
-hasThread
-	^ self hasInstVar: '@thread'
+isDBEHalt
+	^ isDBEHalt
 ! !
 
 !MaglevException class methodsFor: 'constants'!
 
 basetype
 	^ #exception
+!
+
+inlineViewClass
+	^ MaglevExceptionInline
 !
 
 windowViewClass
@@ -727,90 +838,6 @@ basetype
 	^ #gsnmethod
 ! !
 
-MaglevObject subclass: #MaglevHash
-	instanceVariableNames: 'elements elementsSize'
-	package: 'Maglev-Core'!
-
-!MaglevHash methodsFor: 'accessing'!
-
-at: anInteger
-	^ self elements at: anInteger
-!
-
-atKey: anObject
-	self elements do: [:assoc |
-		anObject = assoc key
-			ifTrue: [^ assoc value]].
-	self error: 'Object is not in the collection'.
-!
-
-atKeyInspection: anObject
-	self elements do: [:assoc |
-		anObject = assoc key inspection
-			ifTrue: [^ assoc value]].
-	self error: 'Object is not in the collection'.
-!
-
-atKeyString: anObject
-	self elements do: [:assoc |
-		anObject = assoc key string
-			ifTrue: [^ assoc value]].
-	self error: 'Object is not in the collection'.
-!
-
-elements
-	^ elements
-!
-
-elementsSize
-	^ elementsSize
-!
-
-keysAndValuesDo: aBlock
-	elements keysAndValuesDo: [:index :kv | aBlock value: kv key value: kv value].
-!
-
-valuesDo: aBlock
-	self elements do: [:assoc |
-		aBlock value: assoc value].
-! !
-
-!MaglevHash methodsFor: 'instance creation'!
-
-parseJSON: obj
-	super parseJSON: obj.
-	elements ifNil: [elements := Dictionary new].
-	elementsSize := obj elementsSize.
-	obj elements keysAndValuesDo: [:index :assoc | |key value|
-		key := MaglevObject newObject: (assoc at: 1).
-		value := MaglevObject newObject: (assoc at: 2).
-		elements at: index asNumber put: key -> value].
-! !
-
-!MaglevHash methodsFor: 'testing'!
-
-hasElements
-	^ self elementsSize > 0
-!
-
-isFullyLoaded
-	^ self elementsSize == self elements size
-! !
-
-!MaglevHash class methodsFor: 'constants'!
-
-basetype
-	^ #hash
-!
-
-inlineViewClass
-	^ MaglevHashInline
-!
-
-windowViewClass
-	^ MaglevHashWindow
-! !
-
 MaglevObject subclass: #MaglevModule
 	instanceVariableNames: 'includedModules includedModulesSize constants constantsSize rubyFullName smalltalkFullName'
 	package: 'Maglev-Core'!
@@ -951,6 +978,10 @@ string
 
 !MaglevNilClass methodsFor: 'testing'!
 
+ifNotMaglevNil: aBlock
+	^ self
+!
+
 isMaglevNil
 	^ true
 ! !
@@ -1046,16 +1077,43 @@ windowViewClass
 ! !
 
 MaglevObject subclass: #MaglevThread
-	instanceVariableNames: ''
+	instanceVariableNames: 'exception localStorage'
 	package: 'Maglev-Core'!
+
+!MaglevThread methodsFor: 'accessing'!
+
+exception
+	^ exception
+!
+
+inspection
+	self hasException 
+		ifTrue: [^ '#<GsProcess[', exception inspection, ']>']
+		ifFalse: [^ super inspection].
+!
+
+localStorage
+	^ localStorage
+! !
 
 !MaglevThread methodsFor: 'instance creation'!
 
 parseJSON: obj
+	|objException|
 	super parseJSON: obj.
+	objException := obj at: 'exception'.
+	objException ifNotNil: [exception := MaglevObject newObject: objException].
+	localStorage := MaglevObject newObject: obj threadLocalStorage.
 ! !
 
 !MaglevThread methodsFor: 'interactions'!
+
+proceedWithCallback: aBlock
+	MaglevAjax 
+		ajax: '/code/proceed/', oop asString
+		data: Dictionary new
+		withCallback: aBlock.
+!
 
 stackFrame: anInteger withCallback: aBlock
 	|params|
@@ -1095,12 +1153,37 @@ stepOver: frameIndex withCallback: aBlock
 		ajax: '/code/stepOver/', oop asString
 		data: params
 		withCallback: aBlock.
+!
+
+trimTo: frameIndex withCallback: aBlock
+	|params|
+	params := Dictionary new
+		at: 'index' put: frameIndex;
+		yourself.
+	MaglevAjax 
+		ajax: '/code/trim/', oop asString
+		data: params
+		withCallback: aBlock.
+! !
+
+!MaglevThread methodsFor: 'testing'!
+
+hasException
+	^ exception isMaglevNil not
 ! !
 
 !MaglevThread class methodsFor: 'constants'!
 
 basetype
 	^ #thread
+!
+
+inlineViewClass
+	^ MaglevThreadInline
+!
+
+windowViewClass
+	^ MaglevThreadWindow
 ! !
 
 Object subclass: #MaglevObjectSpace
