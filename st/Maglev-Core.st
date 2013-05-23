@@ -110,6 +110,7 @@ openWindow: anInteger
 !
 
 ready
+	self openWindow: 76033.
 ! !
 
 !Maglev class methodsFor: 'singleton'!
@@ -1092,6 +1093,20 @@ inlineViewClass
 
 windowViewClass
 	^ MaglevNilClassWindow
+! !
+
+MaglevObject subclass: #MaglevRubyWorkspace
+	instanceVariableNames: ''
+	package: 'Maglev-Core'!
+
+!MaglevRubyWorkspace class methodsFor: 'constants'!
+
+basetype
+	^ #rubyWorkspace
+!
+
+windowViewClass
+	^ MaglevRubyWorkspaceWindow
 ! !
 
 MaglevObject subclass: #MaglevString

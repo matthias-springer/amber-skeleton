@@ -2570,7 +2570,31 @@ smalltalk.MaglevClassWindow);
 
 
 
-smalltalk.addClass('MaglevSystemClassWindow', smalltalk.MaglevClassWindow, [], 'Maglev-Database-Explorer');
+smalltalk.addClass('MaglevSystemClassWindow', smalltalk.MaglevClassWindow, ['transactionResultBox'], 'Maglev-Database-Explorer');
+smalltalk.addMethod(
+unescape('_abortTransaction'),
+smalltalk.method({
+selector: unescape('abortTransaction'),
+fn: function (){
+var self=this;
+smalltalk.send(self, "_showTransactionWaitingBox", []);
+smalltalk.send(self['@object'], "_evaluate_language_withCallback_", ["self.__DBEAbortTransaction", "ruby", (function(success, resultObj){smalltalk.send(smalltalk.send(self['@transactionResultBox'], "_asJQuery", []), "_empty", []);smalltalk.send(self['@transactionResultBox'], "_removeClass_", [unescape("alert-info")]);((($receiver = success).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self['@transactionResultBox'], "_addClass_", [unescape("alert-success")]);})() : (function(){return smalltalk.send(self['@transactionResultBox'], "_addClass_", [unescape("alert-error")]);})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return smalltalk.send(self['@transactionResultBox'], "_addClass_", [unescape("alert-success")]);}), (function(){return smalltalk.send(self['@transactionResultBox'], "_addClass_", [unescape("alert-error")]);})]));return smalltalk.send(self['@transactionResultBox'], "_with_", [smalltalk.send(resultObj, "_inlineViewComponent", [])]);})]);
+return self;}
+}),
+smalltalk.MaglevSystemClassWindow);
+
+smalltalk.addMethod(
+unescape('_commitTransaction'),
+smalltalk.method({
+selector: unescape('commitTransaction'),
+fn: function (){
+var self=this;
+smalltalk.send(self, "_showTransactionWaitingBox", []);
+smalltalk.send(self['@object'], "_evaluate_language_withCallback_", ["self.__DBECommitTransaction", "ruby", (function(success, resultObj){smalltalk.send(smalltalk.send(self['@transactionResultBox'], "_asJQuery", []), "_empty", []);smalltalk.send(self['@transactionResultBox'], "_removeClass_", [unescape("alert-info")]);((($receiver = success).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self['@transactionResultBox'], "_addClass_", [unescape("alert-success")]);})() : (function(){return smalltalk.send(self['@transactionResultBox'], "_addClass_", [unescape("alert-error")]);})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return smalltalk.send(self['@transactionResultBox'], "_addClass_", [unescape("alert-success")]);}), (function(){return smalltalk.send(self['@transactionResultBox'], "_addClass_", [unescape("alert-error")]);})]));return smalltalk.send(self['@transactionResultBox'], "_with_", [smalltalk.send(resultObj, "_inlineViewComponent", [])]);})]);
+return self;}
+}),
+smalltalk.MaglevSystemClassWindow);
+
 smalltalk.addMethod(
 unescape('_contentTabs'),
 smalltalk.method({
@@ -2581,7 +2605,31 @@ var result=nil;
 (result=smalltalk.send(self, "_contentTabs", [], smalltalk.MaglevClassWindow));
 smalltalk.send(result, "_at_put_", ["Stone Version Report", smalltalk.symbolFor("renderStoneVersionReportOn:")]);
 smalltalk.send(result, "_at_put_", ["Gem Version Report", smalltalk.symbolFor("renderGemVersionReportOn:")]);
+smalltalk.send(result, "_at_put_", ["Control Panel", smalltalk.symbolFor("renderControlPanelOn:")]);
 return result;
+return self;}
+}),
+smalltalk.MaglevSystemClassWindow);
+
+smalltalk.addMethod(
+unescape('_continueTransaction'),
+smalltalk.method({
+selector: unescape('continueTransaction'),
+fn: function (){
+var self=this;
+smalltalk.send(self, "_showTransactionWaitingBox", []);
+smalltalk.send(self['@object'], "_evaluate_language_withCallback_", ["self.__DBEContinueTransaction", "ruby", (function(success, resultObj){smalltalk.send(smalltalk.send(self['@transactionResultBox'], "_asJQuery", []), "_empty", []);smalltalk.send(self['@transactionResultBox'], "_removeClass_", [unescape("alert-info")]);((($receiver = success).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self['@transactionResultBox'], "_addClass_", [unescape("alert-success")]);})() : (function(){return smalltalk.send(self['@transactionResultBox'], "_addClass_", [unescape("alert-error")]);})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return smalltalk.send(self['@transactionResultBox'], "_addClass_", [unescape("alert-success")]);}), (function(){return smalltalk.send(self['@transactionResultBox'], "_addClass_", [unescape("alert-error")]);})]));return smalltalk.send(self['@transactionResultBox'], "_with_", [smalltalk.send(resultObj, "_inlineViewComponent", [])]);})]);
+return self;}
+}),
+smalltalk.MaglevSystemClassWindow);
+
+smalltalk.addMethod(
+unescape('_renderControlPanelOn_'),
+smalltalk.method({
+selector: unescape('renderControlPanelOn%3A'),
+fn: function (html){
+var self=this;
+smalltalk.send(html, "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_class_", ["well"]);return smalltalk.send($rec, "_with_", [(function(){(function($rec){smalltalk.send($rec, "_type_", ["button"]);smalltalk.send($rec, "_class_", [unescape("btn%20btn-warning")]);smalltalk.send($rec, "_value_", ["Abort Transaction"]);smalltalk.send($rec, "_style_", [unescape("width%3A%2032%25%3B%20margin-right%3A%201%25%3B")]);return smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_abortTransaction", []);})]);})(smalltalk.send(html, "_input", []));(function($rec){smalltalk.send($rec, "_type_", ["button"]);smalltalk.send($rec, "_class_", [unescape("btn%20btn-warning")]);smalltalk.send($rec, "_value_", ["Commit Transaction"]);smalltalk.send($rec, "_style_", [unescape("width%3A%2032%25%3B%20margin-right%3A%201%25%3B")]);return smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_commitTransaction", []);})]);})(smalltalk.send(html, "_input", []));(function($rec){smalltalk.send($rec, "_type_", ["button"]);smalltalk.send($rec, "_class_", [unescape("btn%20btn-warning")]);smalltalk.send($rec, "_value_", ["Continue Transaction"]);smalltalk.send($rec, "_style_", [unescape("width%3A%2033%25%3B")]);return smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_continueTransaction", []);})]);})(smalltalk.send(html, "_input", []));return (self['@transactionResultBox']=(function($rec){smalltalk.send($rec, "_style_", [unescape("margin-top%3A%2010px%3B%20margin-bottom%3A%200px%3B")]);smalltalk.send($rec, "_class_", ["alert"]);return smalltalk.send($rec, "_hide", []);})(smalltalk.send(html, "_div", [])));})]);})(smalltalk.send(html, "_div", []));})]);
 return self;}
 }),
 smalltalk.MaglevSystemClassWindow);
@@ -2608,9 +2656,70 @@ return self;}
 }),
 smalltalk.MaglevSystemClassWindow);
 
+smalltalk.addMethod(
+unescape('_showTransactionWaitingBox'),
+smalltalk.method({
+selector: unescape('showTransactionWaitingBox'),
+fn: function (){
+var self=this;
+(function($rec){smalltalk.send($rec, "_addClass_", [unescape("alert-info")]);smalltalk.send($rec, "_removeClass_", [unescape("alert-success")]);return smalltalk.send($rec, "_removeClass_", [unescape("alert-error")]);})(self['@transactionResultBox']);
+smalltalk.send(smalltalk.send(self['@transactionResultBox'], "_asJQuery", []), "_empty", []);
+(function($rec){smalltalk.send($rec, "_with_", [smalltalk.send((smalltalk.MaglevIcon || MaglevIcon), "_wait", [])]);smalltalk.send($rec, "_with_", [" loading..."]);return smalltalk.send($rec, "_show", []);})(self['@transactionResultBox']);
+return self;}
+}),
+smalltalk.MaglevSystemClassWindow);
+
 
 
 smalltalk.addClass('MaglevNilClassWindow', smalltalk.MaglevObjectWindow, [], 'Maglev-Database-Explorer');
+
+
+smalltalk.addClass('MaglevRubyWorkspaceWindow', smalltalk.MaglevObjectWindow, ['terminalBox', 'commandBox'], 'Maglev-Database-Explorer');
+smalltalk.addMethod(
+unescape('_contentTabs'),
+smalltalk.method({
+selector: unescape('contentTabs'),
+fn: function (){
+var self=this;
+var result=nil;
+(result=smalltalk.send(self, "_contentTabs", [], smalltalk.MaglevObjectWindow));
+smalltalk.send(result, "_at_put_", ["Workspace", smalltalk.symbolFor("renderWorkspaceOn:")]);
+return result;
+return self;}
+}),
+smalltalk.MaglevRubyWorkspaceWindow);
+
+smalltalk.addMethod(
+unescape('_handleEnter'),
+smalltalk.method({
+selector: unescape('handleEnter'),
+fn: function (){
+var self=this;
+var command=nil;
+var html=nil;
+(html=smalltalk.send((smalltalk.HTMLCanvas || HTMLCanvas), "_onJQuery_", [smalltalk.send(self['@terminalBox'], "_asJQuery", [])]));
+(command=smalltalk.send(smalltalk.send(self['@commandBox'], "_asJQuery", []), "_val", []));
+(command=smalltalk.send(command, "_replace_with_", [unescape("%27"), unescape("%27%27")]));
+smalltalk.send(smalltalk.send(self['@commandBox'], "_asJQuery", []), "_val_", [""]);
+(function($rec){smalltalk.send($rec, "_with_", [command]);return smalltalk.send($rec, "_with_", [smalltalk.send(html, "_br", [])]);})(html);
+smalltalk.send(self['@object'], "_evaluate_language_withCallback_", [smalltalk.send(smalltalk.send(unescape("self.evaluate%28%27"), "__comma", [command]), "__comma", [unescape("%27%29")]), "ruby", (function(success, resultObj){var class_=nil;
+((($receiver = smalltalk.send(smalltalk.send(resultObj, "_at_", [(1)]), "_value", [])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (class_=unescape("alert%20alert-error"));})() : (function(){return (class_=unescape("alert%20alert-success"));})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return (class_=unescape("alert%20alert-error"));}), (function(){return (class_=unescape("alert%20alert-success"));})]));return smalltalk.send(self['@terminalBox'], "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_class_", [class_]);smalltalk.send($rec, "_with_", [unescape("%3D%3E%20")]);smalltalk.send($rec, "_with_", [smalltalk.send(smalltalk.send(resultObj, "_at_", [(2)]), "_inlineViewComponent", [])]);return smalltalk.send($rec, "_with_", [smalltalk.send(html, "_br", [])]);})(smalltalk.send(html, "_div", []));})]);})]);
+return self;}
+}),
+smalltalk.MaglevRubyWorkspaceWindow);
+
+smalltalk.addMethod(
+unescape('_renderWorkspaceOn_'),
+smalltalk.method({
+selector: unescape('renderWorkspaceOn%3A'),
+fn: function (html){
+var self=this;
+(self['@terminalBox']=smalltalk.send(smalltalk.send(html, "_pre", []), "_style_", [unescape("height%3A%20350px%3B%20overflow-y%3A%20scroll%3B%20overflow-x%3A%20hidden%3B%20color%3A%20%23000000%3B")]));
+(self['@commandBox']=(function($rec){smalltalk.send($rec, "_type_", ["text"]);smalltalk.send($rec, "_style_", [unescape("width%3A%2097%25%3B")]);return smalltalk.send($rec, "_onKeyPress_", [(function(evt){return ((($receiver = smalltalk.send(smalltalk.send(evt, "_keyCode", []), "__eq_eq", [(13)])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self, "_handleEnter", []);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(self, "_handleEnter", []);})]));})]);})(smalltalk.send(html, "_input", [])));
+return self;}
+}),
+smalltalk.MaglevRubyWorkspaceWindow);
+
 
 
 smalltalk.addClass('MaglevStringWindow', smalltalk.MaglevObjectWindow, [], 'Maglev-Database-Explorer');

@@ -170,7 +170,7 @@ smalltalk.method({
 selector: unescape('ready'),
 fn: function (){
 var self=this;
-
+smalltalk.send(self, "_openWindow_", [(76033)]);
 return self;}
 }),
 smalltalk.Maglev.klass);
@@ -2008,6 +2008,31 @@ return (smalltalk.MaglevNilClassWindow || MaglevNilClassWindow);
 return self;}
 }),
 smalltalk.MaglevNilClass.klass);
+
+
+smalltalk.addClass('MaglevRubyWorkspace', smalltalk.MaglevObject, [], 'Maglev-Core');
+
+smalltalk.addMethod(
+unescape('_basetype'),
+smalltalk.method({
+selector: unescape('basetype'),
+fn: function (){
+var self=this;
+return smalltalk.symbolFor("rubyWorkspace");
+return self;}
+}),
+smalltalk.MaglevRubyWorkspace.klass);
+
+smalltalk.addMethod(
+unescape('_windowViewClass'),
+smalltalk.method({
+selector: unescape('windowViewClass'),
+fn: function (){
+var self=this;
+return (smalltalk.MaglevRubyWorkspaceWindow || MaglevRubyWorkspaceWindow);
+return self;}
+}),
+smalltalk.MaglevRubyWorkspace.klass);
 
 
 smalltalk.addClass('MaglevString', smalltalk.MaglevObject, ['string', 'isStringComplete'], 'Maglev-Core');

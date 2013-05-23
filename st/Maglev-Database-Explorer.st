@@ -1747,8 +1747,52 @@ renderWindowTitleContentOn: html
 ! !
 
 MaglevClassWindow subclass: #MaglevSystemClassWindow
-	instanceVariableNames: ''
+	instanceVariableNames: 'transactionResultBox'
 	package: 'Maglev-Database-Explorer'!
+
+!MaglevSystemClassWindow methodsFor: 'interactions'!
+
+abortTransaction
+	self showTransactionWaitingBox.
+	object 
+		evaluate: 'self.__DBEAbortTransaction'
+		language: 'ruby'
+		withCallback: [:success :resultObj |
+			transactionResultBox asJQuery empty.
+			transactionResultBox removeClass: 'alert-info'.
+			success
+				ifTrue: [transactionResultBox addClass: 'alert-success']
+				ifFalse: [transactionResultBox addClass: 'alert-error'].
+			transactionResultBox with: resultObj inlineViewComponent].
+!
+
+commitTransaction
+	self showTransactionWaitingBox.
+	object 
+		evaluate: 'self.__DBECommitTransaction'
+		language: 'ruby'
+		withCallback: [:success :resultObj |
+			transactionResultBox asJQuery empty.
+			transactionResultBox removeClass: 'alert-info'.
+			success
+				ifTrue: [transactionResultBox addClass: 'alert-success']
+				ifFalse: [transactionResultBox addClass: 'alert-error'].
+			transactionResultBox with: resultObj inlineViewComponent].
+!
+
+continueTransaction
+	self showTransactionWaitingBox.
+	object 
+		evaluate: 'self.__DBEContinueTransaction'
+		language: 'ruby'
+		withCallback: [:success :resultObj |
+			transactionResultBox asJQuery empty.
+			transactionResultBox removeClass: 'alert-info'.
+			success
+				ifTrue: [transactionResultBox addClass: 'alert-success']
+				ifFalse: [transactionResultBox addClass: 'alert-error'].
+			transactionResultBox with: resultObj inlineViewComponent].
+! !
 
 !MaglevSystemClassWindow methodsFor: 'rendering'!
 
@@ -1757,7 +1801,37 @@ contentTabs
 	result := super contentTabs.
 	result at: 'Stone Version Report' put: #renderStoneVersionReportOn:.
 	result at: 'Gem Version Report' put: #renderGemVersionReportOn:.
+	result at: 'Control Panel' put: #renderControlPanelOn:.
 	^ result
+!
+
+renderControlPanelOn: html
+	html with:	[
+		html div
+			class: 'well';
+			with: [
+				html input
+					type: 'button';
+					class: 'btn btn-warning';
+					value: 'Abort Transaction';
+					style: 'width: 32%; margin-right: 1%;';
+					onClick: [self abortTransaction].
+				html input
+					type: 'button';
+					class: 'btn btn-warning';
+					value: 'Commit Transaction';
+					style: 'width: 32%; margin-right: 1%;';
+					onClick: [self commitTransaction].
+				html input
+					type: 'button';
+					class: 'btn btn-warning';
+					value: 'Continue Transaction';
+					style: 'width: 33%;';
+					onClick: [self continueTransaction].
+				transactionResultBox := html div
+					style: 'margin-top: 10px; margin-bottom: 0px;';
+					class: 'alert';
+					hide]].
 !
 
 renderGemVersionReportOn: html
@@ -1766,11 +1840,71 @@ renderGemVersionReportOn: html
 
 renderStoneVersionReportOn: html
 	html with: (MaglevTable newAssociationDictFor: self object with: #stoneVersionReport).
+!
+
+showTransactionWaitingBox
+	transactionResultBox
+		addClass: 'alert-info';
+		removeClass: 'alert-success';
+		removeClass: 'alert-error'.
+	transactionResultBox asJQuery empty.
+	transactionResultBox
+		with: MaglevIcon wait;
+		with: ' loading...';
+		show.
 ! !
 
 MaglevObjectWindow subclass: #MaglevNilClassWindow
 	instanceVariableNames: ''
 	package: 'Maglev-Database-Explorer'!
+
+MaglevObjectWindow subclass: #MaglevRubyWorkspaceWindow
+	instanceVariableNames: 'terminalBox commandBox'
+	package: 'Maglev-Database-Explorer'!
+
+!MaglevRubyWorkspaceWindow methodsFor: 'interactions'!
+
+handleEnter
+	|command html|
+	html := HTMLCanvas onJQuery: terminalBox asJQuery.
+	command := commandBox asJQuery val.
+	command := command replace: '''' with: ''''''.
+	commandBox asJQuery val: ''.
+	html
+		with: command;
+		with: html br.
+	object 
+		evaluate: 'self.evaluate(''', command, ''')'
+		language: 'ruby'
+		withCallback: [:success :resultObj | |class|
+			(resultObj at: 1) value
+				ifTrue: [class := 'alert alert-error']
+				ifFalse: [class := 'alert alert-success'].
+			terminalBox with: [html div
+				class: class;
+				with: '=> ';
+				with: (resultObj at: 2) inlineViewComponent;
+				with: html br]].
+! !
+
+!MaglevRubyWorkspaceWindow methodsFor: 'rendering'!
+
+contentTabs
+	|result|
+	result := super contentTabs.
+	result at: 'Workspace' put: #renderWorkspaceOn:.
+	^ result
+!
+
+renderWorkspaceOn: html
+	terminalBox := html pre
+		style: 'height: 350px; overflow-y: scroll; overflow-x: hidden; color: #000000;'.
+	commandBox := html input
+		type: 'text';
+		style: 'width: 97%;';
+		onKeyPress: [:evt | evt keyCode == 13 
+			ifTrue: [self handleEnter]].
+! !
 
 MaglevObjectWindow subclass: #MaglevStringWindow
 	instanceVariableNames: ''

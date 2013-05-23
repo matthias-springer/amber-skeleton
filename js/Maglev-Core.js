@@ -236,11 +236,11 @@ selector: unescape('ready'),
 category: 'initializing',
 fn: function (){
 var self=this;
-
+smalltalk.send(self, "_openWindow_", [(76033)]);
 return self;},
 args: [],
-source: unescape('ready'),
-messageSends: [],
+source: unescape('ready%0A%09self%20openWindow%3A%2076033.'),
+messageSends: ["openWindow:"],
 referencedClasses: []
 }),
 smalltalk.Maglev.klass);
@@ -2843,6 +2843,41 @@ messageSends: [],
 referencedClasses: ["MaglevNilClassWindow"]
 }),
 smalltalk.MaglevNilClass.klass);
+
+
+smalltalk.addClass('MaglevRubyWorkspace', smalltalk.MaglevObject, [], 'Maglev-Core');
+
+smalltalk.addMethod(
+unescape('_basetype'),
+smalltalk.method({
+selector: unescape('basetype'),
+category: 'constants',
+fn: function (){
+var self=this;
+return smalltalk.symbolFor("rubyWorkspace");
+return self;},
+args: [],
+source: unescape('basetype%0A%09%5E%20%23rubyWorkspace'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.MaglevRubyWorkspace.klass);
+
+smalltalk.addMethod(
+unescape('_windowViewClass'),
+smalltalk.method({
+selector: unescape('windowViewClass'),
+category: 'constants',
+fn: function (){
+var self=this;
+return (smalltalk.MaglevRubyWorkspaceWindow || MaglevRubyWorkspaceWindow);
+return self;},
+args: [],
+source: unescape('windowViewClass%0A%09%5E%20MaglevRubyWorkspaceWindow'),
+messageSends: [],
+referencedClasses: ["MaglevRubyWorkspaceWindow"]
+}),
+smalltalk.MaglevRubyWorkspace.klass);
 
 
 smalltalk.addClass('MaglevString', smalltalk.MaglevObject, ['string', 'isStringComplete'], 'Maglev-Core');
