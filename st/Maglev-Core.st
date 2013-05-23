@@ -604,6 +604,13 @@ elementsSize
 	^ elementsSize
 !
 
+includesKey: anObject
+	self elements do: [:assoc |
+		anObject = assoc key
+			ifTrue: [^ true]].
+	^ false
+!
+
 keysAndValuesDo: aBlock
 	elements keysAndValuesDo: [:index :kv | aBlock value: kv key value: kv value].
 !
@@ -1011,6 +1018,48 @@ windowViewClass
 	^ MaglevClassWindow
 ! !
 
+MaglevClass subclass: #MaglevSystemClass
+	instanceVariableNames: 'gemVersionReport gemVersionReportSize stoneVersionReport stoneVersionReportSize'
+	package: 'Maglev-Core'!
+
+!MaglevSystemClass methodsFor: 'accessing'!
+
+gemVersionReport
+	^ gemVersionReport
+!
+
+gemVersionReportSize
+	^ gemVersionReportSize
+!
+
+stoneVersionReport
+	^ stoneVersionReport
+!
+
+stoneVersionReportSize
+	^ stoneVersionReportSize
+! !
+
+!MaglevSystemClass methodsFor: 'instance creation'!
+
+parseJSON: obj
+	super parseJSON: obj.
+	gemVersionReport := MaglevObject newObject: obj gemVersionReport.
+	gemVersionReportSize := obj gemVersionReportSize.
+	stoneVersionReport := MaglevObject newObject: obj stoneVersionReport.
+	stoneVersionReportSize := obj stoneVersionReportSize.
+! !
+
+!MaglevSystemClass class methodsFor: 'constants'!
+
+basetype
+	^ #systemClass
+!
+
+windowViewClass
+	^ MaglevSystemClassWindow
+! !
+
 MaglevObject subclass: #MaglevNilClass
 	instanceVariableNames: ''
 	package: 'Maglev-Core'!
@@ -1122,7 +1171,7 @@ windowViewClass
 ! !
 
 MaglevObject subclass: #MaglevThread
-	instanceVariableNames: 'exception localStorage'
+	instanceVariableNames: 'exception localStorage localStorageSize status'
 	package: 'Maglev-Core'!
 
 !MaglevThread methodsFor: 'accessing'!
@@ -1139,6 +1188,14 @@ inspection
 
 localStorage
 	^ localStorage
+!
+
+localStorageSize
+	^ localStorageSize
+!
+
+status
+	^ status
 ! !
 
 !MaglevThread methodsFor: 'instance creation'!
@@ -1149,6 +1206,8 @@ parseJSON: obj
 	objException := obj at: 'exception'.
 	objException ifNotNil: [exception := MaglevObject newObject: objException].
 	localStorage := MaglevObject newObject: obj threadLocalStorage.
+	localStorageSize := obj threadLocalStorageSize.
+	status := obj status.
 ! !
 
 !MaglevThread methodsFor: 'interactions'!

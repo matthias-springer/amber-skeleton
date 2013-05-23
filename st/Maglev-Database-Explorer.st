@@ -322,10 +322,18 @@ renderOn: html
 ! !
 
 Widget subclass: #MaglevIcon
-	instanceVariableNames: 'b icon spin'
+	instanceVariableNames: 'b icon spin caption'
 	package: 'Maglev-Database-Explorer'!
 
 !MaglevIcon methodsFor: 'accessing'!
+
+caption
+	^ caption
+!
+
+caption: aString
+	caption := aString.
+!
 
 icon
 	icon ifNil: [icon := 'star'].
@@ -352,9 +360,17 @@ renderOn: html
 	cssClass := 'icon-', self icon.
 	self spin 
 		ifTrue: [cssClass := cssClass, ' icon-spin'].
-	b := html b
-		class: cssClass;
-		yourself.
+	caption 
+		ifNil: [b := html b
+				class: cssClass;
+				yourself]
+		ifNotNil: [b := html b
+				class: cssClass;
+				data: 'toggle' with: 'tooltip';
+				data: 'placement' with: 'top';
+				data: 'original-title' with: caption;
+				yourself.
+			b asJQuery tooltip].
 ! !
 
 !MaglevIcon class methodsFor: 'instance creation'!
@@ -371,9 +387,21 @@ move
 		yourself
 !
 
+pause
+	^ self new
+		icon: 'pause';
+		yourself
+!
+
 pencil
 	^ self new
 		icon: 'pencil';
+		yourself
+!
+
+play
+	^ self new
+		icon: 'play';
 		yourself
 !
 
@@ -401,9 +429,21 @@ star
 		yourself
 !
 
+stop
+	^ self new
+		icon: 'stop';
+		yourself
+!
+
 terminal
 	^ self new
 		icon: 'terminal';
+		yourself
+!
+
+trash
+	^ self new
+		icon: 'trash';
 		yourself
 !
 
@@ -411,6 +451,7 @@ wait
 	^ self new
 		icon: 'refresh';
 		spin: true;
+		caption: 'Loading...';
 		yourself
 ! !
 
@@ -871,11 +912,14 @@ MaglevObjectInline subclass: #MaglevExceptionInline
 
 renderObjectActionsOn: html
 	object isTrappable
-		ifFalse: [html with: MaglevIcon terminal].
+		ifFalse: [html with: (MaglevIcon terminal
+			caption: 'Not trappable')].
 	object isResumable
-		ifTrue: [html with: MaglevIcon playCircle].
+		ifTrue: [html with: (MaglevIcon playCircle
+			caption: 'Resumable')].
 	object isDBEHalt
-		ifTrue: [html with: MaglevIcon flag].
+		ifTrue: [html with: (MaglevIcon flag
+			caption: 'Database Explorer Halt')].
 ! !
 
 MaglevObjectInline subclass: #MaglevFixnumInline
@@ -1031,6 +1075,21 @@ MaglevObjectInline subclass: #MaglevThreadInline
 
 maxInspection
 	^ 25
+!
+
+renderObjectActionsOn: html
+	object status = 'sleep'
+		ifTrue: [html with: (MaglevIcon pause
+			caption: 'Thread status: sleeping')].
+	object status = 'false'
+		ifTrue: [html with: (MaglevIcon stop
+			caption: 'Thread status: stopped (false)')].
+	object status = 'run'
+		ifTrue: [html with: (MaglevIcon play
+			caption: 'Thread status: running')].
+	object status = 'aborting'
+		ifTrue: [html with: (MaglevIcon trash
+			caption: 'Thread status: aborting')].
 ! !
 
 Widget subclass: #MaglevTable
@@ -1664,7 +1723,7 @@ sortList: aListBox
 ! !
 
 MaglevModuleWindow subclass: #MaglevClassWindow
-	instanceVariableNames: 'categoryNamesSelect selectorsSelect selectors rubySelectors editorContainer editor waitingScreen errorBox envIdContainer rubyIcon stIcon sourceLocationContainer methodObject'
+	instanceVariableNames: ''
 	package: 'Maglev-Database-Explorer'!
 
 !MaglevClassWindow methodsFor: 'rendering'!
@@ -1685,6 +1744,28 @@ renderWindowTitleContentOn: html
 		with: [
 			self renderVirtualClassAndClassOn: html.
 			self renderCloseButtonOn: html].
+! !
+
+MaglevClassWindow subclass: #MaglevSystemClassWindow
+	instanceVariableNames: ''
+	package: 'Maglev-Database-Explorer'!
+
+!MaglevSystemClassWindow methodsFor: 'rendering'!
+
+contentTabs
+	|result|
+	result := super contentTabs.
+	result at: 'Stone Version Report' put: #renderStoneVersionReportOn:.
+	result at: 'Gem Version Report' put: #renderGemVersionReportOn:.
+	^ result
+!
+
+renderGemVersionReportOn: html
+	html with: (MaglevTable newAssociationDictFor: self object with: #gemVersionReport).
+!
+
+renderStoneVersionReportOn: html
+	html with: (MaglevTable newAssociationDictFor: self object with: #stoneVersionReport).
 ! !
 
 MaglevObjectWindow subclass: #MaglevNilClassWindow
@@ -1784,21 +1865,25 @@ renderButtonsOn: html
 				type: 'button';
 				class: 'btn btn-primary';
 				value: 'Proceed';
+				style: 'margin-right: 1%; width: 24%;';
 				onClick: [self proceed].
 			html input
 				type: 'button';
 				class: 'btn btn-primary';
 				value: 'Step into';
+				style: 'margin-right: 1%; width: 24%;';
 				onClick: [self stepInto].
 			html input
 				type: 'button';
 				class: 'btn btn-primary';
 				value: 'Step over';
+				style: 'margin-right: 1%; width: 24%;';
 				onClick: [self stepOver].
 			html input
 				type: 'button';
 				class: 'btn btn-primary';
 				value: 'Trim stack';
+				style: 'width: 25%;';
 				onClick: [self trimStack]].
 !
 
@@ -1832,12 +1917,12 @@ renderStackTraceOn: html
 			onChange: [self renderFrame].
 	self renderButtonsOn: html.
 	waitingScreen := html div
-    with: [html
-        with: MaglevIcon wait;
-        with: ' loading...'];
-    hide.
-  methodContainer := html div.
-  self reloadStackWithCallback: nil.
+		with: [html
+			with: MaglevIcon wait;
+			with: ' loading...'];
+		hide.
+	methodContainer := html div.
+	self reloadStackWithCallback: nil.
 ! !
 
 MaglevWindow subclass: #MaglevSearchWindow

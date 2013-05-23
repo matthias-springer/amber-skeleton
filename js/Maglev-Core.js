@@ -1484,6 +1484,24 @@ referencedClasses: []
 smalltalk.MaglevDictionary);
 
 smalltalk.addMethod(
+unescape('_includesKey_'),
+smalltalk.method({
+selector: unescape('includesKey%3A'),
+category: 'accessing',
+fn: function (anObject){
+var self=this;
+try{smalltalk.send(smalltalk.send(self, "_elements", []), "_do_", [(function(assoc){return ((($receiver = smalltalk.send(anObject, "__eq", [smalltalk.send(assoc, "_key", [])])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (function(){throw({name: 'stReturn', selector: '_includesKey_', fn: function(){return true}})})();})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return (function(){throw({name: 'stReturn', selector: '_includesKey_', fn: function(){return true}})})();})]));})]);
+(function(){throw({name: 'stReturn', selector: '_includesKey_', fn: function(){return false}})})();
+return self;
+} catch(e) {if(e.name === 'stReturn' && e.selector === '_includesKey_'){return e.fn()} throw(e)}},
+args: ["anObject"],
+source: unescape('includesKey%3A%20anObject%0A%09self%20elements%20do%3A%20%5B%3Aassoc%20%7C%0A%09%09anObject%20%3D%20assoc%20key%0A%09%09%09ifTrue%3A%20%5B%5E%20true%5D%5D.%0A%09%5E%20false'),
+messageSends: ["do:", "elements", "ifTrue:", unescape("%3D"), "key"],
+referencedClasses: []
+}),
+smalltalk.MaglevDictionary);
+
+smalltalk.addMethod(
 unescape('_isFullyLoaded'),
 smalltalk.method({
 selector: unescape('isFullyLoaded'),
@@ -2609,6 +2627,125 @@ referencedClasses: ["MaglevClassWindow"]
 smalltalk.MaglevClass.klass);
 
 
+smalltalk.addClass('MaglevSystemClass', smalltalk.MaglevClass, ['gemVersionReport', 'gemVersionReportSize', 'stoneVersionReport', 'stoneVersionReportSize'], 'Maglev-Core');
+smalltalk.addMethod(
+unescape('_gemVersionReport'),
+smalltalk.method({
+selector: unescape('gemVersionReport'),
+category: 'accessing',
+fn: function (){
+var self=this;
+return self['@gemVersionReport'];
+return self;},
+args: [],
+source: unescape('gemVersionReport%0A%09%5E%20gemVersionReport'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.MaglevSystemClass);
+
+smalltalk.addMethod(
+unescape('_gemVersionReportSize'),
+smalltalk.method({
+selector: unescape('gemVersionReportSize'),
+category: 'accessing',
+fn: function (){
+var self=this;
+return self['@gemVersionReportSize'];
+return self;},
+args: [],
+source: unescape('gemVersionReportSize%0A%09%5E%20gemVersionReportSize'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.MaglevSystemClass);
+
+smalltalk.addMethod(
+unescape('_parseJSON_'),
+smalltalk.method({
+selector: unescape('parseJSON%3A'),
+category: 'instance creation',
+fn: function (obj){
+var self=this;
+smalltalk.send(self, "_parseJSON_", [obj], smalltalk.MaglevClass);
+(self['@gemVersionReport']=smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObject_", [smalltalk.send(obj, "_gemVersionReport", [])]));
+(self['@gemVersionReportSize']=smalltalk.send(obj, "_gemVersionReportSize", []));
+(self['@stoneVersionReport']=smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObject_", [smalltalk.send(obj, "_stoneVersionReport", [])]));
+(self['@stoneVersionReportSize']=smalltalk.send(obj, "_stoneVersionReportSize", []));
+return self;},
+args: ["obj"],
+source: unescape('parseJSON%3A%20obj%0A%09super%20parseJSON%3A%20obj.%0A%09gemVersionReport%20%3A%3D%20MaglevObject%20newObject%3A%20obj%20gemVersionReport.%0A%09gemVersionReportSize%20%3A%3D%20obj%20gemVersionReportSize.%0A%09stoneVersionReport%20%3A%3D%20MaglevObject%20newObject%3A%20obj%20stoneVersionReport.%0A%09stoneVersionReportSize%20%3A%3D%20obj%20stoneVersionReportSize.'),
+messageSends: ["parseJSON:", "newObject:", "gemVersionReport", "gemVersionReportSize", "stoneVersionReport", "stoneVersionReportSize"],
+referencedClasses: ["MaglevObject"]
+}),
+smalltalk.MaglevSystemClass);
+
+smalltalk.addMethod(
+unescape('_stoneVersionReport'),
+smalltalk.method({
+selector: unescape('stoneVersionReport'),
+category: 'accessing',
+fn: function (){
+var self=this;
+return self['@stoneVersionReport'];
+return self;},
+args: [],
+source: unescape('stoneVersionReport%0A%09%5E%20stoneVersionReport'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.MaglevSystemClass);
+
+smalltalk.addMethod(
+unescape('_stoneVersionReportSize'),
+smalltalk.method({
+selector: unescape('stoneVersionReportSize'),
+category: 'accessing',
+fn: function (){
+var self=this;
+return self['@stoneVersionReportSize'];
+return self;},
+args: [],
+source: unescape('stoneVersionReportSize%0A%09%5E%20stoneVersionReportSize'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.MaglevSystemClass);
+
+
+smalltalk.addMethod(
+unescape('_basetype'),
+smalltalk.method({
+selector: unescape('basetype'),
+category: 'constants',
+fn: function (){
+var self=this;
+return smalltalk.symbolFor("systemClass");
+return self;},
+args: [],
+source: unescape('basetype%0A%09%5E%20%23systemClass'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.MaglevSystemClass.klass);
+
+smalltalk.addMethod(
+unescape('_windowViewClass'),
+smalltalk.method({
+selector: unescape('windowViewClass'),
+category: 'constants',
+fn: function (){
+var self=this;
+return (smalltalk.MaglevSystemClassWindow || MaglevSystemClassWindow);
+return self;},
+args: [],
+source: unescape('windowViewClass%0A%09%5E%20MaglevSystemClassWindow'),
+messageSends: [],
+referencedClasses: ["MaglevSystemClassWindow"]
+}),
+smalltalk.MaglevSystemClass.klass);
+
+
 smalltalk.addClass('MaglevNilClass', smalltalk.MaglevObject, [], 'Maglev-Core');
 smalltalk.addMethod(
 unescape('_ifNotMaglevNil_'),
@@ -2914,7 +3051,7 @@ referencedClasses: ["MaglevSymbolWindow"]
 smalltalk.MaglevSymbol.klass);
 
 
-smalltalk.addClass('MaglevThread', smalltalk.MaglevObject, ['exception', 'localStorage'], 'Maglev-Core');
+smalltalk.addClass('MaglevThread', smalltalk.MaglevObject, ['exception', 'localStorage', 'localStorageSize', 'status'], 'Maglev-Core');
 smalltalk.addMethod(
 unescape('_exception'),
 smalltalk.method({
@@ -2981,6 +3118,22 @@ referencedClasses: []
 smalltalk.MaglevThread);
 
 smalltalk.addMethod(
+unescape('_localStorageSize'),
+smalltalk.method({
+selector: unescape('localStorageSize'),
+category: 'accessing',
+fn: function (){
+var self=this;
+return self['@localStorageSize'];
+return self;},
+args: [],
+source: unescape('localStorageSize%0A%09%5E%20localStorageSize'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.MaglevThread);
+
+smalltalk.addMethod(
 unescape('_parseJSON_'),
 smalltalk.method({
 selector: unescape('parseJSON%3A'),
@@ -2992,10 +3145,12 @@ smalltalk.send(self, "_parseJSON_", [obj], smalltalk.MaglevObject);
 (objException=smalltalk.send(obj, "_at_", ["exception"]));
 (($receiver = objException) != nil && $receiver != undefined) ? (function(){return (self['@exception']=smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObject_", [objException]));})() : nil;
 (self['@localStorage']=smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObject_", [smalltalk.send(obj, "_threadLocalStorage", [])]));
+(self['@localStorageSize']=smalltalk.send(obj, "_threadLocalStorageSize", []));
+(self['@status']=smalltalk.send(obj, "_status", []));
 return self;},
 args: ["obj"],
-source: unescape('parseJSON%3A%20obj%0A%09%7CobjException%7C%0A%09super%20parseJSON%3A%20obj.%0A%09objException%20%3A%3D%20obj%20at%3A%20%27exception%27.%0A%09objException%20ifNotNil%3A%20%5Bexception%20%3A%3D%20MaglevObject%20newObject%3A%20objException%5D.%0A%09localStorage%20%3A%3D%20MaglevObject%20newObject%3A%20obj%20threadLocalStorage.'),
-messageSends: ["parseJSON:", "at:", "ifNotNil:", "newObject:", "threadLocalStorage"],
+source: unescape('parseJSON%3A%20obj%0A%09%7CobjException%7C%0A%09super%20parseJSON%3A%20obj.%0A%09objException%20%3A%3D%20obj%20at%3A%20%27exception%27.%0A%09objException%20ifNotNil%3A%20%5Bexception%20%3A%3D%20MaglevObject%20newObject%3A%20objException%5D.%0A%09localStorage%20%3A%3D%20MaglevObject%20newObject%3A%20obj%20threadLocalStorage.%0A%09localStorageSize%20%3A%3D%20obj%20threadLocalStorageSize.%0A%09status%20%3A%3D%20obj%20status.'),
+messageSends: ["parseJSON:", "at:", "ifNotNil:", "newObject:", "threadLocalStorage", "threadLocalStorageSize", "status"],
 referencedClasses: ["MaglevObject"]
 }),
 smalltalk.MaglevThread);
@@ -3047,6 +3202,22 @@ args: ["aBlock"],
 source: unescape('stackTraceMethodsWithCallback%3A%20aBlock%0A%09MaglevAjax%20%0A%09%09ajax%3A%20%27/code/frames/%27%2C%20oop%20asString%0A%09%09data%3A%20Dictionary%20new%0A%09%09withCallback%3A%20aBlock.'),
 messageSends: ["ajax:data:withCallback:", unescape("%2C"), "asString", "new"],
 referencedClasses: ["MaglevAjax", "Dictionary"]
+}),
+smalltalk.MaglevThread);
+
+smalltalk.addMethod(
+unescape('_status'),
+smalltalk.method({
+selector: unescape('status'),
+category: 'accessing',
+fn: function (){
+var self=this;
+return self['@status'];
+return self;},
+args: [],
+source: unescape('status%0A%09%5E%20status'),
+messageSends: [],
+referencedClasses: []
 }),
 smalltalk.MaglevThread);
 
