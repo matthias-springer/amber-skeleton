@@ -195,7 +195,39 @@ referencedClasses: ["MaglevWaitingWindow"]
 smalltalk.Maglev);
 
 
-smalltalk.Maglev.klass.iVarNames = ['instance'];
+smalltalk.Maglev.klass.iVarNames = ['instance','defaultWorkspaceId','persistentRootId','maglevSystemId'];
+smalltalk.addMethod(
+unescape('_defaultWorkspaceId'),
+smalltalk.method({
+selector: unescape('defaultWorkspaceId'),
+category: 'accessing',
+fn: function (){
+var self=this;
+return self['@defaultWorkspaceId'];
+return self;},
+args: [],
+source: unescape('defaultWorkspaceId%0A%09%5E%20defaultWorkspaceId'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.Maglev.klass);
+
+smalltalk.addMethod(
+unescape('_defaultWorkspaceId_'),
+smalltalk.method({
+selector: unescape('defaultWorkspaceId%3A'),
+category: 'accessing',
+fn: function (anInteger){
+var self=this;
+(self['@defaultWorkspaceId']=anInteger);
+return self;},
+args: ["anInteger"],
+source: unescape('defaultWorkspaceId%3A%20anInteger%0A%09%22Called%20from%20JavaScript%20initializer.%22%0A%09defaultWorkspaceId%20%3A%3D%20anInteger.'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.Maglev.klass);
+
 smalltalk.addMethod(
 unescape('_instance'),
 smalltalk.method({
@@ -210,6 +242,38 @@ args: [],
 source: unescape('instance%0A%09instance%20ifNil%3A%20%5Binstance%20%3A%3D%20Maglev%20new%5D.%0A%09%5E%20instance'),
 messageSends: ["ifNil:", "new"],
 referencedClasses: ["Maglev"]
+}),
+smalltalk.Maglev.klass);
+
+smalltalk.addMethod(
+unescape('_maglevSystemId'),
+smalltalk.method({
+selector: unescape('maglevSystemId'),
+category: 'accessing',
+fn: function (){
+var self=this;
+return self['@maglevSystemId'];
+return self;},
+args: [],
+source: unescape('maglevSystemId%0A%09%5E%20maglevSystemId'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.Maglev.klass);
+
+smalltalk.addMethod(
+unescape('_maglevSystemId_'),
+smalltalk.method({
+selector: unescape('maglevSystemId%3A'),
+category: 'accessing',
+fn: function (anInteger){
+var self=this;
+(self['@maglevSystemId']=anInteger);
+return self;},
+args: ["anInteger"],
+source: unescape('maglevSystemId%3A%20anInteger%0A%09%22Called%20from%20JavaScript%20initializer.%22%0A%09maglevSystemId%20%3A%3D%20anInteger.'),
+messageSends: [],
+referencedClasses: []
 }),
 smalltalk.Maglev.klass);
 
@@ -230,17 +294,51 @@ referencedClasses: ["Maglev"]
 smalltalk.Maglev.klass);
 
 smalltalk.addMethod(
+unescape('_persistentRootId'),
+smalltalk.method({
+selector: unescape('persistentRootId'),
+category: 'accessing',
+fn: function (){
+var self=this;
+return self['@persistentRootId'];
+return self;},
+args: [],
+source: unescape('persistentRootId%0A%09%5E%20persistentRootId'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.Maglev.klass);
+
+smalltalk.addMethod(
+unescape('_persistentRootId_'),
+smalltalk.method({
+selector: unescape('persistentRootId%3A'),
+category: 'accessing',
+fn: function (anInteger){
+var self=this;
+(self['@persistentRootId']=anInteger);
+return self;},
+args: ["anInteger"],
+source: unescape('persistentRootId%3A%20anInteger%0A%09%22Called%20from%20JavaScript%20initializer.%22%0A%09persistentRootId%20%3A%3D%20anInteger.'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.Maglev.klass);
+
+smalltalk.addMethod(
 unescape('_ready'),
 smalltalk.method({
 selector: unescape('ready'),
 category: 'initializing',
 fn: function (){
 var self=this;
-smalltalk.send(self, "_openWindow_", [(76033)]);
+smalltalk.send(self, "_openWindow_", [smalltalk.send(self, "_defaultWorkspaceId", [])]);
+smalltalk.send(self, "_openWindow_", [smalltalk.send(self, "_persistentRootId", [])]);
+smalltalk.send(self, "_openWindow_", [smalltalk.send(self, "_maglevSystemId", [])]);
 return self;},
 args: [],
-source: unescape('ready%0A%09self%20openWindow%3A%2076033.'),
-messageSends: ["openWindow:"],
+source: unescape('ready%0A%09self%20openWindow%3A%20self%20defaultWorkspaceId.%0A%09self%20openWindow%3A%20self%20persistentRootId.%0A%09self%20openWindow%3A%20self%20maglevSystemId.'),
+messageSends: ["openWindow:", "defaultWorkspaceId", "persistentRootId", "maglevSystemId"],
 referencedClasses: []
 }),
 smalltalk.Maglev.klass);
@@ -1360,6 +1458,22 @@ args: [],
 source: unescape('basetype%0A%09%5E%20%23boolean'),
 messageSends: [],
 referencedClasses: []
+}),
+smalltalk.MaglevBoolean.klass);
+
+smalltalk.addMethod(
+unescape('_inlineViewClass'),
+smalltalk.method({
+selector: unescape('inlineViewClass'),
+category: 'constants',
+fn: function (){
+var self=this;
+return (smalltalk.MaglevBooleanInline || MaglevBooleanInline);
+return self;},
+args: [],
+source: unescape('inlineViewClass%0A%09%5E%20MaglevBooleanInline'),
+messageSends: [],
+referencedClasses: ["MaglevBooleanInline"]
 }),
 smalltalk.MaglevBoolean.klass);
 

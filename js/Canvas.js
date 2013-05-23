@@ -2545,6 +2545,38 @@ referencedClasses: []
 smalltalk.TagBrush);
 
 smalltalk.addMethod(
+unescape('_onArrowKeyDown_'),
+smalltalk.method({
+selector: unescape('onArrowKeyDown%3A'),
+category: 'events',
+fn: function (aBlock){
+var self=this;
+smalltalk.send(self, "_onKeyDown_", [(function(e){smalltalk.send(e, "_preventDefault", []);return ((($receiver = smalltalk.send(smalltalk.send(e, "_keyCode", []), "__eq", [(40)])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(aBlock, "_value", []);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(aBlock, "_value", []);})]));})]);
+return self;},
+args: ["aBlock"],
+source: unescape('onArrowKeyDown%3A%20aBlock%0A%09self%20onKeyDown%3A%20%5B%3Ae%7C%20e%20preventDefault.%20e%20keyCode%20%3D%2040%20ifTrue%3A%20%5BaBlock%20value%5D%5D.'),
+messageSends: ["onKeyDown:", "preventDefault", "ifTrue:", unescape("%3D"), "keyCode", "value"],
+referencedClasses: []
+}),
+smalltalk.TagBrush);
+
+smalltalk.addMethod(
+unescape('_onArrowKeyUp_'),
+smalltalk.method({
+selector: unescape('onArrowKeyUp%3A'),
+category: 'events',
+fn: function (aBlock){
+var self=this;
+smalltalk.send(self, "_onKeyDown_", [(function(e){smalltalk.send(e, "_preventDefault", []);return ((($receiver = smalltalk.send(smalltalk.send(e, "_keyCode", []), "__eq", [(38)])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(aBlock, "_value", []);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(aBlock, "_value", []);})]));})]);
+return self;},
+args: ["aBlock"],
+source: unescape('onArrowKeyUp%3A%20aBlock%0A%09self%20onKeyDown%3A%20%5B%3Ae%7C%20e%20preventDefault.%20e%20keyCode%20%3D%2038%20ifTrue%3A%5BaBlock%20value%5D%5D.'),
+messageSends: ["onKeyDown:", "preventDefault", "ifTrue:", unescape("%3D"), "keyCode", "value"],
+referencedClasses: []
+}),
+smalltalk.TagBrush);
+
+smalltalk.addMethod(
 unescape('_onBlur_'),
 smalltalk.method({
 selector: unescape('onBlur%3A'),

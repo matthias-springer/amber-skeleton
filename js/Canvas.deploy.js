@@ -1755,6 +1755,28 @@ return self;}
 smalltalk.TagBrush);
 
 smalltalk.addMethod(
+unescape('_onArrowKeyDown_'),
+smalltalk.method({
+selector: unescape('onArrowKeyDown%3A'),
+fn: function (aBlock){
+var self=this;
+smalltalk.send(self, "_onKeyDown_", [(function(e){smalltalk.send(e, "_preventDefault", []);return ((($receiver = smalltalk.send(smalltalk.send(e, "_keyCode", []), "__eq", [(40)])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(aBlock, "_value", []);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(aBlock, "_value", []);})]));})]);
+return self;}
+}),
+smalltalk.TagBrush);
+
+smalltalk.addMethod(
+unescape('_onArrowKeyUp_'),
+smalltalk.method({
+selector: unescape('onArrowKeyUp%3A'),
+fn: function (aBlock){
+var self=this;
+smalltalk.send(self, "_onKeyDown_", [(function(e){smalltalk.send(e, "_preventDefault", []);return ((($receiver = smalltalk.send(smalltalk.send(e, "_keyCode", []), "__eq", [(38)])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(aBlock, "_value", []);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(aBlock, "_value", []);})]));})]);
+return self;}
+}),
+smalltalk.TagBrush);
+
+smalltalk.addMethod(
 unescape('_onBlur_'),
 smalltalk.method({
 selector: unescape('onBlur%3A'),

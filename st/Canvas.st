@@ -740,6 +740,14 @@ asJQuery
 
 !TagBrush methodsFor: 'events'!
 
+onArrowKeyDown: aBlock
+	self onKeyDown: [:e| e preventDefault. e keyCode = 40 ifTrue: [aBlock value]].
+!
+
+onArrowKeyUp: aBlock
+	self onKeyDown: [:e| e preventDefault. e keyCode = 38 ifTrue:[aBlock value]].
+!
+
 onBlur: aBlock
     self asJQuery bind: 'blur' do: aBlock
 !

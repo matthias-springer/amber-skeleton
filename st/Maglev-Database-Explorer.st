@@ -188,14 +188,10 @@ renderStatusBarOn: html
 		with: [html tbody with: [
 			html tr with: [
 				html td with: [
-					rubyIcon := html img
-						src: '/images/ruby.png';
-						class: 'icon-language';
-						hide.
-					stIcon := html img
-						src: '/images/smalltalk.png';
-						class: 'icon-language';
-						hide.
+					rubyIcon := MaglevIconImage ruby hide; yourself.
+					stIcon := MaglevIconImage smalltalk hide; yourself.
+					html with: rubyIcon.
+					html with: stIcon.
 					envIdContainer := html span with: 'Environment ID'].
 				html td with: [
 					sourceLocationContainer := html span with: 'Source location']]]].
@@ -453,6 +449,159 @@ wait
 		spin: true;
 		caption: 'Loading...';
 		yourself
+! !
+
+Widget subclass: #MaglevIconImage
+	instanceVariableNames: 'src cssClass image hidden'
+	package: 'Maglev-Database-Explorer'!
+
+!MaglevIconImage methodsFor: 'accessing'!
+
+cssClass: aString
+	cssClass := aString.
+!
+
+hidden
+	hidden ifNil: [hidden := false].
+	^ hidden
+!
+
+src: aString
+	src := aString.
+! !
+
+!MaglevIconImage methodsFor: 'interactions'!
+
+hide
+	hidden := true.
+	image ifNotNil: [image hide].
+!
+
+show
+	hidden := false.
+	image ifNotNil: [image show].
+! !
+
+!MaglevIconImage methodsFor: 'rendering'!
+
+renderOn: html
+	image := html img
+		src: src;
+		class: cssClass.
+	self hidden ifTrue: [image hide].
+! !
+
+!MaglevIconImage class methodsFor: 'instance creation'!
+
+ruby
+	^ self new
+		src: '/images/ruby.png';
+		cssClass: 'icon-language';
+		yourself
+!
+
+smalltalk
+	^ self new
+		src: '/images/smalltalk.png';
+		cssClass: 'icon-language';
+		yourself
+! !
+
+Widget subclass: #MaglevListBox
+	instanceVariableNames: 'list changedCallback htmlIv'
+	package: 'Maglev-Database-Explorer'!
+
+!MaglevListBox methodsFor: 'accessing'!
+
+changedCallback: aBlock
+	changedCallback := aBlock.
+!
+
+selectedData
+	^ (list asJQuery find: '.ui-selected') data: 'data'
+!
+
+selectedDataIndex
+	^ (list asJQuery find: '.ui-selected') index + 1
+!
+
+size
+	^ (list asJQuery find: 'li') length
+!
+
+style: aString
+	list style: aString.
+! !
+
+!MaglevListBox methodsFor: 'interactions'!
+
+bindEvents
+	< self['@list']._asJQuery().selectable({
+		stop: function() {self._selectionChanged();}}); >
+!
+
+clear
+	list asJQuery empty.
+!
+
+hide
+	list hide.
+!
+
+moveSelectionDown
+	|newIndex|
+	newIndex := self selectedDataIndex + 1 - 1.
+	newIndex = self size ifTrue: [newIndex := 0].
+	self unselectAll.
+	(list asJQuery find: 'li:eq(', newIndex asString, ')') addClass: 'ui-selected'.
+	self selectionChanged.
+!
+
+moveSelectionUp
+	|newIndex|
+	newIndex := self selectedDataIndex - 1 - 1.
+	newIndex < 0 ifTrue: [newIndex := self size - 1].
+	self unselectAll.
+	(list asJQuery find: 'li:eq(', newIndex asString, ')') addClass: 'ui-selected'.
+	self selectionChanged.
+!
+
+selectionChanged
+	changedCallback value: self selectedData value: self selectedDataIndex.
+!
+
+show
+	list show.
+!
+
+unselectAll
+	(list asJQuery find: 'li') removeClass: 'ui-selected'.
+! !
+
+!MaglevListBox methodsFor: 'rendering'!
+
+renderOn: html
+	list := html ol
+		at: 'tabindex' put: '1';
+		onArrowKeyDown: [self moveSelectionDown];
+		onArrowKeyUp: [self moveSelectionUp];
+		onClick: [list asJQuery focus].
+	htmlIv := html.
+	self bindEvents.
+!
+
+with: content
+	self with: content data: ''.
+!
+
+with: content data: dataString
+	"|html|
+	html := HTMLCanvas onJQuery: list asJQuery."
+	list with: [
+		htmlIv li
+			class: 'ui-widget-content';
+			data: 'data' with: dataString;
+			with: [content value: htmlIv]].
 ! !
 
 Widget subclass: #MaglevObjectDropdown
@@ -774,9 +923,9 @@ renderLoadedObjectOn: html
 !
 
 renderObjectActionsOn: html
-	html
+"	html
 		with: MaglevIcon search;
-		with: MaglevIcon pencil.
+		with: MaglevIcon pencil."
 !
 
 renderObjectContainerOn: html
@@ -904,6 +1053,20 @@ renderUnloadedObjectOn: html
 	self renderText: ']' withDropDownOn: html.
 ! !
 
+MaglevObjectInline subclass: #MaglevBooleanInline
+	instanceVariableNames: ''
+	package: 'Maglev-Database-Explorer'!
+
+!MaglevBooleanInline methodsFor: 'constants'!
+
+hasDropDownDefault
+	^ false
+!
+
+isDraggableDefault
+	^ false
+! !
+
 MaglevObjectInline subclass: #MaglevExceptionInline
 	instanceVariableNames: ''
 	package: 'Maglev-Database-Explorer'!
@@ -936,6 +1099,11 @@ isDraggableDefault
 	^ false
 ! !
 
+!MaglevFixnumInline methodsFor: 'rendering'!
+
+renderObjectActionsOn: html
+! !
+
 MaglevObjectInline subclass: #MaglevFloatInline
 	instanceVariableNames: ''
 	package: 'Maglev-Database-Explorer'!
@@ -948,6 +1116,11 @@ hasDropDownDefault
 
 isDraggableDefault
 	^ false
+! !
+
+!MaglevFloatInline methodsFor: 'rendering'!
+
+renderObjectActionsOn: html
 ! !
 
 MaglevObjectInline subclass: #MaglevHashInline
@@ -1617,6 +1790,34 @@ MaglevObjectWindow subclass: #MaglevModuleWindow
 	instanceVariableNames: 'categoryNamesSelect selectorsSelect selectors rubySelectors methodContainer waitingScreen'
 	package: 'Maglev-Database-Explorer'!
 
+!MaglevModuleWindow methodsFor: 'interactions'!
+
+renderSelectors: selectedCategory
+	|currentSelectors|
+	selectorsSelect clear.
+	currentSelectors := selectors at: selectedCategory.
+	currentSelectors ifNil: [^ self].
+	currentSelectors do: [:sel |
+		selectorsSelect 
+			with: [:html | html with: sel]
+			data: sel].
+!
+
+renderSourceCode: selectorString
+	|selectedCategory|
+	methodContainer asJQuery empty.
+	selectorString ifNil: [^ self].
+	waitingScreen show.
+	selectedCategory := self selectedCategoryString.
+	selectedCategory = '(all Ruby)'
+		ifTrue: [self renderRubySourceCodeFor: selectorString]
+		ifFalse: [self renderSmalltalkSourceCodeFor: selectorString].
+!
+
+selectedCategoryString
+	^ categoryNamesSelect selectedData
+! !
+
 !MaglevModuleWindow methodsFor: 'rendering'!
 
 contentTabs
@@ -1633,14 +1834,7 @@ contentTabs
 renderCodeTabOn: html
 	html root
 		style: 'width: 100%;'.
-	categoryNamesSelect := html select
-		size: 10;
-		style: 'width: 50%;';
-		hide.
-	selectorsSelect := html select
-		size: 10;
-		style: 'width: 50%;';
-		hide.
+	self renderListsOn: html.
 	waitingScreen := html div
 		with: [html
 			with: MaglevIcon wait;
@@ -1649,9 +1843,6 @@ renderCodeTabOn: html
 	self object allSelectorsWithCallback: [:obj |
 		selectors := obj.
 		self renderSelectorCategories.
-		self renderSelectors.
-		selectorsSelect onChange: [self renderSourceCode].
-		categoryNamesSelect onChange: [self renderSelectors].
 		waitingScreen hide.
 		categoryNamesSelect show.
 		selectorsSelect show].
@@ -1663,6 +1854,21 @@ renderConstantsOn: html
 
 renderIncludedModulesOn: html
 	html with: (MaglevTable newFor: self object with: #includedModules).
+!
+
+renderListsOn: html
+	categoryNamesSelect := MaglevListBox new.
+	html with: categoryNamesSelect.
+	categoryNamesSelect
+		changedCallback: [:cat :index | self renderSelectors: cat];
+		style: 'height: 250px; overflow-y: scroll; float: left; width: 50%; margin-right: 10px; margin-left: 0px;';
+		hide.
+	selectorsSelect := MaglevListBox new.
+	html with: selectorsSelect.
+	selectorsSelect
+		changedCallback: [:sel :index | self renderSourceCode: sel];
+		style: 'height: 250px; overflow-y: scroll;';
+		hide.
 !
 
 renderMethodObject: obj
@@ -1678,22 +1884,14 @@ renderRubySourceCodeFor: selectorString
 !
 
 renderSelectorCategories
-	|html|
-	categoryNamesSelect asJQuery empty.
-	html := HTMLCanvas onJQuery: categoryNamesSelect asJQuery.
+	categoryNamesSelect clear.
 	selectors keysAndValuesDo: [:category :catSelectors |
-		html 	with: [html option with: category]].
-	categoryNamesSelect asJQuery val: '(all Smalltalk)'.
-!
-
-renderSelectors
-	|html selectedCategory currentSelectors|
-	selectorsSelect asJQuery empty.
-	html := HTMLCanvas onJQuery: selectorsSelect asJQuery.
-	selectedCategory := categoryNamesSelect asJQuery val.
-	currentSelectors := selectors at: selectedCategory.
-	currentSelectors do: [:catSelectors |
-		html with: [html option with: catSelectors]].
+		categoryNamesSelect with: [:html |
+			category = '(all Ruby)' 
+				ifTrue: [html with: MaglevIconImage ruby]
+				ifFalse: [html with: MaglevIconImage smalltalk].
+			html with: category]
+			data: category].
 !
 
 renderSmalltalkSourceCodeFor: selectorString
@@ -1701,17 +1899,6 @@ renderSmalltalkSourceCodeFor: selectorString
 		sourceCodeFor: selectorString 
 		language: 'smalltalk'
 		withCallback: [:obj | self renderMethodObject: obj].
-!
-
-renderSourceCode
-	|selectorString selectedCategory|
-	methodContainer asJQuery empty.
-	waitingScreen show.
-	selectedCategory := categoryNamesSelect asJQuery val.
-	selectorString := selectorsSelect asJQuery val.
-	selectedCategory = '(all Ruby)'
-		ifTrue: [self renderRubySourceCodeFor: selectorString]
-		ifFalse: [self renderSmalltalkSourceCodeFor: selectorString].
 !
 
 sortList: aListBox
@@ -1869,7 +2056,7 @@ handleEnter
 	html := HTMLCanvas onJQuery: terminalBox asJQuery.
 	command := commandBox asJQuery val.
 	command := command replace: '''' with: ''''''.
-	commandBox asJQuery val: ''.
+	commandBox asJQuery prop: 'disabled' value: true.
 	html
 		with: command;
 		with: html br.
@@ -1884,7 +2071,14 @@ handleEnter
 				class: class;
 				with: '=> ';
 				with: (resultObj at: 2) inlineViewComponent;
-				with: html br]].
+				with: html br].
+			self scrollToBottom.
+			commandBox asJQuery prop: 'disabled' value: false.
+			commandBox asJQuery val: ''].
+!
+
+scrollToBottom
+	terminalBox asJQuery scrollTop: (terminalBox asJQuery at: 0) scrollHeight.
 ! !
 
 !MaglevRubyWorkspaceWindow methodsFor: 'rendering'!
@@ -1896,6 +2090,14 @@ contentTabs
 	^ result
 !
 
+mouseFix
+	< var editor = self['@terminalBox'];
+	editor._asJQuery().mousedown(function (event) {
+		event.preventDefault();
+		return false;
+	}); >
+!
+
 renderWorkspaceOn: html
 	terminalBox := html pre
 		style: 'height: 350px; overflow-y: scroll; overflow-x: hidden; color: #000000;'.
@@ -1904,6 +2106,7 @@ renderWorkspaceOn: html
 		style: 'width: 97%;';
 		onKeyPress: [:evt | evt keyCode == 13 
 			ifTrue: [self handleEnter]].
+	self mouseFix.
 ! !
 
 MaglevObjectWindow subclass: #MaglevStringWindow
@@ -1921,7 +2124,7 @@ MaglevObjectWindow subclass: #MaglevThreadWindow
 !MaglevThreadWindow methodsFor: 'accessing'!
 
 frameIndex
-	^ (methodSelect asJQuery at: 0) selectedIndex + 1
+	^ methodSelect selectedDataIndex
 ! !
 
 !MaglevThreadWindow methodsFor: 'interactions'!
@@ -1936,12 +2139,16 @@ proceed
 reloadStackWithCallback: aBlock
 	|html|
 	waitForStackTrace show.
-	methodSelect asJQuery empty.
-	html := HTMLCanvas onJQuery: methodSelect asJQuery.
+	methodSelect clear.
 	object stackTraceMethodsWithCallback: [:obj |
-		methodSelect
-			with: [obj do: [:method |
-				html option with: method]].
+		obj do: [:method |
+			methodSelect
+				with: [:html | 
+					(method includesSubString: '(envId 0)')
+						ifTrue: [html with: MaglevIconImage smalltalk].
+					(method includesSubString: '(envId 1)')
+						ifTrue: [html with: MaglevIconImage ruby].
+					html with: method]].
 		waitForStackTrace hide.
 		aBlock = nil
 			ifFalse: [aBlock value]].
@@ -2021,11 +2228,9 @@ renderButtonsOn: html
 				onClick: [self trimStack]].
 !
 
-renderFrame
-	|frameIndex|
+renderFrame: frameIndex
 	methodContainer asJQuery empty.
 	waitingScreen show.
-	frameIndex := self frameIndex.
 	frameIndex > 0
 		ifTrue: [object
 			stackFrame: frameIndex 
@@ -2045,10 +2250,11 @@ renderStackTraceOn: html
 		with: [html
 				with: MaglevIcon wait;
 				with: ' loading...'].
-	methodSelect := html select
-			size: 10;
-			style: 'width: 100%;';
-			onChange: [self renderFrame].
+	methodSelect := MaglevListBox new.
+	html with: methodSelect.
+	methodSelect
+		changedCallback: [:text :index | self renderFrame: index];
+		style: 'width: 100%; height: 250px; overflow-y: scroll;'.
 	self renderButtonsOn: html.
 	waitingScreen := html div
 		with: [html

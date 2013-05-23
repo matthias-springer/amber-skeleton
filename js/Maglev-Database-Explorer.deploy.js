@@ -212,7 +212,7 @@ smalltalk.method({
 selector: unescape('renderStatusBarOn%3A'),
 fn: function (html){
 var self=this;
-(function($rec){smalltalk.send($rec, "_class_", [unescape("table-bordered")]);smalltalk.send($rec, "_style_", [unescape("margin-top%3A%205px%3B")]);return smalltalk.send($rec, "_with_", [(function(){return smalltalk.send(smalltalk.send(html, "_tbody", []), "_with_", [(function(){return smalltalk.send(smalltalk.send(html, "_tr", []), "_with_", [(function(){smalltalk.send(smalltalk.send(html, "_td", []), "_with_", [(function(){(self['@rubyIcon']=(function($rec){smalltalk.send($rec, "_src_", [unescape("/images/ruby.png")]);smalltalk.send($rec, "_class_", [unescape("icon-language")]);return smalltalk.send($rec, "_hide", []);})(smalltalk.send(html, "_img", [])));(self['@stIcon']=(function($rec){smalltalk.send($rec, "_src_", [unescape("/images/smalltalk.png")]);smalltalk.send($rec, "_class_", [unescape("icon-language")]);return smalltalk.send($rec, "_hide", []);})(smalltalk.send(html, "_img", [])));return (self['@envIdContainer']=smalltalk.send(smalltalk.send(html, "_span", []), "_with_", ["Environment ID"]));})]);return smalltalk.send(smalltalk.send(html, "_td", []), "_with_", [(function(){return (self['@sourceLocationContainer']=smalltalk.send(smalltalk.send(html, "_span", []), "_with_", ["Source location"]));})]);})]);})]);})]);})(smalltalk.send(html, "_table", []));
+(function($rec){smalltalk.send($rec, "_class_", [unescape("table-bordered")]);smalltalk.send($rec, "_style_", [unescape("margin-top%3A%205px%3B")]);return smalltalk.send($rec, "_with_", [(function(){return smalltalk.send(smalltalk.send(html, "_tbody", []), "_with_", [(function(){return smalltalk.send(smalltalk.send(html, "_tr", []), "_with_", [(function(){smalltalk.send(smalltalk.send(html, "_td", []), "_with_", [(function(){(self['@rubyIcon']=(function($rec){smalltalk.send($rec, "_hide", []);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send((smalltalk.MaglevIconImage || MaglevIconImage), "_ruby", [])));(self['@stIcon']=(function($rec){smalltalk.send($rec, "_hide", []);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send((smalltalk.MaglevIconImage || MaglevIconImage), "_smalltalk", [])));smalltalk.send(html, "_with_", [self['@rubyIcon']]);smalltalk.send(html, "_with_", [self['@stIcon']]);return (self['@envIdContainer']=smalltalk.send(smalltalk.send(html, "_span", []), "_with_", ["Environment ID"]));})]);return smalltalk.send(smalltalk.send(html, "_td", []), "_with_", [(function(){return (self['@sourceLocationContainer']=smalltalk.send(smalltalk.send(html, "_span", []), "_with_", ["Source location"]));})]);})]);})]);})]);})(smalltalk.send(html, "_table", []));
 return self;}
 }),
 smalltalk.MaglevGsNMethodEditor);
@@ -660,6 +660,293 @@ return self;}
 smalltalk.MaglevIcon.klass);
 
 
+smalltalk.addClass('MaglevIconImage', smalltalk.Widget, ['src', 'cssClass', 'image', 'hidden'], 'Maglev-Database-Explorer');
+smalltalk.addMethod(
+unescape('_cssClass_'),
+smalltalk.method({
+selector: unescape('cssClass%3A'),
+fn: function (aString){
+var self=this;
+(self['@cssClass']=aString);
+return self;}
+}),
+smalltalk.MaglevIconImage);
+
+smalltalk.addMethod(
+unescape('_hidden'),
+smalltalk.method({
+selector: unescape('hidden'),
+fn: function (){
+var self=this;
+(($receiver = self['@hidden']) == nil || $receiver == undefined) ? (function(){return (self['@hidden']=false);})() : $receiver;
+return self['@hidden'];
+return self;}
+}),
+smalltalk.MaglevIconImage);
+
+smalltalk.addMethod(
+unescape('_hide'),
+smalltalk.method({
+selector: unescape('hide'),
+fn: function (){
+var self=this;
+(self['@hidden']=true);
+(($receiver = self['@image']) != nil && $receiver != undefined) ? (function(){return smalltalk.send(self['@image'], "_hide", []);})() : nil;
+return self;}
+}),
+smalltalk.MaglevIconImage);
+
+smalltalk.addMethod(
+unescape('_renderOn_'),
+smalltalk.method({
+selector: unescape('renderOn%3A'),
+fn: function (html){
+var self=this;
+(self['@image']=(function($rec){smalltalk.send($rec, "_src_", [self['@src']]);return smalltalk.send($rec, "_class_", [self['@cssClass']]);})(smalltalk.send(html, "_img", [])));
+((($receiver = smalltalk.send(self, "_hidden", [])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self['@image'], "_hide", []);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(self['@image'], "_hide", []);})]));
+return self;}
+}),
+smalltalk.MaglevIconImage);
+
+smalltalk.addMethod(
+unescape('_show'),
+smalltalk.method({
+selector: unescape('show'),
+fn: function (){
+var self=this;
+(self['@hidden']=false);
+(($receiver = self['@image']) != nil && $receiver != undefined) ? (function(){return smalltalk.send(self['@image'], "_show", []);})() : nil;
+return self;}
+}),
+smalltalk.MaglevIconImage);
+
+smalltalk.addMethod(
+unescape('_src_'),
+smalltalk.method({
+selector: unescape('src%3A'),
+fn: function (aString){
+var self=this;
+(self['@src']=aString);
+return self;}
+}),
+smalltalk.MaglevIconImage);
+
+
+smalltalk.addMethod(
+unescape('_ruby'),
+smalltalk.method({
+selector: unescape('ruby'),
+fn: function (){
+var self=this;
+return (function($rec){smalltalk.send($rec, "_src_", [unescape("/images/ruby.png")]);smalltalk.send($rec, "_cssClass_", [unescape("icon-language")]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send(self, "_new", []));
+return self;}
+}),
+smalltalk.MaglevIconImage.klass);
+
+smalltalk.addMethod(
+unescape('_smalltalk'),
+smalltalk.method({
+selector: unescape('smalltalk'),
+fn: function (){
+var self=this;
+return (function($rec){smalltalk.send($rec, "_src_", [unescape("/images/smalltalk.png")]);smalltalk.send($rec, "_cssClass_", [unescape("icon-language")]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send(self, "_new", []));
+return self;}
+}),
+smalltalk.MaglevIconImage.klass);
+
+
+smalltalk.addClass('MaglevListBox', smalltalk.Widget, ['list', 'changedCallback', 'htmlIv'], 'Maglev-Database-Explorer');
+smalltalk.addMethod(
+unescape('_bindEvents'),
+smalltalk.method({
+selector: unescape('bindEvents'),
+fn: function (){
+var self=this;
+ self['@list']._asJQuery().selectable({
+		stop: function() {self._selectionChanged();}}); ;
+return self;}
+}),
+smalltalk.MaglevListBox);
+
+smalltalk.addMethod(
+unescape('_changedCallback_'),
+smalltalk.method({
+selector: unescape('changedCallback%3A'),
+fn: function (aBlock){
+var self=this;
+(self['@changedCallback']=aBlock);
+return self;}
+}),
+smalltalk.MaglevListBox);
+
+smalltalk.addMethod(
+unescape('_clear'),
+smalltalk.method({
+selector: unescape('clear'),
+fn: function (){
+var self=this;
+smalltalk.send(smalltalk.send(self['@list'], "_asJQuery", []), "_empty", []);
+return self;}
+}),
+smalltalk.MaglevListBox);
+
+smalltalk.addMethod(
+unescape('_hide'),
+smalltalk.method({
+selector: unescape('hide'),
+fn: function (){
+var self=this;
+smalltalk.send(self['@list'], "_hide", []);
+return self;}
+}),
+smalltalk.MaglevListBox);
+
+smalltalk.addMethod(
+unescape('_moveSelectionDown'),
+smalltalk.method({
+selector: unescape('moveSelectionDown'),
+fn: function (){
+var self=this;
+var newIndex=nil;
+(newIndex=((($receiver = ((($receiver = smalltalk.send(self, "_selectedDataIndex", [])).klass === smalltalk.Number) ? $receiver +(1) : smalltalk.send($receiver, "__plus", [(1)]))).klass === smalltalk.Number) ? $receiver -(1) : smalltalk.send($receiver, "__minus", [(1)])));
+((($receiver = smalltalk.send(newIndex, "__eq", [smalltalk.send(self, "_size", [])])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (newIndex=(0));})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return (newIndex=(0));})]));
+smalltalk.send(self, "_unselectAll", []);
+smalltalk.send(smalltalk.send(smalltalk.send(self['@list'], "_asJQuery", []), "_find_", [smalltalk.send(smalltalk.send(unescape("li%3Aeq%28"), "__comma", [smalltalk.send(newIndex, "_asString", [])]), "__comma", [unescape("%29")])]), "_addClass_", [unescape("ui-selected")]);
+smalltalk.send(self, "_selectionChanged", []);
+return self;}
+}),
+smalltalk.MaglevListBox);
+
+smalltalk.addMethod(
+unescape('_moveSelectionUp'),
+smalltalk.method({
+selector: unescape('moveSelectionUp'),
+fn: function (){
+var self=this;
+var newIndex=nil;
+(newIndex=((($receiver = ((($receiver = smalltalk.send(self, "_selectedDataIndex", [])).klass === smalltalk.Number) ? $receiver -(1) : smalltalk.send($receiver, "__minus", [(1)]))).klass === smalltalk.Number) ? $receiver -(1) : smalltalk.send($receiver, "__minus", [(1)])));
+((($receiver = ((($receiver = newIndex).klass === smalltalk.Number) ? $receiver <(0) : smalltalk.send($receiver, "__lt", [(0)]))).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (newIndex=((($receiver = smalltalk.send(self, "_size", [])).klass === smalltalk.Number) ? $receiver -(1) : smalltalk.send($receiver, "__minus", [(1)])));})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return (newIndex=((($receiver = smalltalk.send(self, "_size", [])).klass === smalltalk.Number) ? $receiver -(1) : smalltalk.send($receiver, "__minus", [(1)])));})]));
+smalltalk.send(self, "_unselectAll", []);
+smalltalk.send(smalltalk.send(smalltalk.send(self['@list'], "_asJQuery", []), "_find_", [smalltalk.send(smalltalk.send(unescape("li%3Aeq%28"), "__comma", [smalltalk.send(newIndex, "_asString", [])]), "__comma", [unescape("%29")])]), "_addClass_", [unescape("ui-selected")]);
+smalltalk.send(self, "_selectionChanged", []);
+return self;}
+}),
+smalltalk.MaglevListBox);
+
+smalltalk.addMethod(
+unescape('_renderOn_'),
+smalltalk.method({
+selector: unescape('renderOn%3A'),
+fn: function (html){
+var self=this;
+(self['@list']=(function($rec){smalltalk.send($rec, "_at_put_", ["tabindex", "1"]);smalltalk.send($rec, "_onArrowKeyDown_", [(function(){return smalltalk.send(self, "_moveSelectionDown", []);})]);smalltalk.send($rec, "_onArrowKeyUp_", [(function(){return smalltalk.send(self, "_moveSelectionUp", []);})]);return smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(smalltalk.send(self['@list'], "_asJQuery", []), "_focus", []);})]);})(smalltalk.send(html, "_ol", [])));
+(self['@htmlIv']=html);
+smalltalk.send(self, "_bindEvents", []);
+return self;}
+}),
+smalltalk.MaglevListBox);
+
+smalltalk.addMethod(
+unescape('_selectedData'),
+smalltalk.method({
+selector: unescape('selectedData'),
+fn: function (){
+var self=this;
+return smalltalk.send(smalltalk.send(smalltalk.send(self['@list'], "_asJQuery", []), "_find_", [unescape(".ui-selected")]), "_data_", ["data"]);
+return self;}
+}),
+smalltalk.MaglevListBox);
+
+smalltalk.addMethod(
+unescape('_selectedDataIndex'),
+smalltalk.method({
+selector: unescape('selectedDataIndex'),
+fn: function (){
+var self=this;
+return ((($receiver = smalltalk.send(smalltalk.send(smalltalk.send(self['@list'], "_asJQuery", []), "_find_", [unescape(".ui-selected")]), "_index", [])).klass === smalltalk.Number) ? $receiver +(1) : smalltalk.send($receiver, "__plus", [(1)]));
+return self;}
+}),
+smalltalk.MaglevListBox);
+
+smalltalk.addMethod(
+unescape('_selectionChanged'),
+smalltalk.method({
+selector: unescape('selectionChanged'),
+fn: function (){
+var self=this;
+smalltalk.send(self['@changedCallback'], "_value_value_", [smalltalk.send(self, "_selectedData", []), smalltalk.send(self, "_selectedDataIndex", [])]);
+return self;}
+}),
+smalltalk.MaglevListBox);
+
+smalltalk.addMethod(
+unescape('_show'),
+smalltalk.method({
+selector: unescape('show'),
+fn: function (){
+var self=this;
+smalltalk.send(self['@list'], "_show", []);
+return self;}
+}),
+smalltalk.MaglevListBox);
+
+smalltalk.addMethod(
+unescape('_size'),
+smalltalk.method({
+selector: unescape('size'),
+fn: function (){
+var self=this;
+return smalltalk.send(smalltalk.send(smalltalk.send(self['@list'], "_asJQuery", []), "_find_", ["li"]), "_length", []);
+return self;}
+}),
+smalltalk.MaglevListBox);
+
+smalltalk.addMethod(
+unescape('_style_'),
+smalltalk.method({
+selector: unescape('style%3A'),
+fn: function (aString){
+var self=this;
+smalltalk.send(self['@list'], "_style_", [aString]);
+return self;}
+}),
+smalltalk.MaglevListBox);
+
+smalltalk.addMethod(
+unescape('_unselectAll'),
+smalltalk.method({
+selector: unescape('unselectAll'),
+fn: function (){
+var self=this;
+smalltalk.send(smalltalk.send(smalltalk.send(self['@list'], "_asJQuery", []), "_find_", ["li"]), "_removeClass_", [unescape("ui-selected")]);
+return self;}
+}),
+smalltalk.MaglevListBox);
+
+smalltalk.addMethod(
+unescape('_with_'),
+smalltalk.method({
+selector: unescape('with%3A'),
+fn: function (content){
+var self=this;
+smalltalk.send(self, "_with_data_", [content, ""]);
+return self;}
+}),
+smalltalk.MaglevListBox);
+
+smalltalk.addMethod(
+unescape('_with_data_'),
+smalltalk.method({
+selector: unescape('with%3Adata%3A'),
+fn: function (content, dataString){
+var self=this;
+smalltalk.send(self['@list'], "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_class_", [unescape("ui-widget-content")]);smalltalk.send($rec, "_data_with_", ["data", dataString]);return smalltalk.send($rec, "_with_", [(function(){return smalltalk.send(content, "_value_", [self['@htmlIv']]);})]);})(smalltalk.send(self['@htmlIv'], "_li", []));})]);
+return self;}
+}),
+smalltalk.MaglevListBox);
+
+
+
 smalltalk.addClass('MaglevObjectDropdown', smalltalk.Widget, ['container', 'resultContainer', 'editor', 'editorElement', 'rubyButton', 'smalltalkButton', 'object'], 'Maglev-Database-Explorer');
 smalltalk.addMethod(
 unescape('_appendToInlineObject_for_'),
@@ -1104,7 +1391,7 @@ smalltalk.method({
 selector: unescape('renderObjectActionsOn%3A'),
 fn: function (html){
 var self=this;
-(function($rec){smalltalk.send($rec, "_with_", [smalltalk.send((smalltalk.MaglevIcon || MaglevIcon), "_search", [])]);return smalltalk.send($rec, "_with_", [smalltalk.send((smalltalk.MaglevIcon || MaglevIcon), "_pencil", [])]);})(html);
+
 return self;}
 }),
 smalltalk.MaglevObjectInline);
@@ -1275,6 +1562,31 @@ smalltalk.MaglevArrayInline);
 
 
 
+smalltalk.addClass('MaglevBooleanInline', smalltalk.MaglevObjectInline, [], 'Maglev-Database-Explorer');
+smalltalk.addMethod(
+unescape('_hasDropDownDefault'),
+smalltalk.method({
+selector: unescape('hasDropDownDefault'),
+fn: function (){
+var self=this;
+return false;
+return self;}
+}),
+smalltalk.MaglevBooleanInline);
+
+smalltalk.addMethod(
+unescape('_isDraggableDefault'),
+smalltalk.method({
+selector: unescape('isDraggableDefault'),
+fn: function (){
+var self=this;
+return false;
+return self;}
+}),
+smalltalk.MaglevBooleanInline);
+
+
+
 smalltalk.addClass('MaglevExceptionInline', smalltalk.MaglevObjectInline, [], 'Maglev-Database-Explorer');
 smalltalk.addMethod(
 unescape('_renderObjectActionsOn_'),
@@ -1314,6 +1626,17 @@ return self;}
 }),
 smalltalk.MaglevFixnumInline);
 
+smalltalk.addMethod(
+unescape('_renderObjectActionsOn_'),
+smalltalk.method({
+selector: unescape('renderObjectActionsOn%3A'),
+fn: function (html){
+var self=this;
+
+return self;}
+}),
+smalltalk.MaglevFixnumInline);
+
 
 
 smalltalk.addClass('MaglevFloatInline', smalltalk.MaglevObjectInline, [], 'Maglev-Database-Explorer');
@@ -1335,6 +1658,17 @@ selector: unescape('isDraggableDefault'),
 fn: function (){
 var self=this;
 return false;
+return self;}
+}),
+smalltalk.MaglevFloatInline);
+
+smalltalk.addMethod(
+unescape('_renderObjectActionsOn_'),
+smalltalk.method({
+selector: unescape('renderObjectActionsOn%3A'),
+fn: function (html){
+var self=this;
+
 return self;}
 }),
 smalltalk.MaglevFloatInline);
@@ -2409,11 +2743,10 @@ selector: unescape('renderCodeTabOn%3A'),
 fn: function (html){
 var self=this;
 smalltalk.send(smalltalk.send(html, "_root", []), "_style_", [unescape("width%3A%20100%25%3B")]);
-(self['@categoryNamesSelect']=(function($rec){smalltalk.send($rec, "_size_", [(10)]);smalltalk.send($rec, "_style_", [unescape("width%3A%2050%25%3B")]);return smalltalk.send($rec, "_hide", []);})(smalltalk.send(html, "_select", [])));
-(self['@selectorsSelect']=(function($rec){smalltalk.send($rec, "_size_", [(10)]);smalltalk.send($rec, "_style_", [unescape("width%3A%2050%25%3B")]);return smalltalk.send($rec, "_hide", []);})(smalltalk.send(html, "_select", [])));
+smalltalk.send(self, "_renderListsOn_", [html]);
 (self['@waitingScreen']=smalltalk.send(smalltalk.send(html, "_div", []), "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_with_", [smalltalk.send((smalltalk.MaglevIcon || MaglevIcon), "_wait", [])]);return smalltalk.send($rec, "_with_", [" loading..."]);})(html);})]));
 (self['@methodContainer']=smalltalk.send(html, "_div", []));
-smalltalk.send(smalltalk.send(self, "_object", []), "_allSelectorsWithCallback_", [(function(obj){(self['@selectors']=obj);smalltalk.send(self, "_renderSelectorCategories", []);smalltalk.send(self, "_renderSelectors", []);smalltalk.send(self['@selectorsSelect'], "_onChange_", [(function(){return smalltalk.send(self, "_renderSourceCode", []);})]);smalltalk.send(self['@categoryNamesSelect'], "_onChange_", [(function(){return smalltalk.send(self, "_renderSelectors", []);})]);smalltalk.send(self['@waitingScreen'], "_hide", []);smalltalk.send(self['@categoryNamesSelect'], "_show", []);return smalltalk.send(self['@selectorsSelect'], "_show", []);})]);
+smalltalk.send(smalltalk.send(self, "_object", []), "_allSelectorsWithCallback_", [(function(obj){(self['@selectors']=obj);smalltalk.send(self, "_renderSelectorCategories", []);smalltalk.send(self['@waitingScreen'], "_hide", []);smalltalk.send(self['@categoryNamesSelect'], "_show", []);return smalltalk.send(self['@selectorsSelect'], "_show", []);})]);
 return self;}
 }),
 smalltalk.MaglevModuleWindow);
@@ -2436,6 +2769,22 @@ selector: unescape('renderIncludedModulesOn%3A'),
 fn: function (html){
 var self=this;
 smalltalk.send(html, "_with_", [smalltalk.send((smalltalk.MaglevTable || MaglevTable), "_newFor_with_", [smalltalk.send(self, "_object", []), smalltalk.symbolFor("includedModules")])]);
+return self;}
+}),
+smalltalk.MaglevModuleWindow);
+
+smalltalk.addMethod(
+unescape('_renderListsOn_'),
+smalltalk.method({
+selector: unescape('renderListsOn%3A'),
+fn: function (html){
+var self=this;
+(self['@categoryNamesSelect']=smalltalk.send((smalltalk.MaglevListBox || MaglevListBox), "_new", []));
+smalltalk.send(html, "_with_", [self['@categoryNamesSelect']]);
+(function($rec){smalltalk.send($rec, "_changedCallback_", [(function(cat, index){return smalltalk.send(self, "_renderSelectors_", [cat]);})]);smalltalk.send($rec, "_style_", [unescape("height%3A%20250px%3B%20overflow-y%3A%20scroll%3B%20float%3A%20left%3B%20width%3A%2050%25%3B%20margin-right%3A%2010px%3B%20margin-left%3A%200px%3B")]);return smalltalk.send($rec, "_hide", []);})(self['@categoryNamesSelect']);
+(self['@selectorsSelect']=smalltalk.send((smalltalk.MaglevListBox || MaglevListBox), "_new", []));
+smalltalk.send(html, "_with_", [self['@selectorsSelect']]);
+(function($rec){smalltalk.send($rec, "_changedCallback_", [(function(sel, index){return smalltalk.send(self, "_renderSourceCode_", [sel]);})]);smalltalk.send($rec, "_style_", [unescape("height%3A%20250px%3B%20overflow-y%3A%20scroll%3B")]);return smalltalk.send($rec, "_hide", []);})(self['@selectorsSelect']);
 return self;}
 }),
 smalltalk.MaglevModuleWindow);
@@ -2469,30 +2818,25 @@ smalltalk.method({
 selector: unescape('renderSelectorCategories'),
 fn: function (){
 var self=this;
-var html=nil;
-smalltalk.send(smalltalk.send(self['@categoryNamesSelect'], "_asJQuery", []), "_empty", []);
-(html=smalltalk.send((smalltalk.HTMLCanvas || HTMLCanvas), "_onJQuery_", [smalltalk.send(self['@categoryNamesSelect'], "_asJQuery", [])]));
-smalltalk.send(self['@selectors'], "_keysAndValuesDo_", [(function(category, catSelectors){return smalltalk.send(html, "_with_", [(function(){return smalltalk.send(smalltalk.send(html, "_option", []), "_with_", [category]);})]);})]);
-smalltalk.send(smalltalk.send(self['@categoryNamesSelect'], "_asJQuery", []), "_val_", [unescape("%28all%20Smalltalk%29")]);
+smalltalk.send(self['@categoryNamesSelect'], "_clear", []);
+smalltalk.send(self['@selectors'], "_keysAndValuesDo_", [(function(category, catSelectors){return smalltalk.send(self['@categoryNamesSelect'], "_with_data_", [(function(html){((($receiver = smalltalk.send(category, "__eq", [unescape("%28all%20Ruby%29")])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(html, "_with_", [smalltalk.send((smalltalk.MaglevIconImage || MaglevIconImage), "_ruby", [])]);})() : (function(){return smalltalk.send(html, "_with_", [smalltalk.send((smalltalk.MaglevIconImage || MaglevIconImage), "_smalltalk", [])]);})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return smalltalk.send(html, "_with_", [smalltalk.send((smalltalk.MaglevIconImage || MaglevIconImage), "_ruby", [])]);}), (function(){return smalltalk.send(html, "_with_", [smalltalk.send((smalltalk.MaglevIconImage || MaglevIconImage), "_smalltalk", [])]);})]));return smalltalk.send(html, "_with_", [category]);}), category]);})]);
 return self;}
 }),
 smalltalk.MaglevModuleWindow);
 
 smalltalk.addMethod(
-unescape('_renderSelectors'),
+unescape('_renderSelectors_'),
 smalltalk.method({
-selector: unescape('renderSelectors'),
-fn: function (){
+selector: unescape('renderSelectors%3A'),
+fn: function (selectedCategory){
 var self=this;
-var html=nil;
-var selectedCategory=nil;
-var currentSelectors=nil;
-smalltalk.send(smalltalk.send(self['@selectorsSelect'], "_asJQuery", []), "_empty", []);
-(html=smalltalk.send((smalltalk.HTMLCanvas || HTMLCanvas), "_onJQuery_", [smalltalk.send(self['@selectorsSelect'], "_asJQuery", [])]));
-(selectedCategory=smalltalk.send(smalltalk.send(self['@categoryNamesSelect'], "_asJQuery", []), "_val", []));
+try{var currentSelectors=nil;
+smalltalk.send(self['@selectorsSelect'], "_clear", []);
 (currentSelectors=smalltalk.send(self['@selectors'], "_at_", [selectedCategory]));
-smalltalk.send(currentSelectors, "_do_", [(function(catSelectors){return smalltalk.send(html, "_with_", [(function(){return smalltalk.send(smalltalk.send(html, "_option", []), "_with_", [catSelectors]);})]);})]);
-return self;}
+(($receiver = currentSelectors) == nil || $receiver == undefined) ? (function(){return (function(){throw({name: 'stReturn', selector: '_renderSelectors_', fn: function(){return self}})})();})() : $receiver;
+smalltalk.send(currentSelectors, "_do_", [(function(sel){return smalltalk.send(self['@selectorsSelect'], "_with_data_", [(function(html){return smalltalk.send(html, "_with_", [sel]);}), sel]);})]);
+return self;
+} catch(e) {if(e.name === 'stReturn' && e.selector === '_renderSelectors_'){return e.fn()} throw(e)}}
 }),
 smalltalk.MaglevModuleWindow);
 
@@ -2508,18 +2852,29 @@ return self;}
 smalltalk.MaglevModuleWindow);
 
 smalltalk.addMethod(
-unescape('_renderSourceCode'),
+unescape('_renderSourceCode_'),
 smalltalk.method({
-selector: unescape('renderSourceCode'),
+selector: unescape('renderSourceCode%3A'),
+fn: function (selectorString){
+var self=this;
+try{var selectedCategory=nil;
+smalltalk.send(smalltalk.send(self['@methodContainer'], "_asJQuery", []), "_empty", []);
+(($receiver = selectorString) == nil || $receiver == undefined) ? (function(){return (function(){throw({name: 'stReturn', selector: '_renderSourceCode_', fn: function(){return self}})})();})() : $receiver;
+smalltalk.send(self['@waitingScreen'], "_show", []);
+(selectedCategory=smalltalk.send(self, "_selectedCategoryString", []));
+((($receiver = smalltalk.send(selectedCategory, "__eq", [unescape("%28all%20Ruby%29")])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self, "_renderRubySourceCodeFor_", [selectorString]);})() : (function(){return smalltalk.send(self, "_renderSmalltalkSourceCodeFor_", [selectorString]);})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return smalltalk.send(self, "_renderRubySourceCodeFor_", [selectorString]);}), (function(){return smalltalk.send(self, "_renderSmalltalkSourceCodeFor_", [selectorString]);})]));
+return self;
+} catch(e) {if(e.name === 'stReturn' && e.selector === '_renderSourceCode_'){return e.fn()} throw(e)}}
+}),
+smalltalk.MaglevModuleWindow);
+
+smalltalk.addMethod(
+unescape('_selectedCategoryString'),
+smalltalk.method({
+selector: unescape('selectedCategoryString'),
 fn: function (){
 var self=this;
-var selectorString=nil;
-var selectedCategory=nil;
-smalltalk.send(smalltalk.send(self['@methodContainer'], "_asJQuery", []), "_empty", []);
-smalltalk.send(self['@waitingScreen'], "_show", []);
-(selectedCategory=smalltalk.send(smalltalk.send(self['@categoryNamesSelect'], "_asJQuery", []), "_val", []));
-(selectorString=smalltalk.send(smalltalk.send(self['@selectorsSelect'], "_asJQuery", []), "_val", []));
-((($receiver = smalltalk.send(selectedCategory, "__eq", [unescape("%28all%20Ruby%29")])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self, "_renderRubySourceCodeFor_", [selectorString]);})() : (function(){return smalltalk.send(self, "_renderSmalltalkSourceCodeFor_", [selectorString]);})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return smalltalk.send(self, "_renderRubySourceCodeFor_", [selectorString]);}), (function(){return smalltalk.send(self, "_renderSmalltalkSourceCodeFor_", [selectorString]);})]));
+return smalltalk.send(self['@categoryNamesSelect'], "_selectedData", []);
 return self;}
 }),
 smalltalk.MaglevModuleWindow);
@@ -2700,10 +3055,25 @@ var html=nil;
 (html=smalltalk.send((smalltalk.HTMLCanvas || HTMLCanvas), "_onJQuery_", [smalltalk.send(self['@terminalBox'], "_asJQuery", [])]));
 (command=smalltalk.send(smalltalk.send(self['@commandBox'], "_asJQuery", []), "_val", []));
 (command=smalltalk.send(command, "_replace_with_", [unescape("%27"), unescape("%27%27")]));
-smalltalk.send(smalltalk.send(self['@commandBox'], "_asJQuery", []), "_val_", [""]);
+smalltalk.send(smalltalk.send(self['@commandBox'], "_asJQuery", []), "_prop_value_", ["disabled", true]);
 (function($rec){smalltalk.send($rec, "_with_", [command]);return smalltalk.send($rec, "_with_", [smalltalk.send(html, "_br", [])]);})(html);
 smalltalk.send(self['@object'], "_evaluate_language_withCallback_", [smalltalk.send(smalltalk.send(unescape("self.evaluate%28%27"), "__comma", [command]), "__comma", [unescape("%27%29")]), "ruby", (function(success, resultObj){var class_=nil;
-((($receiver = smalltalk.send(smalltalk.send(resultObj, "_at_", [(1)]), "_value", [])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (class_=unescape("alert%20alert-error"));})() : (function(){return (class_=unescape("alert%20alert-success"));})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return (class_=unescape("alert%20alert-error"));}), (function(){return (class_=unescape("alert%20alert-success"));})]));return smalltalk.send(self['@terminalBox'], "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_class_", [class_]);smalltalk.send($rec, "_with_", [unescape("%3D%3E%20")]);smalltalk.send($rec, "_with_", [smalltalk.send(smalltalk.send(resultObj, "_at_", [(2)]), "_inlineViewComponent", [])]);return smalltalk.send($rec, "_with_", [smalltalk.send(html, "_br", [])]);})(smalltalk.send(html, "_div", []));})]);})]);
+((($receiver = smalltalk.send(smalltalk.send(resultObj, "_at_", [(1)]), "_value", [])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (class_=unescape("alert%20alert-error"));})() : (function(){return (class_=unescape("alert%20alert-success"));})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return (class_=unescape("alert%20alert-error"));}), (function(){return (class_=unescape("alert%20alert-success"));})]));smalltalk.send(self['@terminalBox'], "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_class_", [class_]);smalltalk.send($rec, "_with_", [unescape("%3D%3E%20")]);smalltalk.send($rec, "_with_", [smalltalk.send(smalltalk.send(resultObj, "_at_", [(2)]), "_inlineViewComponent", [])]);return smalltalk.send($rec, "_with_", [smalltalk.send(html, "_br", [])]);})(smalltalk.send(html, "_div", []));})]);smalltalk.send(self, "_scrollToBottom", []);smalltalk.send(smalltalk.send(self['@commandBox'], "_asJQuery", []), "_prop_value_", ["disabled", false]);return smalltalk.send(smalltalk.send(self['@commandBox'], "_asJQuery", []), "_val_", [""]);})]);
+return self;}
+}),
+smalltalk.MaglevRubyWorkspaceWindow);
+
+smalltalk.addMethod(
+unescape('_mouseFix'),
+smalltalk.method({
+selector: unescape('mouseFix'),
+fn: function (){
+var self=this;
+ var editor = self['@terminalBox'];
+	editor._asJQuery().mousedown(function (event) {
+		event.preventDefault();
+		return false;
+	}); ;
 return self;}
 }),
 smalltalk.MaglevRubyWorkspaceWindow);
@@ -2716,6 +3086,18 @@ fn: function (html){
 var self=this;
 (self['@terminalBox']=smalltalk.send(smalltalk.send(html, "_pre", []), "_style_", [unescape("height%3A%20350px%3B%20overflow-y%3A%20scroll%3B%20overflow-x%3A%20hidden%3B%20color%3A%20%23000000%3B")]));
 (self['@commandBox']=(function($rec){smalltalk.send($rec, "_type_", ["text"]);smalltalk.send($rec, "_style_", [unescape("width%3A%2097%25%3B")]);return smalltalk.send($rec, "_onKeyPress_", [(function(evt){return ((($receiver = smalltalk.send(smalltalk.send(evt, "_keyCode", []), "__eq_eq", [(13)])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self, "_handleEnter", []);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(self, "_handleEnter", []);})]));})]);})(smalltalk.send(html, "_input", [])));
+smalltalk.send(self, "_mouseFix", []);
+return self;}
+}),
+smalltalk.MaglevRubyWorkspaceWindow);
+
+smalltalk.addMethod(
+unescape('_scrollToBottom'),
+smalltalk.method({
+selector: unescape('scrollToBottom'),
+fn: function (){
+var self=this;
+smalltalk.send(smalltalk.send(self['@terminalBox'], "_asJQuery", []), "_scrollTop_", [smalltalk.send(smalltalk.send(smalltalk.send(self['@terminalBox'], "_asJQuery", []), "_at_", [(0)]), "_scrollHeight", [])]);
 return self;}
 }),
 smalltalk.MaglevRubyWorkspaceWindow);
@@ -2750,7 +3132,7 @@ smalltalk.method({
 selector: unescape('frameIndex'),
 fn: function (){
 var self=this;
-return ((($receiver = smalltalk.send(smalltalk.send(smalltalk.send(self['@methodSelect'], "_asJQuery", []), "_at_", [(0)]), "_selectedIndex", [])).klass === smalltalk.Number) ? $receiver +(1) : smalltalk.send($receiver, "__plus", [(1)]));
+return smalltalk.send(self['@methodSelect'], "_selectedDataIndex", []);
 return self;}
 }),
 smalltalk.MaglevThreadWindow);
@@ -2774,9 +3156,8 @@ fn: function (aBlock){
 var self=this;
 var html=nil;
 smalltalk.send(self['@waitForStackTrace'], "_show", []);
-smalltalk.send(smalltalk.send(self['@methodSelect'], "_asJQuery", []), "_empty", []);
-(html=smalltalk.send((smalltalk.HTMLCanvas || HTMLCanvas), "_onJQuery_", [smalltalk.send(self['@methodSelect'], "_asJQuery", [])]));
-smalltalk.send(self['@object'], "_stackTraceMethodsWithCallback_", [(function(obj){smalltalk.send(self['@methodSelect'], "_with_", [(function(){return smalltalk.send(obj, "_do_", [(function(method){return smalltalk.send(smalltalk.send(html, "_option", []), "_with_", [method]);})]);})]);smalltalk.send(self['@waitForStackTrace'], "_hide", []);return ((($receiver = smalltalk.send(aBlock, "__eq", [nil])).klass === smalltalk.Boolean) ? (! $receiver ? (function(){return smalltalk.send(aBlock, "_value", []);})() : nil) : smalltalk.send($receiver, "_ifFalse_", [(function(){return smalltalk.send(aBlock, "_value", []);})]));})]);
+smalltalk.send(self['@methodSelect'], "_clear", []);
+smalltalk.send(self['@object'], "_stackTraceMethodsWithCallback_", [(function(obj){smalltalk.send(obj, "_do_", [(function(method){return smalltalk.send(self['@methodSelect'], "_with_", [(function(html){((($receiver = smalltalk.send(method, "_includesSubString_", [unescape("%28envId%200%29")])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(html, "_with_", [smalltalk.send((smalltalk.MaglevIconImage || MaglevIconImage), "_smalltalk", [])]);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(html, "_with_", [smalltalk.send((smalltalk.MaglevIconImage || MaglevIconImage), "_smalltalk", [])]);})]));((($receiver = smalltalk.send(method, "_includesSubString_", [unescape("%28envId%201%29")])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(html, "_with_", [smalltalk.send((smalltalk.MaglevIconImage || MaglevIconImage), "_ruby", [])]);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(html, "_with_", [smalltalk.send((smalltalk.MaglevIconImage || MaglevIconImage), "_ruby", [])]);})]));return smalltalk.send(html, "_with_", [method]);})]);})]);smalltalk.send(self['@waitForStackTrace'], "_hide", []);return ((($receiver = smalltalk.send(aBlock, "__eq", [nil])).klass === smalltalk.Boolean) ? (! $receiver ? (function(){return smalltalk.send(aBlock, "_value", []);})() : nil) : smalltalk.send($receiver, "_ifFalse_", [(function(){return smalltalk.send(aBlock, "_value", []);})]));})]);
 return self;}
 }),
 smalltalk.MaglevThreadWindow);
@@ -2793,15 +3174,13 @@ return self;}
 smalltalk.MaglevThreadWindow);
 
 smalltalk.addMethod(
-unescape('_renderFrame'),
+unescape('_renderFrame_'),
 smalltalk.method({
-selector: unescape('renderFrame'),
-fn: function (){
+selector: unescape('renderFrame%3A'),
+fn: function (frameIndex){
 var self=this;
-var frameIndex=nil;
 smalltalk.send(smalltalk.send(self['@methodContainer'], "_asJQuery", []), "_empty", []);
 smalltalk.send(self['@waitingScreen'], "_show", []);
-(frameIndex=smalltalk.send(self, "_frameIndex", []));
 ((($receiver = ((($receiver = frameIndex).klass === smalltalk.Number) ? $receiver >(0) : smalltalk.send($receiver, "__gt", [(0)]))).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self['@object'], "_stackFrame_withCallback_", [frameIndex, (function(obj){smalltalk.send(smalltalk.send(self['@methodContainer'], "_asJQuery", []), "_empty", []);smalltalk.send(self['@methodContainer'], "_with_", [smalltalk.send((smalltalk.MaglevGsNMethodDebugEditor || MaglevGsNMethodDebugEditor), "_for_", [obj])]);return smalltalk.send(self['@waitingScreen'], "_hide", []);})]);})() : (function(){return smalltalk.send(self['@waitingScreen'], "_hide", []);})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return smalltalk.send(self['@object'], "_stackFrame_withCallback_", [frameIndex, (function(obj){smalltalk.send(smalltalk.send(self['@methodContainer'], "_asJQuery", []), "_empty", []);smalltalk.send(self['@methodContainer'], "_with_", [smalltalk.send((smalltalk.MaglevGsNMethodDebugEditor || MaglevGsNMethodDebugEditor), "_for_", [obj])]);return smalltalk.send(self['@waitingScreen'], "_hide", []);})]);}), (function(){return smalltalk.send(self['@waitingScreen'], "_hide", []);})]));
 return self;}
 }),
@@ -2825,7 +3204,9 @@ selector: unescape('renderStackTraceOn%3A'),
 fn: function (html){
 var self=this;
 (self['@waitForStackTrace']=smalltalk.send(smalltalk.send(html, "_div", []), "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_with_", [smalltalk.send((smalltalk.MaglevIcon || MaglevIcon), "_wait", [])]);return smalltalk.send($rec, "_with_", [" loading..."]);})(html);})]));
-(self['@methodSelect']=(function($rec){smalltalk.send($rec, "_size_", [(10)]);smalltalk.send($rec, "_style_", [unescape("width%3A%20100%25%3B")]);return smalltalk.send($rec, "_onChange_", [(function(){return smalltalk.send(self, "_renderFrame", []);})]);})(smalltalk.send(html, "_select", [])));
+(self['@methodSelect']=smalltalk.send((smalltalk.MaglevListBox || MaglevListBox), "_new", []));
+smalltalk.send(html, "_with_", [self['@methodSelect']]);
+(function($rec){smalltalk.send($rec, "_changedCallback_", [(function(text, index){return smalltalk.send(self, "_renderFrame_", [index]);})]);return smalltalk.send($rec, "_style_", [unescape("width%3A%20100%25%3B%20height%3A%20250px%3B%20overflow-y%3A%20scroll%3B")]);})(self['@methodSelect']);
 smalltalk.send(self, "_renderButtonsOn_", [html]);
 (self['@waitingScreen']=(function($rec){smalltalk.send($rec, "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_with_", [smalltalk.send((smalltalk.MaglevIcon || MaglevIcon), "_wait", [])]);return smalltalk.send($rec, "_with_", [" loading..."]);})(html);})]);return smalltalk.send($rec, "_hide", []);})(smalltalk.send(html, "_div", [])));
 (self['@methodContainer']=smalltalk.send(html, "_div", []));

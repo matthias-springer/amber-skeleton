@@ -101,7 +101,36 @@ showReloadObjectWindow: oop
 	^ window
 ! !
 
-Maglev class instanceVariableNames: 'instance'!
+Maglev class instanceVariableNames: 'instance defaultWorkspaceId persistentRootId maglevSystemId'!
+
+!Maglev class methodsFor: 'accessing'!
+
+defaultWorkspaceId
+	^ defaultWorkspaceId
+!
+
+defaultWorkspaceId: anInteger
+	"Called from JavaScript initializer."
+	defaultWorkspaceId := anInteger.
+!
+
+maglevSystemId
+	^ maglevSystemId
+!
+
+maglevSystemId: anInteger
+	"Called from JavaScript initializer."
+	maglevSystemId := anInteger.
+!
+
+persistentRootId
+	^ persistentRootId
+!
+
+persistentRootId: anInteger
+	"Called from JavaScript initializer."
+	persistentRootId := anInteger.
+! !
 
 !Maglev class methodsFor: 'initializing'!
 
@@ -110,7 +139,9 @@ openWindow: anInteger
 !
 
 ready
-	self openWindow: 76033.
+	self openWindow: self defaultWorkspaceId.
+	self openWindow: self persistentRootId.
+	self openWindow: self maglevSystemId.
 ! !
 
 !Maglev class methodsFor: 'singleton'!
@@ -564,6 +595,10 @@ parseJSONNotLoaded: obj
 
 basetype
 	^ #boolean
+!
+
+inlineViewClass
+	^ MaglevBooleanInline
 ! !
 
 MaglevObject subclass: #MaglevDictionary

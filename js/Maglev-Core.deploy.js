@@ -140,7 +140,29 @@ return self;}
 smalltalk.Maglev);
 
 
-smalltalk.Maglev.klass.iVarNames = ['instance'];
+smalltalk.Maglev.klass.iVarNames = ['instance','defaultWorkspaceId','persistentRootId','maglevSystemId'];
+smalltalk.addMethod(
+unescape('_defaultWorkspaceId'),
+smalltalk.method({
+selector: unescape('defaultWorkspaceId'),
+fn: function (){
+var self=this;
+return self['@defaultWorkspaceId'];
+return self;}
+}),
+smalltalk.Maglev.klass);
+
+smalltalk.addMethod(
+unescape('_defaultWorkspaceId_'),
+smalltalk.method({
+selector: unescape('defaultWorkspaceId%3A'),
+fn: function (anInteger){
+var self=this;
+(self['@defaultWorkspaceId']=anInteger);
+return self;}
+}),
+smalltalk.Maglev.klass);
+
 smalltalk.addMethod(
 unescape('_instance'),
 smalltalk.method({
@@ -149,6 +171,28 @@ fn: function (){
 var self=this;
 (($receiver = self['@instance']) == nil || $receiver == undefined) ? (function(){return (self['@instance']=smalltalk.send((smalltalk.Maglev || Maglev), "_new", []));})() : $receiver;
 return self['@instance'];
+return self;}
+}),
+smalltalk.Maglev.klass);
+
+smalltalk.addMethod(
+unescape('_maglevSystemId'),
+smalltalk.method({
+selector: unescape('maglevSystemId'),
+fn: function (){
+var self=this;
+return self['@maglevSystemId'];
+return self;}
+}),
+smalltalk.Maglev.klass);
+
+smalltalk.addMethod(
+unescape('_maglevSystemId_'),
+smalltalk.method({
+selector: unescape('maglevSystemId%3A'),
+fn: function (anInteger){
+var self=this;
+(self['@maglevSystemId']=anInteger);
 return self;}
 }),
 smalltalk.Maglev.klass);
@@ -165,12 +209,36 @@ return self;}
 smalltalk.Maglev.klass);
 
 smalltalk.addMethod(
+unescape('_persistentRootId'),
+smalltalk.method({
+selector: unescape('persistentRootId'),
+fn: function (){
+var self=this;
+return self['@persistentRootId'];
+return self;}
+}),
+smalltalk.Maglev.klass);
+
+smalltalk.addMethod(
+unescape('_persistentRootId_'),
+smalltalk.method({
+selector: unescape('persistentRootId%3A'),
+fn: function (anInteger){
+var self=this;
+(self['@persistentRootId']=anInteger);
+return self;}
+}),
+smalltalk.Maglev.klass);
+
+smalltalk.addMethod(
 unescape('_ready'),
 smalltalk.method({
 selector: unescape('ready'),
 fn: function (){
 var self=this;
-smalltalk.send(self, "_openWindow_", [(76033)]);
+smalltalk.send(self, "_openWindow_", [smalltalk.send(self, "_defaultWorkspaceId", [])]);
+smalltalk.send(self, "_openWindow_", [smalltalk.send(self, "_persistentRootId", [])]);
+smalltalk.send(self, "_openWindow_", [smalltalk.send(self, "_maglevSystemId", [])]);
 return self;}
 }),
 smalltalk.Maglev.klass);
@@ -964,6 +1032,17 @@ selector: unescape('basetype'),
 fn: function (){
 var self=this;
 return smalltalk.symbolFor("boolean");
+return self;}
+}),
+smalltalk.MaglevBoolean.klass);
+
+smalltalk.addMethod(
+unescape('_inlineViewClass'),
+smalltalk.method({
+selector: unescape('inlineViewClass'),
+fn: function (){
+var self=this;
+return (smalltalk.MaglevBooleanInline || MaglevBooleanInline);
 return self;}
 }),
 smalltalk.MaglevBoolean.klass);
