@@ -1566,6 +1566,17 @@ return self;}
 smalltalk.TagBrush);
 
 smalltalk.addMethod(
+unescape('_data_'),
+smalltalk.method({
+selector: unescape('data%3A'),
+fn: function (attribute){
+var self=this;
+return smalltalk.send(smalltalk.send(self, "_asJQuery", []), "_data_", [attribute]);
+return self;}
+}),
+smalltalk.TagBrush);
+
+smalltalk.addMethod(
 unescape('_data_with_'),
 smalltalk.method({
 selector: unescape('data%3Awith%3A'),

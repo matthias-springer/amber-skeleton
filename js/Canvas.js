@@ -2271,6 +2271,22 @@ referencedClasses: []
 smalltalk.TagBrush);
 
 smalltalk.addMethod(
+unescape('_data_'),
+smalltalk.method({
+selector: unescape('data%3A'),
+category: 'attributes',
+fn: function (attribute){
+var self=this;
+return smalltalk.send(smalltalk.send(self, "_asJQuery", []), "_data_", [attribute]);
+return self;},
+args: ["attribute"],
+source: unescape('data%3A%20attribute%0A%09%5E%20self%20asJQuery%20data%3A%20attribute'),
+messageSends: ["data:", "asJQuery"],
+referencedClasses: []
+}),
+smalltalk.TagBrush);
+
+smalltalk.addMethod(
 unescape('_data_with_'),
 smalltalk.method({
 selector: unescape('data%3Awith%3A'),

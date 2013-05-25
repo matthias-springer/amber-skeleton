@@ -42,7 +42,7 @@ with: anObject
 ! !
 
 Widget subclass: #MaglevGsNMethodEditor
-	instanceVariableNames: 'object editorContainer errorBox rubyIcon stIcon envIdContainer sourceLocationContainer editor'
+	instanceVariableNames: 'object editorContainer errorBox rubyIcon stIcon envIdContainer sourceLocationContainer editor editorHeight editorWidth'
 	package: 'Maglev-Database-Explorer'!
 
 !MaglevGsNMethodEditor methodsFor: 'accessing'!
@@ -96,6 +96,15 @@ initializeEditor
 	editor := CodeMirror value: (editorContainer asJQuery at: 0) value: params.
 	editor setValue: ''.
 	self mouseFix.
+	self makeEditorResizable.
+!
+
+makeEditorResizable
+	< self['@editorContainer']._asJQuery().find('.CodeMirror').resizable({
+		resize: function() {	
+			self['@editor'].setSize($(this).width(), $(this).height());	
+		}
+	}); >
 !
 
 mouseFix
@@ -184,7 +193,7 @@ renderOn: html
 renderStatusBarOn: html
 	html table
 		class: 'table-bordered';
-		style: 'margin-top: 5px;';
+		style: 'margin-top: 5px; width: 100%;';
 		with: [html tbody with: [
 			html tr with: [
 				html td with: [
@@ -192,7 +201,8 @@ renderStatusBarOn: html
 					stIcon := MaglevIconImage smalltalk hide; yourself.
 					html with: rubyIcon.
 					html with: stIcon.
-					envIdContainer := html span with: 'Environment ID'].
+					envIdContainer := html span with: 'Environment ID'];
+					style: 'width: 1px;'.
 				html td with: [
 					sourceLocationContainer := html span with: 'Source location']]]].
 ! !
@@ -340,6 +350,10 @@ icon: aString
 	icon := aString.
 !
 
+onClick: aBlock
+	b onClick: aBlock.
+!
+
 spin
 	spin ifNil: [spin := false].
 	^ spin
@@ -370,6 +384,12 @@ renderOn: html
 ! !
 
 !MaglevIcon class methodsFor: 'instance creation'!
+
+codeFork
+	^ self new
+		icon: 'code-fork';
+		yourself
+!
 
 flag
 	^ self new
@@ -500,6 +520,13 @@ ruby
 		yourself
 !
 
+rubySmalltalkBridge
+	^ self new
+		src: '/images/ruby_smalltalk_bridge.png';
+		cssClass: 'icon-language';
+		yourself
+!
+
 smalltalk
 	^ self new
 		src: '/images/smalltalk.png';
@@ -508,13 +535,26 @@ smalltalk
 ! !
 
 Widget subclass: #MaglevListBox
-	instanceVariableNames: 'list changedCallback htmlIv'
+	instanceVariableNames: 'list changedCallback htmlIv divContainer height searchbox searchInput'
 	package: 'Maglev-Database-Explorer'!
 
 !MaglevListBox methodsFor: 'accessing'!
 
 changedCallback: aBlock
 	changedCallback := aBlock.
+!
+
+height
+	^ height
+!
+
+height: anInteger
+	|searchboxHeight|
+	(searchbox asJQuery is: ':visible')
+		ifTrue: [searchboxHeight := searchbox asJQuery height + 2]
+		ifFalse: [searchboxHeight := 0].
+	height := anInteger.
+	list asJQuery css: 'height' data: (anInteger - searchboxHeight) asString, 'px'.
 !
 
 selectedData
@@ -525,12 +565,20 @@ selectedDataIndex
 	^ (list asJQuery find: '.ui-selected') index + 1
 !
 
+selectedDataVisibleIndex
+	^ ((list asJQuery find: 'li:visible') index: (list asJQuery find: 'li.ui-selected')) + 1
+!
+
 size
 	^ (list asJQuery find: 'li') length
 !
 
+sizeVisible
+	^ (list asJQuery find: 'li:visible') length
+!
+
 style: aString
-	list style: aString.
+	divContainer style: aString.
 ! !
 
 !MaglevListBox methodsFor: 'interactions'!
@@ -544,25 +592,48 @@ clear
 	list asJQuery empty.
 !
 
+commandFind
+	searchbox show.
+	self height: self height.
+	searchInput asJQuery focus.
+!
+
+filterResults
+	|text|
+	text := searchInput asJQuery val.
+	(list asJQuery find: 'li') each: [:idx :htmlEl | |el|
+		< el = $(htmlEl); >.
+		(el text includesSubString: text)
+			ifTrue: [el show]
+			ifFalse: [el hide]].
+	self hideSearchBox.
+!
+
 hide
 	list hide.
 !
 
+hideSearchBox
+	searchbox hide.
+	self height: self height.
+	list asJQuery focus.
+!
+
 moveSelectionDown
 	|newIndex|
-	newIndex := self selectedDataIndex + 1 - 1.
-	newIndex = self size ifTrue: [newIndex := 0].
+	newIndex := self selectedDataVisibleIndex + 1 - 1.
+	newIndex = self sizeVisible ifTrue: [newIndex := 0].
 	self unselectAll.
-	(list asJQuery find: 'li:eq(', newIndex asString, ')') addClass: 'ui-selected'.
+	(list asJQuery find: 'li:visible:eq(', newIndex asString, ')') addClass: 'ui-selected'.
 	self selectionChanged.
 !
 
 moveSelectionUp
 	|newIndex|
-	newIndex := self selectedDataIndex - 1 - 1.
-	newIndex < 0 ifTrue: [newIndex := self size - 1].
+	newIndex := self selectedDataVisibleIndex - 1 - 1.
+	newIndex < 0 ifTrue: [newIndex := self sizeVisible - 1].
 	self unselectAll.
-	(list asJQuery find: 'li:eq(', newIndex asString, ')') addClass: 'ui-selected'.
+	(list asJQuery find: 'li:visible:eq(', newIndex asString, ')') addClass: 'ui-selected'.
 	self selectionChanged.
 !
 
@@ -581,13 +652,36 @@ unselectAll
 !MaglevListBox methodsFor: 'rendering'!
 
 renderOn: html
-	list := html ol
-		at: 'tabindex' put: '1';
-		onArrowKeyDown: [self moveSelectionDown];
-		onArrowKeyUp: [self moveSelectionUp];
-		onClick: [list asJQuery focus].
-	htmlIv := html.
+	divContainer := html div with: [
+		self renderSearchBoxOn: html.
+		list := html ol
+			at: 'tabindex' put: '1';
+			style: 'overflow-y: scroll;';
+			onKeyDown: [:e | 
+				e preventDefault. 
+				e keyCode = 40 ifTrue: [self moveSelectionDown].
+				e keyCode = 38 ifTrue: [self moveSelectionUp].
+				(e keyCode = 70 and: [e ctrlKey]) ifTrue: [self commandFind]];
+			onClick: [list asJQuery focus].
+		htmlIv := html].
 	self bindEvents.
+!
+
+renderSearchBoxOn: html
+	searchbox := html div
+		class: 'input-prepend';
+		style: 'margin-bottom: 2px; box-sizing: border-box; -webkit-box-sizing: border-box; padding-right: 50px; width: 100%;';
+		with: [
+			html span 
+				class: 'add-on';
+				 with: 'find'.
+			searchInput := html input
+				type: 'text';
+				class: 'span2';
+				style: 'width: 100%;';
+				onChange: [self filterResults];
+				onFocusOut: [self hideSearchBox]];
+		hide.
 !
 
 with: content
@@ -1138,10 +1232,6 @@ maxElements
 ! !
 
 !MaglevHashInline methodsFor: 'rendering'!
-
-isDraggableDefault
-	^ false
-!
 
 renderLoadedObjectOn: html
 	|showElements maxElements|
@@ -1787,10 +1877,32 @@ renderHashElementsOn: html
 ! !
 
 MaglevObjectWindow subclass: #MaglevModuleWindow
-	instanceVariableNames: 'categoryNamesSelect selectorsSelect selectors rubySelectors methodContainer waitingScreen'
+	instanceVariableNames: 'categoryNamesSelect selectorsSelect selectors rubySelectors methodContainer waitingScreen hierarchyContainer'
 	package: 'Maglev-Database-Explorer'!
 
+!MaglevModuleWindow methodsFor: 'initializing'!
+
+initializeTree: container
+	< container.jstree({
+		plugins: ["crrm", "html_data", "themes"],
+		core: {
+			animation: 0,
+			open_parents: true}});
+	// setTimout: jstree fix
+	setTimeout(function(){
+		container.find('.treeview-replace-me').each(function(index, el) {
+			var jqEl = $(el);
+			self._renderInlineViewFor_inside_(jqEl.data('oop'), jqEl);
+			jqEl.removeClass('treeview-replace-me');
+		});}, 0); >
+! !
+
 !MaglevModuleWindow methodsFor: 'interactions'!
+
+renderHierarchySubclass: cls for: oop
+	< var ownerLi = self['@hierarchyContainer']._asJQuery().find("[data-oop='" + oop + "']");
+	self['@hierarchyContainer']._asJQuery().jstree('create', ownerLi, null, {attr: {'data-oop': cls._oop(), 'data-replace-me': '1'}}, null, true); >
+!
 
 renderSelectors: selectedCategory
 	|currentSelectors|
@@ -1814,6 +1926,13 @@ renderSourceCode: selectorString
 		ifFalse: [self renderSmalltalkSourceCodeFor: selectorString].
 !
 
+replaceHierarchySubclasses
+	< self['@hierarchyContainer']._asJQuery().find("[data-replace-me='1']").each(function(idx, el) {
+		$(el).find('a').remove();
+		self._renderInlineViewFor_inside_($(el).data('oop'), $(el));
+	}); >
+!
+
 selectedCategoryString
 	^ categoryNamesSelect selectedData
 ! !
@@ -1828,6 +1947,7 @@ contentTabs
 	self object hasIncludedModules
 		ifTrue: [result at: 'Included Modules' put: #renderIncludedModulesOn:].
 	result at: 'Code' put: #renderCodeTabOn:.
+	result at: 'Hierarchy' put: #renderHierarchyOn:.
 	^ result
 !
 
@@ -1852,8 +1972,46 @@ renderConstantsOn: html
 	html with: (MaglevTable newAssociationDictFor: self object with: #constants).
 !
 
+renderHierarchyOn: html
+	|waitingBox|
+	waitingBox := html div with: [
+		html 
+			with: MaglevIcon wait;
+			with: ' loading...'].
+	object ensureSuperListLoadedWithCallback: [ |renderedInlines|
+		renderedInlines := Array new.
+		hierarchyContainer := html div with: [ |lastUl|
+			lastUl := html ul.
+			object superList do: [:cls | "render superclasses"
+				lastUl with: [
+					html li
+						data: 'oop' with: cls oop asString;
+						with: [|container|
+							container := html span 
+								data: 'oop' with: cls oop asString;
+								class: 'treeview-replace-me'.
+							renderedInlines add: container];
+						with: [lastUl := html ul]]]].
+		self initializeTree: hierarchyContainer asJQuery.
+		waitingBox hide].
+!
+
 renderIncludedModulesOn: html
 	html with: (MaglevTable newFor: self object with: #includedModules).
+!
+
+renderInlineViewFor: oop inside: htmlElement
+	|html subclassesButton|
+	html := HTMLCanvas onJQuery: htmlElement.
+	subclassesButton := MaglevIcon codeFork.
+	html with: subclassesButton.
+	subclassesButton onClick: [ |obj|
+		obj := MaglevObjectSpace instance at: oop.
+		obj ensureSubclassesLoadedWithCallback: [
+			obj subclasses do: [:cls |
+				self renderHierarchySubclass: cls for: oop].
+			self replaceHierarchySubclasses]].
+	(MaglevObjectSpace instance at: oop) inlineViewComponent renderOn: html.
 !
 
 renderListsOn: html
@@ -1861,13 +2019,15 @@ renderListsOn: html
 	html with: categoryNamesSelect.
 	categoryNamesSelect
 		changedCallback: [:cat :index | self renderSelectors: cat];
-		style: 'height: 250px; overflow-y: scroll; float: left; width: 50%; margin-right: 10px; margin-left: 0px;';
+		height: 250;
+		style: 'float: left; width: 50%; margin-right: 10px; margin-left: 0px; display: inline-block;';
 		hide.
 	selectorsSelect := MaglevListBox new.
 	html with: selectorsSelect.
 	selectorsSelect
 		changedCallback: [:sel :index | self renderSourceCode: sel];
-		style: 'height: 250px; overflow-y: scroll;';
+		height: 250;
+		style: 'display: inline-block; width: 50%; box-sizing: border-box; -webkit-box-sizing: border-box; padding-right: 10px;';
 		hide.
 !
 
@@ -2148,6 +2308,8 @@ reloadStackWithCallback: aBlock
 						ifTrue: [html with: MaglevIconImage smalltalk].
 					(method includesSubString: '(envId 1)')
 						ifTrue: [html with: MaglevIconImage ruby].
+					(method includesSubString: '(envId 1b)')
+						ifTrue: [html with: MaglevIconImage rubySmalltalkBridge].
 					html with: method]].
 		waitForStackTrace hide.
 		aBlock = nil
@@ -2254,7 +2416,8 @@ renderStackTraceOn: html
 	html with: methodSelect.
 	methodSelect
 		changedCallback: [:text :index | self renderFrame: index];
-		style: 'width: 100%; height: 250px; overflow-y: scroll;'.
+		height: 250;
+		style: 'width: 100%;'.
 	self renderButtonsOn: html.
 	waitingScreen := html div
 		with: [html

@@ -927,7 +927,7 @@ basetype
 ! !
 
 MaglevObject subclass: #MaglevModule
-	instanceVariableNames: 'includedModules includedModulesSize constants constantsSize rubyFullName smalltalkFullName'
+	instanceVariableNames: 'includedModules includedModulesSize constants constantsSize rubyFullName smalltalkFullName superList'
 	package: 'Maglev-Core'!
 
 !MaglevModule methodsFor: 'accessing'!
@@ -954,6 +954,10 @@ rubyFullName
 
 smalltalkFullName
 	^ smalltalkFullName string
+!
+
+superList
+	^ superList
 ! !
 
 !MaglevModule methodsFor: 'instance creation'!
@@ -962,16 +966,21 @@ parseJSON: obj
 	super parseJSON: obj.
 	includedModules ifNil: [includedModules := Dictionary new].
 	constants ifNil: [constants := Dictionary new].
-	includedModulesSize := obj includedModulesSize.
-	constantsSize := obj constantsSize.
-	obj includedModules keysAndValuesDo: [:index :value |
-		includedModules at: index asNumber put: (MaglevObject newObject: value)].
-	obj constants keysAndValuesDo: [:index :assoc | |key value|
-		key := MaglevObject newObject: (assoc at: 1).
-		value := MaglevObject newObject: (assoc at: 2).
-		constants at: index asNumber put: key -> value].
-	rubyFullName := MaglevObject newObject: obj rubyFullName.
-	smalltalkFullName := MaglevObject newObject: obj smalltalkFullName.
+	(obj at: 'includedModulesSize') ifNotNil: [
+		includedModulesSize := obj includedModulesSize.
+		obj includedModules keysAndValuesDo: [:index :value |
+			includedModules at: index asNumber put: (MaglevObject newObject: value)]].
+	(obj at: 'constantsSize') ifNotNil: [
+		constantsSize := obj constantsSize.
+		obj constants keysAndValuesDo: [:index :assoc | |key value|
+			key := MaglevObject newObject: (assoc at: 1).
+			value := MaglevObject newObject: (assoc at: 2).
+			constants at: index asNumber put: key -> value]].
+	(obj at: 'superList') ifNotNil: [
+		superList := MaglevObject newObject: obj superList].
+	(obj at: 'rubyFullName') ifNotNil: [
+		rubyFullName := MaglevObject newObject: obj rubyFullName.
+		smalltalkFullName := MaglevObject newObject: obj smalltalkFullName].
 !
 
 parseJSONNotLoaded: obj
@@ -985,6 +994,23 @@ allSelectorsWithCallback: aBlock
 		ajax: '/code/selectors/', oop asString
 		data: Dictionary new
 		withCallback: aBlock.
+!
+
+ensureSuperListLoadedWithCallback: aBlock
+	superList 
+		ifNil: [MaglevAjax 
+			ajax: '/object/index/', self oop
+			data: self paramsSuperList
+				withCallback: [:obj | 
+					self parseJSON: obj.
+					aBlock value]]
+		ifNotNil: [aBlock value].
+!
+
+paramsSuperList
+	^ Dictionary new
+		at: 'superList' put: true;
+		yourself
 !
 
 sourceCodeFor: selectorString language: lang withCallback: aBlock
@@ -1024,10 +1050,14 @@ windowViewClass
 ! !
 
 MaglevModule subclass: #MaglevClass
-	instanceVariableNames: 'superclassObject size'
+	instanceVariableNames: 'superclassObject size subclasses'
 	package: 'Maglev-Core'!
 
 !MaglevClass methodsFor: 'accessing'!
+
+subclasses
+	^ subclasses
+!
 
 superclassObject
 	^ superclassObject
@@ -1037,7 +1067,29 @@ superclassObject
 
 parseJSON: obj
 	super parseJSON: obj.
-	superclassObject := MaglevObject newObject: obj superclassObject.
+	(obj at: 'superclassObject') ifNotNil: [
+		superclassObject := MaglevObject newObject: obj superclassObject].
+	(obj at: 'subclasses') ifNotNil: [
+		subclasses := MaglevObject newObject: obj subclasses].
+! !
+
+!MaglevClass methodsFor: 'interactions'!
+
+ensureSubclassesLoadedWithCallback: aBlock
+	subclasses 
+		ifNil: [MaglevAjax 
+			ajax: '/object/index/', self oop
+			data: self paramsSubclasses
+				withCallback: [:obj | 
+					self parseJSON: obj.
+					aBlock value]]
+		ifNotNil: [aBlock value].
+!
+
+paramsSubclasses
+	^ Dictionary new
+		at: 'subclasses' put: true;
+		yourself
 ! !
 
 !MaglevClass class methodsFor: 'constants'!
@@ -1323,6 +1375,7 @@ trimTo: frameIndex withCallback: aBlock
 !MaglevThread methodsFor: 'testing'!
 
 hasException
+	exception ifNil: [^ false].
 	^ exception isMaglevNil not
 ! !
 

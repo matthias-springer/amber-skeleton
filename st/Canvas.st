@@ -608,6 +608,10 @@ contextmenu: aString
 	self at: 'contextmenu' put: aString
 !
 
+data: attribute
+	^ self asJQuery data: attribute
+!
+
 data: attribute with: aString
 	self at: 'data-', attribute put: aString
 !
