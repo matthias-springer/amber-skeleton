@@ -837,7 +837,7 @@ return self;}
 smalltalk.MaglevIconImage.klass);
 
 
-smalltalk.addClass('MaglevListBox', smalltalk.Widget, ['list', 'changedCallback', 'htmlIv', 'divContainer', 'height', 'searchbox', 'searchInput'], 'Maglev-Database-Explorer');
+smalltalk.addClass('MaglevListBox', smalltalk.Widget, ['list', 'changedCallback', 'htmlIv', 'divContainer', 'height', 'searchbox', 'searchInput', 'olContainer', 'olHeightBeforeSearch'], 'Maglev-Database-Explorer');
 smalltalk.addMethod(
 unescape('_bindEvents'),
 smalltalk.method({
@@ -878,6 +878,7 @@ smalltalk.method({
 selector: unescape('commandFind'),
 fn: function (){
 var self=this;
+(self['@olHeightBeforeSearch']=smalltalk.send(self, "_height", []));
 smalltalk.send(self['@searchbox'], "_show", []);
 smalltalk.send(self, "_height_", [smalltalk.send(self, "_height", [])]);
 smalltalk.send(smalltalk.send(self['@searchInput'], "_asJQuery", []), "_focus", []);
@@ -901,12 +902,23 @@ return self;}
 smalltalk.MaglevListBox);
 
 smalltalk.addMethod(
+unescape('_focus'),
+smalltalk.method({
+selector: unescape('focus'),
+fn: function (){
+var self=this;
+smalltalk.send(smalltalk.send(self['@list'], "_asJQuery", []), "_focus", []);
+return self;}
+}),
+smalltalk.MaglevListBox);
+
+smalltalk.addMethod(
 unescape('_height'),
 smalltalk.method({
 selector: unescape('height'),
 fn: function (){
 var self=this;
-return self['@height'];
+return smalltalk.send(smalltalk.send(self['@olContainer'], "_asJQuery", []), "_height", []);
 return self;}
 }),
 smalltalk.MaglevListBox);
@@ -920,7 +932,7 @@ var self=this;
 var searchboxHeight=nil;
 ((($receiver = smalltalk.send(smalltalk.send(self['@searchbox'], "_asJQuery", []), "_is_", [":visible"])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (searchboxHeight=((($receiver = smalltalk.send(smalltalk.send(self['@searchbox'], "_asJQuery", []), "_height", [])).klass === smalltalk.Number) ? $receiver +(2) : smalltalk.send($receiver, "__plus", [(2)])));})() : (function(){return (searchboxHeight=(0));})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return (searchboxHeight=((($receiver = smalltalk.send(smalltalk.send(self['@searchbox'], "_asJQuery", []), "_height", [])).klass === smalltalk.Number) ? $receiver +(2) : smalltalk.send($receiver, "__plus", [(2)])));}), (function(){return (searchboxHeight=(0));})]));
 (self['@height']=anInteger);
-smalltalk.send(smalltalk.send(self['@list'], "_asJQuery", []), "_css_data_", ["height", smalltalk.send(smalltalk.send(((($receiver = anInteger).klass === smalltalk.Number) ? $receiver -searchboxHeight : smalltalk.send($receiver, "__minus", [searchboxHeight])), "_asString", []), "__comma", ["px"])]);
+smalltalk.send(smalltalk.send(self['@olContainer'], "_asJQuery", []), "_css_data_", ["height", smalltalk.send(smalltalk.send(((($receiver = anInteger).klass === smalltalk.Number) ? $receiver -searchboxHeight : smalltalk.send($receiver, "__minus", [searchboxHeight])), "_asString", []), "__comma", ["px"])]);
 return self;}
 }),
 smalltalk.MaglevListBox);
@@ -943,8 +955,19 @@ selector: unescape('hideSearchBox'),
 fn: function (){
 var self=this;
 smalltalk.send(self['@searchbox'], "_hide", []);
-smalltalk.send(self, "_height_", [smalltalk.send(self, "_height", [])]);
+smalltalk.send(self, "_height_", [self['@olHeightBeforeSearch']]);
 smalltalk.send(smalltalk.send(self['@list'], "_asJQuery", []), "_focus", []);
+return self;}
+}),
+smalltalk.MaglevListBox);
+
+smalltalk.addMethod(
+unescape('_makeResizable'),
+smalltalk.method({
+selector: unescape('makeResizable'),
+fn: function (){
+var self=this;
+ self['@olContainer']._asJQuery().resizable({handles: 's'}); ;
 return self;}
 }),
 smalltalk.MaglevListBox);
@@ -987,7 +1010,7 @@ smalltalk.method({
 selector: unescape('renderOn%3A'),
 fn: function (html){
 var self=this;
-(self['@divContainer']=smalltalk.send(smalltalk.send(html, "_div", []), "_with_", [(function(){smalltalk.send(self, "_renderSearchBoxOn_", [html]);(self['@list']=(function($rec){smalltalk.send($rec, "_at_put_", ["tabindex", "1"]);smalltalk.send($rec, "_style_", [unescape("overflow-y%3A%20scroll%3B")]);smalltalk.send($rec, "_onKeyDown_", [(function(e){smalltalk.send(e, "_preventDefault", []);((($receiver = smalltalk.send(smalltalk.send(e, "_keyCode", []), "__eq", [(40)])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self, "_moveSelectionDown", []);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(self, "_moveSelectionDown", []);})]));((($receiver = smalltalk.send(smalltalk.send(e, "_keyCode", []), "__eq", [(38)])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self, "_moveSelectionUp", []);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(self, "_moveSelectionUp", []);})]));return ((($receiver = smalltalk.send(smalltalk.send(smalltalk.send(e, "_keyCode", []), "__eq", [(70)]), "_and_", [(function(){return smalltalk.send(e, "_ctrlKey", []);})])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self, "_commandFind", []);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(self, "_commandFind", []);})]));})]);return smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(smalltalk.send(self['@list'], "_asJQuery", []), "_focus", []);})]);})(smalltalk.send(html, "_ol", [])));return (self['@htmlIv']=html);})]));
+(self['@divContainer']=smalltalk.send(smalltalk.send(html, "_div", []), "_with_", [(function(){smalltalk.send(self, "_renderSearchBoxOn_", [html]);(self['@olContainer']=(function($rec){smalltalk.send($rec, "_style_", [unescape("overflow%3A%20hidden%3B%20border%3A%201px%20solid%20%23aaaaaa")]);return smalltalk.send($rec, "_with_", [(function(){return (self['@list']=(function($rec){smalltalk.send($rec, "_style_", [unescape("width%3A%20100%25%3B%20height%3A%20100%25%3B%20overflow%3A%20auto%3B%20border%3A%20none%3B%20outline%3A%20none%3B")]);smalltalk.send($rec, "_at_put_", ["tabindex", "1"]);smalltalk.send($rec, "_onKeyDown_", [(function(e){smalltalk.send(e, "_preventDefault", []);((($receiver = smalltalk.send(smalltalk.send(e, "_keyCode", []), "__eq", [(40)])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self, "_moveSelectionDown", []);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(self, "_moveSelectionDown", []);})]));((($receiver = smalltalk.send(smalltalk.send(e, "_keyCode", []), "__eq", [(38)])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self, "_moveSelectionUp", []);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(self, "_moveSelectionUp", []);})]));return ((($receiver = smalltalk.send(smalltalk.send(smalltalk.send(e, "_keyCode", []), "__eq", [(70)]), "_and_", [(function(){return smalltalk.send(e, "_ctrlKey", []);})])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self, "_commandFind", []);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(self, "_commandFind", []);})]));})]);return smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_focus", []);})]);})(smalltalk.send(html, "_ol", [])));})]);})(smalltalk.send(html, "_div", [])));smalltalk.send(self, "_makeResizable", []);return (self['@htmlIv']=html);})]));
 smalltalk.send(self, "_bindEvents", []);
 return self;}
 }),
@@ -999,7 +1022,7 @@ smalltalk.method({
 selector: unescape('renderSearchBoxOn%3A'),
 fn: function (html){
 var self=this;
-(self['@searchbox']=(function($rec){smalltalk.send($rec, "_class_", [unescape("input-prepend")]);smalltalk.send($rec, "_style_", [unescape("margin-bottom%3A%202px%3B%20box-sizing%3A%20border-box%3B%20-webkit-box-sizing%3A%20border-box%3B%20padding-right%3A%2050px%3B%20width%3A%20100%25%3B")]);smalltalk.send($rec, "_with_", [(function(){(function($rec){smalltalk.send($rec, "_class_", [unescape("add-on")]);return smalltalk.send($rec, "_with_", ["find"]);})(smalltalk.send(html, "_span", []));return (self['@searchInput']=(function($rec){smalltalk.send($rec, "_type_", ["text"]);smalltalk.send($rec, "_class_", ["span2"]);smalltalk.send($rec, "_style_", [unescape("width%3A%20100%25%3B")]);smalltalk.send($rec, "_onChange_", [(function(){return smalltalk.send(self, "_filterResults", []);})]);return smalltalk.send($rec, "_onFocusOut_", [(function(){return smalltalk.send(self, "_hideSearchBox", []);})]);})(smalltalk.send(html, "_input", [])));})]);return smalltalk.send($rec, "_hide", []);})(smalltalk.send(html, "_div", [])));
+(self['@searchbox']=(function($rec){smalltalk.send($rec, "_class_", [unescape("input-prepend")]);smalltalk.send($rec, "_style_", [unescape("margin-bottom%3A%202px%3B%20box-sizing%3A%20border-box%3B%20-webkit-box-sizing%3A%20border-box%3B%20padding-right%3A%2052px%3B%20width%3A%20100%25%3B")]);smalltalk.send($rec, "_with_", [(function(){(function($rec){smalltalk.send($rec, "_class_", [unescape("add-on")]);return smalltalk.send($rec, "_with_", ["find"]);})(smalltalk.send(html, "_span", []));return (self['@searchInput']=(function($rec){smalltalk.send($rec, "_type_", ["text"]);smalltalk.send($rec, "_class_", ["span2"]);smalltalk.send($rec, "_style_", [unescape("width%3A%20100%25%3B")]);smalltalk.send($rec, "_onChange_", [(function(){return smalltalk.send(self, "_filterResults", []);})]);return smalltalk.send($rec, "_onFocusOut_", [(function(){return smalltalk.send(self, "_hideSearchBox", []);})]);})(smalltalk.send(html, "_input", [])));})]);return smalltalk.send($rec, "_hide", []);})(smalltalk.send(html, "_div", [])));
 return self;}
 }),
 smalltalk.MaglevListBox);
@@ -1043,6 +1066,7 @@ smalltalk.method({
 selector: unescape('selectionChanged'),
 fn: function (){
 var self=this;
+smalltalk.send(self, "_focus", []);
 smalltalk.send(self['@changedCallback'], "_value_value_", [smalltalk.send(self, "_selectedData", []), smalltalk.send(self, "_selectedDataIndex", [])]);
 return self;}
 }),
@@ -2995,7 +3019,7 @@ var self=this;
 smalltalk.send(smalltalk.send(html, "_root", []), "_style_", [unescape("width%3A%20100%25%3B")]);
 smalltalk.send(self, "_renderListsOn_", [html]);
 (self['@waitingScreen']=smalltalk.send(smalltalk.send(html, "_div", []), "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_with_", [smalltalk.send((smalltalk.MaglevIcon || MaglevIcon), "_wait", [])]);return smalltalk.send($rec, "_with_", [" loading..."]);})(html);})]));
-(self['@methodContainer']=smalltalk.send(html, "_div", []));
+(self['@methodContainer']=smalltalk.send(smalltalk.send(html, "_div", []), "_style_", [unescape("margin-top%3A%2010px%3B")]));
 smalltalk.send(smalltalk.send(self, "_object", []), "_allSelectorsWithCallback_", [(function(obj){(self['@selectors']=obj);smalltalk.send(self, "_renderSelectorCategories", []);smalltalk.send(self['@waitingScreen'], "_hide", []);smalltalk.send(self['@categoryNamesSelect'], "_show", []);return smalltalk.send(self['@selectorsSelect'], "_show", []);})]);
 return self;}
 }),
@@ -3506,7 +3530,7 @@ smalltalk.method({
 selector: unescape('renderButtonsOn%3A'),
 fn: function (html){
 var self=this;
-(function($rec){smalltalk.send($rec, "_class_", [unescape("button-area")]);smalltalk.send($rec, "_style_", [unescape("margin-top%3A%200px%3B%20margin-bottom%3A%2010px%3B")]);return smalltalk.send($rec, "_with_", [(function(){(function($rec){smalltalk.send($rec, "_type_", ["button"]);smalltalk.send($rec, "_class_", [unescape("btn%20btn-primary")]);smalltalk.send($rec, "_value_", ["Proceed"]);smalltalk.send($rec, "_style_", [unescape("margin-right%3A%201%25%3B%20width%3A%2024%25%3B")]);return smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_proceed", []);})]);})(smalltalk.send(html, "_input", []));(function($rec){smalltalk.send($rec, "_type_", ["button"]);smalltalk.send($rec, "_class_", [unescape("btn%20btn-primary")]);smalltalk.send($rec, "_value_", ["Step into"]);smalltalk.send($rec, "_style_", [unescape("margin-right%3A%201%25%3B%20width%3A%2024%25%3B")]);return smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_stepInto", []);})]);})(smalltalk.send(html, "_input", []));(function($rec){smalltalk.send($rec, "_type_", ["button"]);smalltalk.send($rec, "_class_", [unescape("btn%20btn-primary")]);smalltalk.send($rec, "_value_", ["Step over"]);smalltalk.send($rec, "_style_", [unescape("margin-right%3A%201%25%3B%20width%3A%2024%25%3B")]);return smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_stepOver", []);})]);})(smalltalk.send(html, "_input", []));return (function($rec){smalltalk.send($rec, "_type_", ["button"]);smalltalk.send($rec, "_class_", [unescape("btn%20btn-primary")]);smalltalk.send($rec, "_value_", ["Trim stack"]);smalltalk.send($rec, "_style_", [unescape("width%3A%2025%25%3B")]);return smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_trimStack", []);})]);})(smalltalk.send(html, "_input", []));})]);})(smalltalk.send(html, "_div", []));
+(function($rec){smalltalk.send($rec, "_class_", [unescape("button-area")]);smalltalk.send($rec, "_style_", [unescape("margin-bottom%3A%2010px%3B")]);return smalltalk.send($rec, "_with_", [(function(){(function($rec){smalltalk.send($rec, "_type_", ["button"]);smalltalk.send($rec, "_class_", [unescape("btn%20btn-primary")]);smalltalk.send($rec, "_value_", ["Proceed"]);smalltalk.send($rec, "_style_", [unescape("margin-right%3A%201%25%3B%20width%3A%2024%25%3B")]);return smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_proceed", []);})]);})(smalltalk.send(html, "_input", []));(function($rec){smalltalk.send($rec, "_type_", ["button"]);smalltalk.send($rec, "_class_", [unescape("btn%20btn-primary")]);smalltalk.send($rec, "_value_", ["Step into"]);smalltalk.send($rec, "_style_", [unescape("margin-right%3A%201%25%3B%20width%3A%2024%25%3B")]);return smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_stepInto", []);})]);})(smalltalk.send(html, "_input", []));(function($rec){smalltalk.send($rec, "_type_", ["button"]);smalltalk.send($rec, "_class_", [unescape("btn%20btn-primary")]);smalltalk.send($rec, "_value_", ["Step over"]);smalltalk.send($rec, "_style_", [unescape("margin-right%3A%201%25%3B%20width%3A%2024%25%3B")]);return smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_stepOver", []);})]);})(smalltalk.send(html, "_input", []));return (function($rec){smalltalk.send($rec, "_type_", ["button"]);smalltalk.send($rec, "_class_", [unescape("btn%20btn-primary")]);smalltalk.send($rec, "_value_", ["Trim stack"]);smalltalk.send($rec, "_style_", [unescape("width%3A%2025%25%3B")]);return smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_trimStack", []);})]);})(smalltalk.send(html, "_input", []));})]);})(smalltalk.send(html, "_div", []));
 return self;}
 }),
 smalltalk.MaglevThreadWindow);

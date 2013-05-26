@@ -1183,7 +1183,7 @@ referencedClasses: []
 smalltalk.MaglevIconImage.klass);
 
 
-smalltalk.addClass('MaglevListBox', smalltalk.Widget, ['list', 'changedCallback', 'htmlIv', 'divContainer', 'height', 'searchbox', 'searchInput'], 'Maglev-Database-Explorer');
+smalltalk.addClass('MaglevListBox', smalltalk.Widget, ['list', 'changedCallback', 'htmlIv', 'divContainer', 'height', 'searchbox', 'searchInput', 'olContainer', 'olHeightBeforeSearch'], 'Maglev-Database-Explorer');
 smalltalk.addMethod(
 unescape('_bindEvents'),
 smalltalk.method({
@@ -1240,13 +1240,14 @@ selector: unescape('commandFind'),
 category: 'interactions',
 fn: function (){
 var self=this;
+(self['@olHeightBeforeSearch']=smalltalk.send(self, "_height", []));
 smalltalk.send(self['@searchbox'], "_show", []);
 smalltalk.send(self, "_height_", [smalltalk.send(self, "_height", [])]);
 smalltalk.send(smalltalk.send(self['@searchInput'], "_asJQuery", []), "_focus", []);
 return self;},
 args: [],
-source: unescape('commandFind%0A%09searchbox%20show.%0A%09self%20height%3A%20self%20height.%0A%09searchInput%20asJQuery%20focus.'),
-messageSends: ["show", "height:", "height", "focus", "asJQuery"],
+source: unescape('commandFind%0A%09olHeightBeforeSearch%20%3A%3D%20self%20height.%0A%09searchbox%20show.%0A%09self%20height%3A%20self%20height.%0A%09searchInput%20asJQuery%20focus.'),
+messageSends: ["height", "show", "height:", "focus", "asJQuery"],
 referencedClasses: []
 }),
 smalltalk.MaglevListBox);
@@ -1272,17 +1273,33 @@ referencedClasses: []
 smalltalk.MaglevListBox);
 
 smalltalk.addMethod(
+unescape('_focus'),
+smalltalk.method({
+selector: unescape('focus'),
+category: 'interactions',
+fn: function (){
+var self=this;
+smalltalk.send(smalltalk.send(self['@list'], "_asJQuery", []), "_focus", []);
+return self;},
+args: [],
+source: unescape('focus%0A%09list%20asJQuery%20focus.'),
+messageSends: ["focus", "asJQuery"],
+referencedClasses: []
+}),
+smalltalk.MaglevListBox);
+
+smalltalk.addMethod(
 unescape('_height'),
 smalltalk.method({
 selector: unescape('height'),
 category: 'accessing',
 fn: function (){
 var self=this;
-return self['@height'];
+return smalltalk.send(smalltalk.send(self['@olContainer'], "_asJQuery", []), "_height", []);
 return self;},
 args: [],
-source: unescape('height%0A%09%5E%20height'),
-messageSends: [],
+source: unescape('height%0A%09%5E%20olContainer%20asJQuery%20height'),
+messageSends: ["height", "asJQuery"],
 referencedClasses: []
 }),
 smalltalk.MaglevListBox);
@@ -1297,10 +1314,10 @@ var self=this;
 var searchboxHeight=nil;
 ((($receiver = smalltalk.send(smalltalk.send(self['@searchbox'], "_asJQuery", []), "_is_", [":visible"])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (searchboxHeight=((($receiver = smalltalk.send(smalltalk.send(self['@searchbox'], "_asJQuery", []), "_height", [])).klass === smalltalk.Number) ? $receiver +(2) : smalltalk.send($receiver, "__plus", [(2)])));})() : (function(){return (searchboxHeight=(0));})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return (searchboxHeight=((($receiver = smalltalk.send(smalltalk.send(self['@searchbox'], "_asJQuery", []), "_height", [])).klass === smalltalk.Number) ? $receiver +(2) : smalltalk.send($receiver, "__plus", [(2)])));}), (function(){return (searchboxHeight=(0));})]));
 (self['@height']=anInteger);
-smalltalk.send(smalltalk.send(self['@list'], "_asJQuery", []), "_css_data_", ["height", smalltalk.send(smalltalk.send(((($receiver = anInteger).klass === smalltalk.Number) ? $receiver -searchboxHeight : smalltalk.send($receiver, "__minus", [searchboxHeight])), "_asString", []), "__comma", ["px"])]);
+smalltalk.send(smalltalk.send(self['@olContainer'], "_asJQuery", []), "_css_data_", ["height", smalltalk.send(smalltalk.send(((($receiver = anInteger).klass === smalltalk.Number) ? $receiver -searchboxHeight : smalltalk.send($receiver, "__minus", [searchboxHeight])), "_asString", []), "__comma", ["px"])]);
 return self;},
 args: ["anInteger"],
-source: unescape('height%3A%20anInteger%0A%09%7CsearchboxHeight%7C%0A%09%28searchbox%20asJQuery%20is%3A%20%27%3Avisible%27%29%0A%09%09ifTrue%3A%20%5BsearchboxHeight%20%3A%3D%20searchbox%20asJQuery%20height%20+%202%5D%0A%09%09ifFalse%3A%20%5BsearchboxHeight%20%3A%3D%200%5D.%0A%09height%20%3A%3D%20anInteger.%0A%09list%20asJQuery%20css%3A%20%27height%27%20data%3A%20%28anInteger%20-%20searchboxHeight%29%20asString%2C%20%27px%27.'),
+source: unescape('height%3A%20anInteger%0A%09%7CsearchboxHeight%7C%0A%09%28searchbox%20asJQuery%20is%3A%20%27%3Avisible%27%29%0A%09%09ifTrue%3A%20%5BsearchboxHeight%20%3A%3D%20searchbox%20asJQuery%20height%20+%202%5D%0A%09%09ifFalse%3A%20%5BsearchboxHeight%20%3A%3D%200%5D.%0A%09height%20%3A%3D%20anInteger.%0A%09olContainer%20asJQuery%20css%3A%20%27height%27%20data%3A%20%28anInteger%20-%20searchboxHeight%29%20asString%2C%20%27px%27.'),
 messageSends: ["ifTrue:ifFalse:", "is:", "asJQuery", unescape("+"), "height", "css:data:", unescape("%2C"), "asString", unescape("-")],
 referencedClasses: []
 }),
@@ -1330,12 +1347,28 @@ category: 'interactions',
 fn: function (){
 var self=this;
 smalltalk.send(self['@searchbox'], "_hide", []);
-smalltalk.send(self, "_height_", [smalltalk.send(self, "_height", [])]);
+smalltalk.send(self, "_height_", [self['@olHeightBeforeSearch']]);
 smalltalk.send(smalltalk.send(self['@list'], "_asJQuery", []), "_focus", []);
 return self;},
 args: [],
-source: unescape('hideSearchBox%0A%09searchbox%20hide.%0A%09self%20height%3A%20self%20height.%0A%09list%20asJQuery%20focus.'),
-messageSends: ["hide", "height:", "height", "focus", "asJQuery"],
+source: unescape('hideSearchBox%0A%09searchbox%20hide.%0A%09self%20height%3A%20olHeightBeforeSearch.%0A%09list%20asJQuery%20focus.'),
+messageSends: ["hide", "height:", "focus", "asJQuery"],
+referencedClasses: []
+}),
+smalltalk.MaglevListBox);
+
+smalltalk.addMethod(
+unescape('_makeResizable'),
+smalltalk.method({
+selector: unescape('makeResizable'),
+category: 'rendering',
+fn: function (){
+var self=this;
+ self['@olContainer']._asJQuery().resizable({handles: 's'}); ;
+return self;},
+args: [],
+source: unescape('makeResizable%0A%09%3C%20self%5B%27@olContainer%27%5D._asJQuery%28%29.resizable%28%7Bhandles%3A%20%27s%27%7D%29%3B%20%3E'),
+messageSends: [],
 referencedClasses: []
 }),
 smalltalk.MaglevListBox);
@@ -1389,12 +1422,12 @@ selector: unescape('renderOn%3A'),
 category: 'rendering',
 fn: function (html){
 var self=this;
-(self['@divContainer']=smalltalk.send(smalltalk.send(html, "_div", []), "_with_", [(function(){smalltalk.send(self, "_renderSearchBoxOn_", [html]);(self['@list']=(function($rec){smalltalk.send($rec, "_at_put_", ["tabindex", "1"]);smalltalk.send($rec, "_style_", [unescape("overflow-y%3A%20scroll%3B")]);smalltalk.send($rec, "_onKeyDown_", [(function(e){smalltalk.send(e, "_preventDefault", []);((($receiver = smalltalk.send(smalltalk.send(e, "_keyCode", []), "__eq", [(40)])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self, "_moveSelectionDown", []);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(self, "_moveSelectionDown", []);})]));((($receiver = smalltalk.send(smalltalk.send(e, "_keyCode", []), "__eq", [(38)])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self, "_moveSelectionUp", []);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(self, "_moveSelectionUp", []);})]));return ((($receiver = smalltalk.send(smalltalk.send(smalltalk.send(e, "_keyCode", []), "__eq", [(70)]), "_and_", [(function(){return smalltalk.send(e, "_ctrlKey", []);})])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self, "_commandFind", []);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(self, "_commandFind", []);})]));})]);return smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(smalltalk.send(self['@list'], "_asJQuery", []), "_focus", []);})]);})(smalltalk.send(html, "_ol", [])));return (self['@htmlIv']=html);})]));
+(self['@divContainer']=smalltalk.send(smalltalk.send(html, "_div", []), "_with_", [(function(){smalltalk.send(self, "_renderSearchBoxOn_", [html]);(self['@olContainer']=(function($rec){smalltalk.send($rec, "_style_", [unescape("overflow%3A%20hidden%3B%20border%3A%201px%20solid%20%23aaaaaa")]);return smalltalk.send($rec, "_with_", [(function(){return (self['@list']=(function($rec){smalltalk.send($rec, "_style_", [unescape("width%3A%20100%25%3B%20height%3A%20100%25%3B%20overflow%3A%20auto%3B%20border%3A%20none%3B%20outline%3A%20none%3B")]);smalltalk.send($rec, "_at_put_", ["tabindex", "1"]);smalltalk.send($rec, "_onKeyDown_", [(function(e){smalltalk.send(e, "_preventDefault", []);((($receiver = smalltalk.send(smalltalk.send(e, "_keyCode", []), "__eq", [(40)])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self, "_moveSelectionDown", []);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(self, "_moveSelectionDown", []);})]));((($receiver = smalltalk.send(smalltalk.send(e, "_keyCode", []), "__eq", [(38)])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self, "_moveSelectionUp", []);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(self, "_moveSelectionUp", []);})]));return ((($receiver = smalltalk.send(smalltalk.send(smalltalk.send(e, "_keyCode", []), "__eq", [(70)]), "_and_", [(function(){return smalltalk.send(e, "_ctrlKey", []);})])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self, "_commandFind", []);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(self, "_commandFind", []);})]));})]);return smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_focus", []);})]);})(smalltalk.send(html, "_ol", [])));})]);})(smalltalk.send(html, "_div", [])));smalltalk.send(self, "_makeResizable", []);return (self['@htmlIv']=html);})]));
 smalltalk.send(self, "_bindEvents", []);
 return self;},
 args: ["html"],
-source: unescape('renderOn%3A%20html%0A%09divContainer%20%3A%3D%20html%20div%20with%3A%20%5B%0A%09%09self%20renderSearchBoxOn%3A%20html.%0A%09%09list%20%3A%3D%20html%20ol%0A%09%09%09at%3A%20%27tabindex%27%20put%3A%20%271%27%3B%0A%09%09%09style%3A%20%27overflow-y%3A%20scroll%3B%27%3B%0A%09%09%09onKeyDown%3A%20%5B%3Ae%20%7C%20%0A%09%09%09%09e%20preventDefault.%20%0A%09%09%09%09e%20keyCode%20%3D%2040%20ifTrue%3A%20%5Bself%20moveSelectionDown%5D.%0A%09%09%09%09e%20keyCode%20%3D%2038%20ifTrue%3A%20%5Bself%20moveSelectionUp%5D.%0A%09%09%09%09%28e%20keyCode%20%3D%2070%20and%3A%20%5Be%20ctrlKey%5D%29%20ifTrue%3A%20%5Bself%20commandFind%5D%5D%3B%0A%09%09%09onClick%3A%20%5Blist%20asJQuery%20focus%5D.%0A%09%09htmlIv%20%3A%3D%20html%5D.%0A%09self%20bindEvents.'),
-messageSends: ["with:", "div", "renderSearchBoxOn:", "at:put:", "style:", "onKeyDown:", "preventDefault", "ifTrue:", unescape("%3D"), "keyCode", "moveSelectionDown", "moveSelectionUp", "and:", "ctrlKey", "commandFind", "onClick:", "focus", "asJQuery", "ol", "bindEvents"],
+source: unescape('renderOn%3A%20html%0A%09divContainer%20%3A%3D%20html%20div%20with%3A%20%5B%0A%09%09self%20renderSearchBoxOn%3A%20html.%0A%09%09olContainer%20%3A%3D%20html%20div%20%0A%09%09%09style%3A%20%27overflow%3A%20hidden%3B%20border%3A%201px%20solid%20%23aaaaaa%27%3B%0A%09%09%09with%3A%20%5B%0A%09%09%09%09list%20%3A%3D%20html%20ol%0A%09%09%09%09%09style%3A%20%27width%3A%20100%25%3B%20height%3A%20100%25%3B%20overflow%3A%20auto%3B%20border%3A%20none%3B%20outline%3A%20none%3B%27%3B%0A%09%09%09%09%09at%3A%20%27tabindex%27%20put%3A%20%271%27%3B%0A%09%09%09%09%09onKeyDown%3A%20%5B%3Ae%20%7C%20%0A%09%09%09%09%09%09e%20preventDefault.%20%0A%09%09%09%09%09%09e%20keyCode%20%3D%2040%20ifTrue%3A%20%5Bself%20moveSelectionDown%5D.%0A%09%09%09%09%09%09e%20keyCode%20%3D%2038%20ifTrue%3A%20%5Bself%20moveSelectionUp%5D.%0A%09%09%09%09%09%09%28e%20keyCode%20%3D%2070%20and%3A%20%5Be%20ctrlKey%5D%29%20ifTrue%3A%20%5Bself%20commandFind%5D%5D%3B%0A%09%09%09%09%09onClick%3A%20%5Bself%20focus%5D%5D.%0A%09%09self%20makeResizable.%0A%09%09htmlIv%20%3A%3D%20html%5D.%0A%09self%20bindEvents.'),
+messageSends: ["with:", "div", "renderSearchBoxOn:", "style:", "at:put:", "onKeyDown:", "preventDefault", "ifTrue:", unescape("%3D"), "keyCode", "moveSelectionDown", "moveSelectionUp", "and:", "ctrlKey", "commandFind", "onClick:", "focus", "ol", "makeResizable", "bindEvents"],
 referencedClasses: []
 }),
 smalltalk.MaglevListBox);
@@ -1406,10 +1439,10 @@ selector: unescape('renderSearchBoxOn%3A'),
 category: 'rendering',
 fn: function (html){
 var self=this;
-(self['@searchbox']=(function($rec){smalltalk.send($rec, "_class_", [unescape("input-prepend")]);smalltalk.send($rec, "_style_", [unescape("margin-bottom%3A%202px%3B%20box-sizing%3A%20border-box%3B%20-webkit-box-sizing%3A%20border-box%3B%20padding-right%3A%2050px%3B%20width%3A%20100%25%3B")]);smalltalk.send($rec, "_with_", [(function(){(function($rec){smalltalk.send($rec, "_class_", [unescape("add-on")]);return smalltalk.send($rec, "_with_", ["find"]);})(smalltalk.send(html, "_span", []));return (self['@searchInput']=(function($rec){smalltalk.send($rec, "_type_", ["text"]);smalltalk.send($rec, "_class_", ["span2"]);smalltalk.send($rec, "_style_", [unescape("width%3A%20100%25%3B")]);smalltalk.send($rec, "_onChange_", [(function(){return smalltalk.send(self, "_filterResults", []);})]);return smalltalk.send($rec, "_onFocusOut_", [(function(){return smalltalk.send(self, "_hideSearchBox", []);})]);})(smalltalk.send(html, "_input", [])));})]);return smalltalk.send($rec, "_hide", []);})(smalltalk.send(html, "_div", [])));
+(self['@searchbox']=(function($rec){smalltalk.send($rec, "_class_", [unescape("input-prepend")]);smalltalk.send($rec, "_style_", [unescape("margin-bottom%3A%202px%3B%20box-sizing%3A%20border-box%3B%20-webkit-box-sizing%3A%20border-box%3B%20padding-right%3A%2052px%3B%20width%3A%20100%25%3B")]);smalltalk.send($rec, "_with_", [(function(){(function($rec){smalltalk.send($rec, "_class_", [unescape("add-on")]);return smalltalk.send($rec, "_with_", ["find"]);})(smalltalk.send(html, "_span", []));return (self['@searchInput']=(function($rec){smalltalk.send($rec, "_type_", ["text"]);smalltalk.send($rec, "_class_", ["span2"]);smalltalk.send($rec, "_style_", [unescape("width%3A%20100%25%3B")]);smalltalk.send($rec, "_onChange_", [(function(){return smalltalk.send(self, "_filterResults", []);})]);return smalltalk.send($rec, "_onFocusOut_", [(function(){return smalltalk.send(self, "_hideSearchBox", []);})]);})(smalltalk.send(html, "_input", [])));})]);return smalltalk.send($rec, "_hide", []);})(smalltalk.send(html, "_div", [])));
 return self;},
 args: ["html"],
-source: unescape('renderSearchBoxOn%3A%20html%0A%09searchbox%20%3A%3D%20html%20div%0A%09%09class%3A%20%27input-prepend%27%3B%0A%09%09style%3A%20%27margin-bottom%3A%202px%3B%20box-sizing%3A%20border-box%3B%20-webkit-box-sizing%3A%20border-box%3B%20padding-right%3A%2050px%3B%20width%3A%20100%25%3B%27%3B%0A%09%09with%3A%20%5B%0A%09%09%09html%20span%20%0A%09%09%09%09class%3A%20%27add-on%27%3B%0A%09%09%09%09%20with%3A%20%27find%27.%0A%09%09%09searchInput%20%3A%3D%20html%20input%0A%09%09%09%09type%3A%20%27text%27%3B%0A%09%09%09%09class%3A%20%27span2%27%3B%0A%09%09%09%09style%3A%20%27width%3A%20100%25%3B%27%3B%0A%09%09%09%09onChange%3A%20%5Bself%20filterResults%5D%3B%0A%09%09%09%09onFocusOut%3A%20%5Bself%20hideSearchBox%5D%5D%3B%0A%09%09hide.'),
+source: unescape('renderSearchBoxOn%3A%20html%0A%09searchbox%20%3A%3D%20html%20div%0A%09%09class%3A%20%27input-prepend%27%3B%0A%09%09style%3A%20%27margin-bottom%3A%202px%3B%20box-sizing%3A%20border-box%3B%20-webkit-box-sizing%3A%20border-box%3B%20padding-right%3A%2052px%3B%20width%3A%20100%25%3B%27%3B%0A%09%09with%3A%20%5B%0A%09%09%09html%20span%20%0A%09%09%09%09class%3A%20%27add-on%27%3B%0A%09%09%09%09%20with%3A%20%27find%27.%0A%09%09%09searchInput%20%3A%3D%20html%20input%0A%09%09%09%09type%3A%20%27text%27%3B%0A%09%09%09%09class%3A%20%27span2%27%3B%0A%09%09%09%09style%3A%20%27width%3A%20100%25%3B%27%3B%0A%09%09%09%09onChange%3A%20%5Bself%20filterResults%5D%3B%0A%09%09%09%09onFocusOut%3A%20%5Bself%20hideSearchBox%5D%5D%3B%0A%09%09hide.'),
 messageSends: ["class:", "style:", "with:", "span", "type:", "onChange:", "filterResults", "onFocusOut:", "hideSearchBox", "input", "hide", "div"],
 referencedClasses: []
 }),
@@ -1470,11 +1503,12 @@ selector: unescape('selectionChanged'),
 category: 'interactions',
 fn: function (){
 var self=this;
+smalltalk.send(self, "_focus", []);
 smalltalk.send(self['@changedCallback'], "_value_value_", [smalltalk.send(self, "_selectedData", []), smalltalk.send(self, "_selectedDataIndex", [])]);
 return self;},
 args: [],
-source: unescape('selectionChanged%0A%09changedCallback%20value%3A%20self%20selectedData%20value%3A%20self%20selectedDataIndex.'),
-messageSends: ["value:value:", "selectedData", "selectedDataIndex"],
+source: unescape('selectionChanged%0A%09self%20focus.%0A%09changedCallback%20value%3A%20self%20selectedData%20value%3A%20self%20selectedDataIndex.'),
+messageSends: ["focus", "value:value:", "selectedData", "selectedDataIndex"],
 referencedClasses: []
 }),
 smalltalk.MaglevListBox);
@@ -4192,11 +4226,11 @@ var self=this;
 smalltalk.send(smalltalk.send(html, "_root", []), "_style_", [unescape("width%3A%20100%25%3B")]);
 smalltalk.send(self, "_renderListsOn_", [html]);
 (self['@waitingScreen']=smalltalk.send(smalltalk.send(html, "_div", []), "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_with_", [smalltalk.send((smalltalk.MaglevIcon || MaglevIcon), "_wait", [])]);return smalltalk.send($rec, "_with_", [" loading..."]);})(html);})]));
-(self['@methodContainer']=smalltalk.send(html, "_div", []));
+(self['@methodContainer']=smalltalk.send(smalltalk.send(html, "_div", []), "_style_", [unescape("margin-top%3A%2010px%3B")]));
 smalltalk.send(smalltalk.send(self, "_object", []), "_allSelectorsWithCallback_", [(function(obj){(self['@selectors']=obj);smalltalk.send(self, "_renderSelectorCategories", []);smalltalk.send(self['@waitingScreen'], "_hide", []);smalltalk.send(self['@categoryNamesSelect'], "_show", []);return smalltalk.send(self['@selectorsSelect'], "_show", []);})]);
 return self;},
 args: ["html"],
-source: unescape('renderCodeTabOn%3A%20html%0A%09html%20root%0A%09%09style%3A%20%27width%3A%20100%25%3B%27.%0A%09self%20renderListsOn%3A%20html.%0A%09waitingScreen%20%3A%3D%20html%20div%0A%09%09with%3A%20%5Bhtml%0A%09%09%09with%3A%20MaglevIcon%20wait%3B%0A%09%09%09with%3A%20%27%20loading...%27%5D.%0A%09methodContainer%20%3A%3D%20html%20div.%0A%09self%20object%20allSelectorsWithCallback%3A%20%5B%3Aobj%20%7C%0A%09%09selectors%20%3A%3D%20obj.%0A%09%09self%20renderSelectorCategories.%0A%09%09waitingScreen%20hide.%0A%09%09categoryNamesSelect%20show.%0A%09%09selectorsSelect%20show%5D.'),
+source: unescape('renderCodeTabOn%3A%20html%0A%09html%20root%0A%09%09style%3A%20%27width%3A%20100%25%3B%27.%0A%09self%20renderListsOn%3A%20html.%0A%09waitingScreen%20%3A%3D%20html%20div%0A%09%09with%3A%20%5Bhtml%0A%09%09%09with%3A%20MaglevIcon%20wait%3B%0A%09%09%09with%3A%20%27%20loading...%27%5D.%0A%09methodContainer%20%3A%3D%20html%20div%0A%09%09style%3A%20%27margin-top%3A%2010px%3B%27.%0A%09self%20object%20allSelectorsWithCallback%3A%20%5B%3Aobj%20%7C%0A%09%09selectors%20%3A%3D%20obj.%0A%09%09self%20renderSelectorCategories.%0A%09%09waitingScreen%20hide.%0A%09%09categoryNamesSelect%20show.%0A%09%09selectorsSelect%20show%5D.'),
 messageSends: ["style:", "root", "renderListsOn:", "with:", "div", "wait", "allSelectorsWithCallback:", "object", "renderSelectorCategories", "hide", "show"],
 referencedClasses: ["MaglevIcon"]
 }),
@@ -4883,10 +4917,10 @@ selector: unescape('renderButtonsOn%3A'),
 category: 'rendering',
 fn: function (html){
 var self=this;
-(function($rec){smalltalk.send($rec, "_class_", [unescape("button-area")]);smalltalk.send($rec, "_style_", [unescape("margin-top%3A%200px%3B%20margin-bottom%3A%2010px%3B")]);return smalltalk.send($rec, "_with_", [(function(){(function($rec){smalltalk.send($rec, "_type_", ["button"]);smalltalk.send($rec, "_class_", [unescape("btn%20btn-primary")]);smalltalk.send($rec, "_value_", ["Proceed"]);smalltalk.send($rec, "_style_", [unescape("margin-right%3A%201%25%3B%20width%3A%2024%25%3B")]);return smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_proceed", []);})]);})(smalltalk.send(html, "_input", []));(function($rec){smalltalk.send($rec, "_type_", ["button"]);smalltalk.send($rec, "_class_", [unescape("btn%20btn-primary")]);smalltalk.send($rec, "_value_", ["Step into"]);smalltalk.send($rec, "_style_", [unescape("margin-right%3A%201%25%3B%20width%3A%2024%25%3B")]);return smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_stepInto", []);})]);})(smalltalk.send(html, "_input", []));(function($rec){smalltalk.send($rec, "_type_", ["button"]);smalltalk.send($rec, "_class_", [unescape("btn%20btn-primary")]);smalltalk.send($rec, "_value_", ["Step over"]);smalltalk.send($rec, "_style_", [unescape("margin-right%3A%201%25%3B%20width%3A%2024%25%3B")]);return smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_stepOver", []);})]);})(smalltalk.send(html, "_input", []));return (function($rec){smalltalk.send($rec, "_type_", ["button"]);smalltalk.send($rec, "_class_", [unescape("btn%20btn-primary")]);smalltalk.send($rec, "_value_", ["Trim stack"]);smalltalk.send($rec, "_style_", [unescape("width%3A%2025%25%3B")]);return smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_trimStack", []);})]);})(smalltalk.send(html, "_input", []));})]);})(smalltalk.send(html, "_div", []));
+(function($rec){smalltalk.send($rec, "_class_", [unescape("button-area")]);smalltalk.send($rec, "_style_", [unescape("margin-bottom%3A%2010px%3B")]);return smalltalk.send($rec, "_with_", [(function(){(function($rec){smalltalk.send($rec, "_type_", ["button"]);smalltalk.send($rec, "_class_", [unescape("btn%20btn-primary")]);smalltalk.send($rec, "_value_", ["Proceed"]);smalltalk.send($rec, "_style_", [unescape("margin-right%3A%201%25%3B%20width%3A%2024%25%3B")]);return smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_proceed", []);})]);})(smalltalk.send(html, "_input", []));(function($rec){smalltalk.send($rec, "_type_", ["button"]);smalltalk.send($rec, "_class_", [unescape("btn%20btn-primary")]);smalltalk.send($rec, "_value_", ["Step into"]);smalltalk.send($rec, "_style_", [unescape("margin-right%3A%201%25%3B%20width%3A%2024%25%3B")]);return smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_stepInto", []);})]);})(smalltalk.send(html, "_input", []));(function($rec){smalltalk.send($rec, "_type_", ["button"]);smalltalk.send($rec, "_class_", [unescape("btn%20btn-primary")]);smalltalk.send($rec, "_value_", ["Step over"]);smalltalk.send($rec, "_style_", [unescape("margin-right%3A%201%25%3B%20width%3A%2024%25%3B")]);return smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_stepOver", []);})]);})(smalltalk.send(html, "_input", []));return (function($rec){smalltalk.send($rec, "_type_", ["button"]);smalltalk.send($rec, "_class_", [unescape("btn%20btn-primary")]);smalltalk.send($rec, "_value_", ["Trim stack"]);smalltalk.send($rec, "_style_", [unescape("width%3A%2025%25%3B")]);return smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_trimStack", []);})]);})(smalltalk.send(html, "_input", []));})]);})(smalltalk.send(html, "_div", []));
 return self;},
 args: ["html"],
-source: unescape('renderButtonsOn%3A%20html%0A%09html%20div%0A%09%09class%3A%20%27button-area%27%3B%0A%09%09style%3A%20%27margin-top%3A%200px%3B%20margin-bottom%3A%2010px%3B%27%3B%0A%09%09with%3A%20%5B%0A%09%09%09html%20input%0A%09%09%09%09type%3A%20%27button%27%3B%0A%09%09%09%09class%3A%20%27btn%20btn-primary%27%3B%0A%09%09%09%09value%3A%20%27Proceed%27%3B%0A%09%09%09%09style%3A%20%27margin-right%3A%201%25%3B%20width%3A%2024%25%3B%27%3B%0A%09%09%09%09onClick%3A%20%5Bself%20proceed%5D.%0A%09%09%09html%20input%0A%09%09%09%09type%3A%20%27button%27%3B%0A%09%09%09%09class%3A%20%27btn%20btn-primary%27%3B%0A%09%09%09%09value%3A%20%27Step%20into%27%3B%0A%09%09%09%09style%3A%20%27margin-right%3A%201%25%3B%20width%3A%2024%25%3B%27%3B%0A%09%09%09%09onClick%3A%20%5Bself%20stepInto%5D.%0A%09%09%09html%20input%0A%09%09%09%09type%3A%20%27button%27%3B%0A%09%09%09%09class%3A%20%27btn%20btn-primary%27%3B%0A%09%09%09%09value%3A%20%27Step%20over%27%3B%0A%09%09%09%09style%3A%20%27margin-right%3A%201%25%3B%20width%3A%2024%25%3B%27%3B%0A%09%09%09%09onClick%3A%20%5Bself%20stepOver%5D.%0A%09%09%09html%20input%0A%09%09%09%09type%3A%20%27button%27%3B%0A%09%09%09%09class%3A%20%27btn%20btn-primary%27%3B%0A%09%09%09%09value%3A%20%27Trim%20stack%27%3B%0A%09%09%09%09style%3A%20%27width%3A%2025%25%3B%27%3B%0A%09%09%09%09onClick%3A%20%5Bself%20trimStack%5D%5D.'),
+source: unescape('renderButtonsOn%3A%20html%0A%09html%20div%0A%09%09class%3A%20%27button-area%27%3B%0A%09%09style%3A%20%27margin-bottom%3A%2010px%3B%27%3B%0A%09%09with%3A%20%5B%0A%09%09%09html%20input%0A%09%09%09%09type%3A%20%27button%27%3B%0A%09%09%09%09class%3A%20%27btn%20btn-primary%27%3B%0A%09%09%09%09value%3A%20%27Proceed%27%3B%0A%09%09%09%09style%3A%20%27margin-right%3A%201%25%3B%20width%3A%2024%25%3B%27%3B%0A%09%09%09%09onClick%3A%20%5Bself%20proceed%5D.%0A%09%09%09html%20input%0A%09%09%09%09type%3A%20%27button%27%3B%0A%09%09%09%09class%3A%20%27btn%20btn-primary%27%3B%0A%09%09%09%09value%3A%20%27Step%20into%27%3B%0A%09%09%09%09style%3A%20%27margin-right%3A%201%25%3B%20width%3A%2024%25%3B%27%3B%0A%09%09%09%09onClick%3A%20%5Bself%20stepInto%5D.%0A%09%09%09html%20input%0A%09%09%09%09type%3A%20%27button%27%3B%0A%09%09%09%09class%3A%20%27btn%20btn-primary%27%3B%0A%09%09%09%09value%3A%20%27Step%20over%27%3B%0A%09%09%09%09style%3A%20%27margin-right%3A%201%25%3B%20width%3A%2024%25%3B%27%3B%0A%09%09%09%09onClick%3A%20%5Bself%20stepOver%5D.%0A%09%09%09html%20input%0A%09%09%09%09type%3A%20%27button%27%3B%0A%09%09%09%09class%3A%20%27btn%20btn-primary%27%3B%0A%09%09%09%09value%3A%20%27Trim%20stack%27%3B%0A%09%09%09%09style%3A%20%27width%3A%2025%25%3B%27%3B%0A%09%09%09%09onClick%3A%20%5Bself%20trimStack%5D%5D.'),
 messageSends: ["class:", "style:", "with:", "type:", "value:", "onClick:", "proceed", "input", "stepInto", "stepOver", "trimStack", "div"],
 referencedClasses: []
 }),

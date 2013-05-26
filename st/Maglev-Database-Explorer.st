@@ -551,7 +551,7 @@ smalltalk
 ! !
 
 Widget subclass: #MaglevListBox
-	instanceVariableNames: 'list changedCallback htmlIv divContainer height searchbox searchInput'
+	instanceVariableNames: 'list changedCallback htmlIv divContainer height searchbox searchInput olContainer olHeightBeforeSearch'
 	package: 'Maglev-Database-Explorer'!
 
 !MaglevListBox methodsFor: 'accessing'!
@@ -561,7 +561,7 @@ changedCallback: aBlock
 !
 
 height
-	^ height
+	^ olContainer asJQuery height
 !
 
 height: anInteger
@@ -570,7 +570,7 @@ height: anInteger
 		ifTrue: [searchboxHeight := searchbox asJQuery height + 2]
 		ifFalse: [searchboxHeight := 0].
 	height := anInteger.
-	list asJQuery css: 'height' data: (anInteger - searchboxHeight) asString, 'px'.
+	olContainer asJQuery css: 'height' data: (anInteger - searchboxHeight) asString, 'px'.
 !
 
 selectedData
@@ -609,6 +609,7 @@ clear
 !
 
 commandFind
+	olHeightBeforeSearch := self height.
 	searchbox show.
 	self height: self height.
 	searchInput asJQuery focus.
@@ -625,13 +626,17 @@ filterResults
 	self hideSearchBox.
 !
 
+focus
+	list asJQuery focus.
+!
+
 hide
 	list hide.
 !
 
 hideSearchBox
 	searchbox hide.
-	self height: self height.
+	self height: olHeightBeforeSearch.
 	list asJQuery focus.
 !
 
@@ -654,6 +659,7 @@ moveSelectionUp
 !
 
 selectionChanged
+	self focus.
 	changedCallback value: self selectedData value: self selectedDataIndex.
 !
 
@@ -667,18 +673,26 @@ unselectAll
 
 !MaglevListBox methodsFor: 'rendering'!
 
+makeResizable
+	< self['@olContainer']._asJQuery().resizable({handles: 's'}); >
+!
+
 renderOn: html
 	divContainer := html div with: [
 		self renderSearchBoxOn: html.
-		list := html ol
-			at: 'tabindex' put: '1';
-			style: 'overflow-y: scroll;';
-			onKeyDown: [:e | 
-				e preventDefault. 
-				e keyCode = 40 ifTrue: [self moveSelectionDown].
-				e keyCode = 38 ifTrue: [self moveSelectionUp].
-				(e keyCode = 70 and: [e ctrlKey]) ifTrue: [self commandFind]];
-			onClick: [list asJQuery focus].
+		olContainer := html div 
+			style: 'overflow: hidden; border: 1px solid #aaaaaa';
+			with: [
+				list := html ol
+					style: 'width: 100%; height: 100%; overflow: auto; border: none; outline: none;';
+					at: 'tabindex' put: '1';
+					onKeyDown: [:e | 
+						e preventDefault. 
+						e keyCode = 40 ifTrue: [self moveSelectionDown].
+						e keyCode = 38 ifTrue: [self moveSelectionUp].
+						(e keyCode = 70 and: [e ctrlKey]) ifTrue: [self commandFind]];
+					onClick: [self focus]].
+		self makeResizable.
 		htmlIv := html].
 	self bindEvents.
 !
@@ -686,7 +700,7 @@ renderOn: html
 renderSearchBoxOn: html
 	searchbox := html div
 		class: 'input-prepend';
-		style: 'margin-bottom: 2px; box-sizing: border-box; -webkit-box-sizing: border-box; padding-right: 50px; width: 100%;';
+		style: 'margin-bottom: 2px; box-sizing: border-box; -webkit-box-sizing: border-box; padding-right: 52px; width: 100%;';
 		with: [
 			html span 
 				class: 'add-on';
@@ -2009,7 +2023,8 @@ renderCodeTabOn: html
 		with: [html
 			with: MaglevIcon wait;
 			with: ' loading...'].
-	methodContainer := html div.
+	methodContainer := html div
+		style: 'margin-top: 10px;'.
 	self object allSelectorsWithCallback: [:obj |
 		selectors := obj.
 		self renderSelectorCategories.
@@ -2437,7 +2452,7 @@ contentTabs
 renderButtonsOn: html
 	html div
 		class: 'button-area';
-		style: 'margin-top: 0px; margin-bottom: 10px;';
+		style: 'margin-bottom: 10px;';
 		with: [
 			html input
 				type: 'button';
