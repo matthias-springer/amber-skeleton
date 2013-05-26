@@ -363,6 +363,16 @@ spin: aBoolean
 	spin := aBoolean.
 ! !
 
+!MaglevIcon methodsFor: 'interactions'!
+
+hide
+	b hide.
+!
+
+show
+	b show.
+! !
+
 !MaglevIcon methodsFor: 'rendering'!
 
 renderOn: html
@@ -394,6 +404,12 @@ codeFork
 flag
 	^ self new
 		icon: 'flag';
+		yourself
+!
+
+listAlt
+	^ self new
+		icon: 'list-alt';
 		yourself
 !
 
@@ -1286,6 +1302,11 @@ MaglevModuleInline subclass: #MaglevClassInline
 
 maxDepth
 	^ 1
+!
+
+renderObjectActionsOn: html
+	html with: (MaglevIcon listAlt
+			caption: 'List class instances').
 ! !
 
 MaglevObjectInline subclass: #MaglevNilClassInline
@@ -1901,7 +1922,9 @@ initializeTree: container
 
 renderHierarchySubclass: cls for: oop
 	< var ownerLi = self['@hierarchyContainer']._asJQuery().find("[data-oop='" + oop + "']");
-	self['@hierarchyContainer']._asJQuery().jstree('create', ownerLi, null, {attr: {'data-oop': cls._oop(), 'data-replace-me': '1'}}, null, true); >
+	if (ownerLi.find("[data-oop='" + cls._oop() + "']").length == 0) {
+		self['@hierarchyContainer']._asJQuery().jstree('create', ownerLi, null, {attr: {'data-oop': cls._oop(), 'data-replace-me': '1'}}, null, true);
+	} >
 !
 
 renderSelectors: selectedCategory
@@ -1928,8 +1951,11 @@ renderSourceCode: selectorString
 
 replaceHierarchySubclasses
 	< self['@hierarchyContainer']._asJQuery().find("[data-replace-me='1']").each(function(idx, el) {
-		$(el).find('a').remove();
-		self._renderInlineViewFor_inside_($(el).data('oop'), $(el));
+		// TODO: jQuery not working here for unknown reasons
+		el.getElementsByTagName('a')[0].remove();
+		el.removeAttribute('data-replace-me');
+		var jqEl = $(el);
+		self._renderInlineViewFor_inside_(jqEl.data('oop'), jqEl);
 	}); >
 !
 
@@ -2001,16 +2027,22 @@ renderIncludedModulesOn: html
 !
 
 renderInlineViewFor: oop inside: htmlElement
-	|html subclassesButton|
+	|html subclassesButton waitIcon|
 	html := HTMLCanvas onJQuery: htmlElement.
+	waitIcon := MaglevIcon wait.
+	html with: waitIcon.
+	waitIcon hide.
 	subclassesButton := MaglevIcon codeFork.
-	html with: subclassesButton.
+	html with: [html a with: subclassesButton].
 	subclassesButton onClick: [ |obj|
+		subclassesButton hide.
+		waitIcon show.
 		obj := MaglevObjectSpace instance at: oop.
 		obj ensureSubclassesLoadedWithCallback: [
 			obj subclasses do: [:cls |
 				self renderHierarchySubclass: cls for: oop].
-			self replaceHierarchySubclasses]].
+			self replaceHierarchySubclasses.
+			waitIcon hide]].
 	(MaglevObjectSpace instance at: oop) inlineViewComponent renderOn: html.
 !
 

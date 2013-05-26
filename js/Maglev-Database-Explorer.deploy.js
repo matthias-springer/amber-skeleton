@@ -472,6 +472,17 @@ return self;}
 smalltalk.MaglevIcon);
 
 smalltalk.addMethod(
+unescape('_hide'),
+smalltalk.method({
+selector: unescape('hide'),
+fn: function (){
+var self=this;
+smalltalk.send(self['@b'], "_hide", []);
+return self;}
+}),
+smalltalk.MaglevIcon);
+
+smalltalk.addMethod(
 unescape('_icon'),
 smalltalk.method({
 selector: unescape('icon'),
@@ -520,6 +531,17 @@ return self;}
 smalltalk.MaglevIcon);
 
 smalltalk.addMethod(
+unescape('_show'),
+smalltalk.method({
+selector: unescape('show'),
+fn: function (){
+var self=this;
+smalltalk.send(self['@b'], "_show", []);
+return self;}
+}),
+smalltalk.MaglevIcon);
+
+smalltalk.addMethod(
 unescape('_spin'),
 smalltalk.method({
 selector: unescape('spin'),
@@ -561,6 +583,17 @@ selector: unescape('flag'),
 fn: function (){
 var self=this;
 return (function($rec){smalltalk.send($rec, "_icon_", ["flag"]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send(self, "_new", []));
+return self;}
+}),
+smalltalk.MaglevIcon.klass);
+
+smalltalk.addMethod(
+unescape('_listAlt'),
+smalltalk.method({
+selector: unescape('listAlt'),
+fn: function (){
+var self=this;
+return (function($rec){smalltalk.send($rec, "_icon_", [unescape("list-alt")]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send(self, "_new", []));
 return self;}
 }),
 smalltalk.MaglevIcon.klass);
@@ -1920,6 +1953,17 @@ return self;}
 }),
 smalltalk.MaglevClassInline);
 
+smalltalk.addMethod(
+unescape('_renderObjectActionsOn_'),
+smalltalk.method({
+selector: unescape('renderObjectActionsOn%3A'),
+fn: function (html){
+var self=this;
+smalltalk.send(html, "_with_", [smalltalk.send(smalltalk.send((smalltalk.MaglevIcon || MaglevIcon), "_listAlt", []), "_caption_", ["List class instances"])]);
+return self;}
+}),
+smalltalk.MaglevClassInline);
+
 
 
 smalltalk.addClass('MaglevNilClassInline', smalltalk.MaglevObjectInline, [], 'Maglev-Database-Explorer');
@@ -2944,7 +2988,9 @@ selector: unescape('renderHierarchySubclass%3Afor%3A'),
 fn: function (cls, oop){
 var self=this;
  var ownerLi = self['@hierarchyContainer']._asJQuery().find("[data-oop='" + oop + "']");
-	self['@hierarchyContainer']._asJQuery().jstree('create', ownerLi, null, {attr: {'data-oop': cls._oop(), 'data-replace-me': '1'}}, null, true); ;
+	if (ownerLi.find("[data-oop='" + cls._oop() + "']").length == 0) {
+		self['@hierarchyContainer']._asJQuery().jstree('create', ownerLi, null, {attr: {'data-oop': cls._oop(), 'data-replace-me': '1'}}, null, true);
+	} ;
 return self;}
 }),
 smalltalk.MaglevModuleWindow);
@@ -2968,11 +3014,15 @@ fn: function (oop, htmlElement){
 var self=this;
 var html=nil;
 var subclassesButton=nil;
+var waitIcon=nil;
 (html=smalltalk.send((smalltalk.HTMLCanvas || HTMLCanvas), "_onJQuery_", [htmlElement]));
+(waitIcon=smalltalk.send((smalltalk.MaglevIcon || MaglevIcon), "_wait", []));
+smalltalk.send(html, "_with_", [waitIcon]);
+smalltalk.send(waitIcon, "_hide", []);
 (subclassesButton=smalltalk.send((smalltalk.MaglevIcon || MaglevIcon), "_codeFork", []));
-smalltalk.send(html, "_with_", [subclassesButton]);
+smalltalk.send(html, "_with_", [(function(){return smalltalk.send(smalltalk.send(html, "_a", []), "_with_", [subclassesButton]);})]);
 smalltalk.send(subclassesButton, "_onClick_", [(function(){var obj=nil;
-(obj=smalltalk.send(smalltalk.send((smalltalk.MaglevObjectSpace || MaglevObjectSpace), "_instance", []), "_at_", [oop]));return smalltalk.send(obj, "_ensureSubclassesLoadedWithCallback_", [(function(){smalltalk.send(smalltalk.send(obj, "_subclasses", []), "_do_", [(function(cls){return smalltalk.send(self, "_renderHierarchySubclass_for_", [cls, oop]);})]);return smalltalk.send(self, "_replaceHierarchySubclasses", []);})]);})]);
+smalltalk.send(subclassesButton, "_hide", []);smalltalk.send(waitIcon, "_show", []);(obj=smalltalk.send(smalltalk.send((smalltalk.MaglevObjectSpace || MaglevObjectSpace), "_instance", []), "_at_", [oop]));return smalltalk.send(obj, "_ensureSubclassesLoadedWithCallback_", [(function(){smalltalk.send(smalltalk.send(obj, "_subclasses", []), "_do_", [(function(cls){return smalltalk.send(self, "_renderHierarchySubclass_for_", [cls, oop]);})]);smalltalk.send(self, "_replaceHierarchySubclasses", []);return smalltalk.send(waitIcon, "_hide", []);})]);})]);
 smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send((smalltalk.MaglevObjectSpace || MaglevObjectSpace), "_instance", []), "_at_", [oop]), "_inlineViewComponent", []), "_renderOn_", [html]);
 return self;}
 }),
@@ -3080,8 +3130,11 @@ selector: unescape('replaceHierarchySubclasses'),
 fn: function (){
 var self=this;
  self['@hierarchyContainer']._asJQuery().find("[data-replace-me='1']").each(function(idx, el) {
-		$(el).find('a').remove();
-		self._renderInlineViewFor_inside_($(el).data('oop'), $(el));
+		// TODO: jQuery not working here for unknown reasons
+		el.getElementsByTagName('a')[0].remove();
+		el.removeAttribute('data-replace-me');
+		var jqEl = $(el);
+		self._renderInlineViewFor_inside_(jqEl.data('oop'), jqEl);
 	}); ;
 return self;}
 }),

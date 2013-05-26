@@ -658,6 +658,22 @@ referencedClasses: []
 smalltalk.MaglevIcon);
 
 smalltalk.addMethod(
+unescape('_hide'),
+smalltalk.method({
+selector: unescape('hide'),
+category: 'interactions',
+fn: function (){
+var self=this;
+smalltalk.send(self['@b'], "_hide", []);
+return self;},
+args: [],
+source: unescape('hide%0A%09b%20hide.'),
+messageSends: ["hide"],
+referencedClasses: []
+}),
+smalltalk.MaglevIcon);
+
+smalltalk.addMethod(
 unescape('_icon'),
 smalltalk.method({
 selector: unescape('icon'),
@@ -726,6 +742,22 @@ referencedClasses: []
 smalltalk.MaglevIcon);
 
 smalltalk.addMethod(
+unescape('_show'),
+smalltalk.method({
+selector: unescape('show'),
+category: 'interactions',
+fn: function (){
+var self=this;
+smalltalk.send(self['@b'], "_show", []);
+return self;},
+args: [],
+source: unescape('show%0A%09b%20show.'),
+messageSends: ["show"],
+referencedClasses: []
+}),
+smalltalk.MaglevIcon);
+
+smalltalk.addMethod(
 unescape('_spin'),
 smalltalk.method({
 selector: unescape('spin'),
@@ -786,6 +818,22 @@ return (function($rec){smalltalk.send($rec, "_icon_", ["flag"]);return smalltalk
 return self;},
 args: [],
 source: unescape('flag%0A%09%5E%20self%20new%0A%09%09icon%3A%20%27flag%27%3B%0A%09%09yourself'),
+messageSends: ["icon:", "yourself", "new"],
+referencedClasses: []
+}),
+smalltalk.MaglevIcon.klass);
+
+smalltalk.addMethod(
+unescape('_listAlt'),
+smalltalk.method({
+selector: unescape('listAlt'),
+category: 'instance creation',
+fn: function (){
+var self=this;
+return (function($rec){smalltalk.send($rec, "_icon_", [unescape("list-alt")]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send(self, "_new", []));
+return self;},
+args: [],
+source: unescape('listAlt%0A%09%5E%20self%20new%0A%09%09icon%3A%20%27list-alt%27%3B%0A%09%09yourself'),
 messageSends: ["icon:", "yourself", "new"],
 referencedClasses: []
 }),
@@ -2696,6 +2744,22 @@ referencedClasses: []
 }),
 smalltalk.MaglevClassInline);
 
+smalltalk.addMethod(
+unescape('_renderObjectActionsOn_'),
+smalltalk.method({
+selector: unescape('renderObjectActionsOn%3A'),
+category: 'constants',
+fn: function (html){
+var self=this;
+smalltalk.send(html, "_with_", [smalltalk.send(smalltalk.send((smalltalk.MaglevIcon || MaglevIcon), "_listAlt", []), "_caption_", ["List class instances"])]);
+return self;},
+args: ["html"],
+source: unescape('renderObjectActionsOn%3A%20html%0A%09html%20with%3A%20%28MaglevIcon%20listAlt%0A%09%09%09caption%3A%20%27List%20class%20instances%27%29.'),
+messageSends: ["with:", "caption:", "listAlt"],
+referencedClasses: ["MaglevIcon"]
+}),
+smalltalk.MaglevClassInline);
+
 
 
 smalltalk.addClass('MaglevNilClassInline', smalltalk.MaglevObjectInline, [], 'Maglev-Database-Explorer');
@@ -4116,10 +4180,12 @@ category: 'interactions',
 fn: function (cls, oop){
 var self=this;
  var ownerLi = self['@hierarchyContainer']._asJQuery().find("[data-oop='" + oop + "']");
-	self['@hierarchyContainer']._asJQuery().jstree('create', ownerLi, null, {attr: {'data-oop': cls._oop(), 'data-replace-me': '1'}}, null, true); ;
+	if (ownerLi.find("[data-oop='" + cls._oop() + "']").length == 0) {
+		self['@hierarchyContainer']._asJQuery().jstree('create', ownerLi, null, {attr: {'data-oop': cls._oop(), 'data-replace-me': '1'}}, null, true);
+	} ;
 return self;},
 args: ["cls", "oop"],
-source: unescape('renderHierarchySubclass%3A%20cls%20for%3A%20oop%0A%09%3C%20var%20ownerLi%20%3D%20self%5B%27@hierarchyContainer%27%5D._asJQuery%28%29.find%28%22%5Bdata-oop%3D%27%22%20+%20oop%20+%20%22%27%5D%22%29%3B%0A%09self%5B%27@hierarchyContainer%27%5D._asJQuery%28%29.jstree%28%27create%27%2C%20ownerLi%2C%20null%2C%20%7Battr%3A%20%7B%27data-oop%27%3A%20cls._oop%28%29%2C%20%27data-replace-me%27%3A%20%271%27%7D%7D%2C%20null%2C%20true%29%3B%20%3E%0A'),
+source: unescape('renderHierarchySubclass%3A%20cls%20for%3A%20oop%0A%09%3C%20var%20ownerLi%20%3D%20self%5B%27@hierarchyContainer%27%5D._asJQuery%28%29.find%28%22%5Bdata-oop%3D%27%22%20+%20oop%20+%20%22%27%5D%22%29%3B%0A%09if%20%28ownerLi.find%28%22%5Bdata-oop%3D%27%22%20+%20cls._oop%28%29%20+%20%22%27%5D%22%29.length%20%3D%3D%200%29%20%7B%0A%09%09self%5B%27@hierarchyContainer%27%5D._asJQuery%28%29.jstree%28%27create%27%2C%20ownerLi%2C%20null%2C%20%7Battr%3A%20%7B%27data-oop%27%3A%20cls._oop%28%29%2C%20%27data-replace-me%27%3A%20%271%27%7D%7D%2C%20null%2C%20true%29%3B%0A%09%7D%20%3E'),
 messageSends: [],
 referencedClasses: []
 }),
@@ -4150,16 +4216,20 @@ fn: function (oop, htmlElement){
 var self=this;
 var html=nil;
 var subclassesButton=nil;
+var waitIcon=nil;
 (html=smalltalk.send((smalltalk.HTMLCanvas || HTMLCanvas), "_onJQuery_", [htmlElement]));
+(waitIcon=smalltalk.send((smalltalk.MaglevIcon || MaglevIcon), "_wait", []));
+smalltalk.send(html, "_with_", [waitIcon]);
+smalltalk.send(waitIcon, "_hide", []);
 (subclassesButton=smalltalk.send((smalltalk.MaglevIcon || MaglevIcon), "_codeFork", []));
-smalltalk.send(html, "_with_", [subclassesButton]);
+smalltalk.send(html, "_with_", [(function(){return smalltalk.send(smalltalk.send(html, "_a", []), "_with_", [subclassesButton]);})]);
 smalltalk.send(subclassesButton, "_onClick_", [(function(){var obj=nil;
-(obj=smalltalk.send(smalltalk.send((smalltalk.MaglevObjectSpace || MaglevObjectSpace), "_instance", []), "_at_", [oop]));return smalltalk.send(obj, "_ensureSubclassesLoadedWithCallback_", [(function(){smalltalk.send(smalltalk.send(obj, "_subclasses", []), "_do_", [(function(cls){return smalltalk.send(self, "_renderHierarchySubclass_for_", [cls, oop]);})]);return smalltalk.send(self, "_replaceHierarchySubclasses", []);})]);})]);
+smalltalk.send(subclassesButton, "_hide", []);smalltalk.send(waitIcon, "_show", []);(obj=smalltalk.send(smalltalk.send((smalltalk.MaglevObjectSpace || MaglevObjectSpace), "_instance", []), "_at_", [oop]));return smalltalk.send(obj, "_ensureSubclassesLoadedWithCallback_", [(function(){smalltalk.send(smalltalk.send(obj, "_subclasses", []), "_do_", [(function(cls){return smalltalk.send(self, "_renderHierarchySubclass_for_", [cls, oop]);})]);smalltalk.send(self, "_replaceHierarchySubclasses", []);return smalltalk.send(waitIcon, "_hide", []);})]);})]);
 smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send((smalltalk.MaglevObjectSpace || MaglevObjectSpace), "_instance", []), "_at_", [oop]), "_inlineViewComponent", []), "_renderOn_", [html]);
 return self;},
 args: ["oop", "htmlElement"],
-source: unescape('renderInlineViewFor%3A%20oop%20inside%3A%20htmlElement%0A%09%7Chtml%20subclassesButton%7C%0A%09html%20%3A%3D%20HTMLCanvas%20onJQuery%3A%20htmlElement.%0A%09subclassesButton%20%3A%3D%20MaglevIcon%20codeFork.%0A%09html%20with%3A%20subclassesButton.%0A%09subclassesButton%20onClick%3A%20%5B%20%7Cobj%7C%0A%09%09obj%20%3A%3D%20MaglevObjectSpace%20instance%20at%3A%20oop.%0A%09%09obj%20ensureSubclassesLoadedWithCallback%3A%20%5B%0A%09%09%09obj%20subclasses%20do%3A%20%5B%3Acls%20%7C%0A%09%09%09%09self%20renderHierarchySubclass%3A%20cls%20for%3A%20oop%5D.%0A%09%09%09self%20replaceHierarchySubclasses%5D%5D.%0A%09%28MaglevObjectSpace%20instance%20at%3A%20oop%29%20inlineViewComponent%20renderOn%3A%20html.'),
-messageSends: ["onJQuery:", "codeFork", "with:", "onClick:", "at:", "instance", "ensureSubclassesLoadedWithCallback:", "do:", "subclasses", "renderHierarchySubclass:for:", "replaceHierarchySubclasses", "renderOn:", "inlineViewComponent"],
+source: unescape('renderInlineViewFor%3A%20oop%20inside%3A%20htmlElement%0A%09%7Chtml%20subclassesButton%20waitIcon%7C%0A%09html%20%3A%3D%20HTMLCanvas%20onJQuery%3A%20htmlElement.%0A%09waitIcon%20%3A%3D%20MaglevIcon%20wait.%0A%09html%20with%3A%20waitIcon.%0A%09waitIcon%20hide.%0A%09subclassesButton%20%3A%3D%20MaglevIcon%20codeFork.%0A%09html%20with%3A%20%5Bhtml%20a%20with%3A%20subclassesButton%5D.%0A%09subclassesButton%20onClick%3A%20%5B%20%7Cobj%7C%0A%09%09subclassesButton%20hide.%0A%09%09waitIcon%20show.%0A%09%09obj%20%3A%3D%20MaglevObjectSpace%20instance%20at%3A%20oop.%0A%09%09obj%20ensureSubclassesLoadedWithCallback%3A%20%5B%0A%09%09%09obj%20subclasses%20do%3A%20%5B%3Acls%20%7C%0A%09%09%09%09self%20renderHierarchySubclass%3A%20cls%20for%3A%20oop%5D.%0A%09%09%09self%20replaceHierarchySubclasses.%0A%09%09%09waitIcon%20hide%5D%5D.%0A%09%28MaglevObjectSpace%20instance%20at%3A%20oop%29%20inlineViewComponent%20renderOn%3A%20html.'),
+messageSends: ["onJQuery:", "wait", "with:", "hide", "codeFork", "a", "onClick:", "show", "at:", "instance", "ensureSubclassesLoadedWithCallback:", "do:", "subclasses", "renderHierarchySubclass:for:", "replaceHierarchySubclasses", "renderOn:", "inlineViewComponent"],
 referencedClasses: ["HTMLCanvas", "MaglevIcon", "MaglevObjectSpace"]
 }),
 smalltalk.MaglevModuleWindow);
@@ -4302,12 +4372,15 @@ category: 'interactions',
 fn: function (){
 var self=this;
  self['@hierarchyContainer']._asJQuery().find("[data-replace-me='1']").each(function(idx, el) {
-		$(el).find('a').remove();
-		self._renderInlineViewFor_inside_($(el).data('oop'), $(el));
+		// TODO: jQuery not working here for unknown reasons
+		el.getElementsByTagName('a')[0].remove();
+		el.removeAttribute('data-replace-me');
+		var jqEl = $(el);
+		self._renderInlineViewFor_inside_(jqEl.data('oop'), jqEl);
 	}); ;
 return self;},
 args: [],
-source: unescape('replaceHierarchySubclasses%0A%09%3C%20self%5B%27@hierarchyContainer%27%5D._asJQuery%28%29.find%28%22%5Bdata-replace-me%3D%271%27%5D%22%29.each%28function%28idx%2C%20el%29%20%7B%0A%09%09%24%28el%29.find%28%27a%27%29.remove%28%29%3B%0A%09%09self._renderInlineViewFor_inside_%28%24%28el%29.data%28%27oop%27%29%2C%20%24%28el%29%29%3B%0A%09%7D%29%3B%20%3E'),
+source: unescape('replaceHierarchySubclasses%0A%09%3C%20self%5B%27@hierarchyContainer%27%5D._asJQuery%28%29.find%28%22%5Bdata-replace-me%3D%271%27%5D%22%29.each%28function%28idx%2C%20el%29%20%7B%0A%09%09//%20TODO%3A%20jQuery%20not%20working%20here%20for%20unknown%20reasons%0A%09%09el.getElementsByTagName%28%27a%27%29%5B0%5D.remove%28%29%3B%0A%09%09el.removeAttribute%28%27data-replace-me%27%29%3B%0A%09%09var%20jqEl%20%3D%20%24%28el%29%3B%0A%09%09self._renderInlineViewFor_inside_%28jqEl.data%28%27oop%27%29%2C%20jqEl%29%3B%0A%09%7D%29%3B%20%3E'),
 messageSends: [],
 referencedClasses: []
 }),
