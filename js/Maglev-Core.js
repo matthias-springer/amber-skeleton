@@ -596,6 +596,22 @@ referencedClasses: []
 smalltalk.MaglevObject);
 
 smalltalk.addMethod(
+unescape('_inlineViewComponentFull'),
+smalltalk.method({
+selector: unescape('inlineViewComponentFull'),
+category: 'rendering',
+fn: function (){
+var self=this;
+return (function($rec){smalltalk.send($rec, "_fullInspection_", [true]);smalltalk.send($rec, "_object_", [self]);smalltalk.send($rec, "_initialize", []);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send(smalltalk.send(smalltalk.send(self, "_class", []), "_inlineViewClass", []), "_basicNew", []));
+return self;},
+args: [],
+source: unescape('inlineViewComponentFull%0A%09%5E%20self%20class%20inlineViewClass%20basicNew%0A%09%09fullInspection%3A%20true%3B%0A%09%09object%3A%20self%3B%0A%09%09initialize%3B%0A%09%09yourself'),
+messageSends: ["fullInspection:", "object:", "initialize", "yourself", "basicNew", "inlineViewClass", "class"],
+referencedClasses: []
+}),
+smalltalk.MaglevObject);
+
+smalltalk.addMethod(
 unescape('_inlineViewComponentShort'),
 smalltalk.method({
 selector: unescape('inlineViewComponentShort'),

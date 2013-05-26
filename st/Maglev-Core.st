@@ -379,6 +379,14 @@ inlineViewComponent
 		yourself
 !
 
+inlineViewComponentFull
+	^ self class inlineViewClass basicNew
+		fullInspection: true;
+		object: self;
+		initialize;
+		yourself
+!
+
 inlineViewComponentShort
 	^ self class inlineViewClass basicNew
 		object: self;

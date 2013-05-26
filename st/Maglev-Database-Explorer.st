@@ -701,7 +701,11 @@ renderSearchBoxOn: html
 !
 
 with: content
-	self with: content data: ''.
+	self with: content data: '' darker: false.
+!
+
+with: content darker: aBoolean
+	self with: content data: '' darker: aBoolean.
 !
 
 with: content data: dataString
@@ -712,6 +716,15 @@ with: content data: dataString
 			class: 'ui-widget-content';
 			data: 'data' with: dataString;
 			with: [content value: htmlIv]].
+!
+
+with: content data: dataString darker: aBoolean
+	list with: [ |li|
+		li := htmlIv li
+			class: 'ui-widget-content';
+			data: 'data' with: dataString;
+			with: [content value: htmlIv].
+		aBoolean ifTrue: [li asJQuery addClass: 'list-darker']].
 ! !
 
 Widget subclass: #MaglevObjectDropdown
@@ -890,7 +903,7 @@ instance
 ! !
 
 Widget subclass: #MaglevObjectInline
-	instanceVariableNames: 'object hasDropDown isDraggable depth isShort dragContent dragDummy dragObject'
+	instanceVariableNames: 'object hasDropDown isDraggable depth isShort dragContent dragDummy dragObject fullInspection'
 	package: 'Maglev-Database-Explorer'!
 
 !MaglevObjectInline methodsFor: 'accessing'!
@@ -902,6 +915,15 @@ depth
 
 depth: anInteger
 	depth := anInteger.
+!
+
+fullInspection
+	fullInspection ifNil: [fullInspection := false].
+	^ fullInspection
+!
+
+fullInspection: aBoolean
+	fullInspection := aBoolean.
 !
 
 hasDropDown
@@ -954,7 +976,9 @@ maxDepth
 !
 
 maxInspection
-	^ 15
+	self fullInspection
+		ifTrue: [^ 1000]
+		ifFalse: [^ 15].
 ! !
 
 !MaglevObjectInline methodsFor: 'interactions'!
@@ -1998,27 +2022,33 @@ renderConstantsOn: html
 	html with: (MaglevTable newAssociationDictFor: self object with: #constants).
 !
 
-renderHierarchyOn: html
-	|waitingBox|
-	waitingBox := html div with: [
-		html 
+renderHierarchyOn: htmlIn
+	|waitingBox hcContainer|
+	hcContainer := htmlIn div
+		style: 'height: 300px; overflow: hidden;'.
+	waitingBox := htmlIn div with: [
+		htmlIn 
 			with: MaglevIcon wait;
 			with: ' loading...'].
-	object ensureSuperListLoadedWithCallback: [ |renderedInlines|
+	object ensureSuperListLoadedWithCallback: [ |renderedInlines html|
+		html := HTMLCanvas onJQuery: hcContainer asJQuery.
 		renderedInlines := Array new.
-		hierarchyContainer := html div with: [ |lastUl|
-			lastUl := html ul.
-			object superList do: [:cls | "render superclasses"
-				lastUl with: [
-					html li
-						data: 'oop' with: cls oop asString;
-						with: [|container|
-							container := html span 
-								data: 'oop' with: cls oop asString;
-								class: 'treeview-replace-me'.
-							renderedInlines add: container];
-						with: [lastUl := html ul]]]].
+		hierarchyContainer := html div 
+			style: 'width: 100%; height: 100%; overflow: auto;';
+			with: [ |lastUl|
+				lastUl := html ul.
+				object superList do: [:cls | "render superclasses"
+					lastUl with: [
+						html li
+							data: 'oop' with: cls oop asString;
+							with: [|container|
+								container := html span 
+									data: 'oop' with: cls oop asString;
+									class: 'treeview-replace-me'.
+								renderedInlines add: container];
+							with: [lastUl := html ul]]]].
 		self initializeTree: hierarchyContainer asJQuery.
+		hcContainer asJQuery resizable.
 		waitingBox hide].
 !
 
@@ -2043,7 +2073,7 @@ renderInlineViewFor: oop inside: htmlElement
 				self renderHierarchySubclass: cls for: oop].
 			self replaceHierarchySubclasses.
 			waitIcon hide]].
-	(MaglevObjectSpace instance at: oop) inlineViewComponent renderOn: html.
+	(MaglevObjectSpace instance at: oop) inlineViewComponentFull renderOn: html.
 !
 
 renderListsOn: html
@@ -2321,6 +2351,18 @@ frameIndex
 
 !MaglevThreadWindow methodsFor: 'interactions'!
 
+isMethodUnimportant: aString
+	|unimportant|
+	unimportant := {'AbstractException >>'.  'AbstractException class'. 'GsProcess >>'. 'GsProcess class'. 
+			'ProcessorScheduler >>'. 'ProcessorScheduler class'. 'CodeEvaluation class'. 'RubyCompiler >>'. 
+			'RubyCompiler class'. 'onException:do:'. 'RubyProc >> callAndRescue:'. '_gsReturnToC'. 
+			'>> onSynchronous:do:'. 'ExecBlock >> ensure:'. 'ExecBlock >> rubyEnsure:'}.
+	unimportant do: [:str |
+		(aString includesSubString: str) 
+			ifTrue: [^ true]].
+	^ false
+!
+
 proceed
 	object 
 		proceedWithCallback: [:obj | 
@@ -2333,7 +2375,8 @@ reloadStackWithCallback: aBlock
 	waitForStackTrace show.
 	methodSelect clear.
 	object stackTraceMethodsWithCallback: [:obj |
-		obj do: [:method |
+		obj do: [:method | |isUnimportant|
+			isUnimportant := self isMethodUnimportant: method.
 			methodSelect
 				with: [:html | 
 					(method includesSubString: '(envId 0)')
@@ -2342,7 +2385,7 @@ reloadStackWithCallback: aBlock
 						ifTrue: [html with: MaglevIconImage ruby].
 					(method includesSubString: '(envId 1b)')
 						ifTrue: [html with: MaglevIconImage rubySmalltalkBridge].
-					html with: method]].
+					html with: method] darker: isUnimportant].
 		waitForStackTrace hide.
 		aBlock = nil
 			ifFalse: [aBlock value]].
