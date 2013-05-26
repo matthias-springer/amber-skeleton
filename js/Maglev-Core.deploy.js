@@ -1,11 +1,12 @@
 smalltalk.addPackage('Maglev-Core', {});
-smalltalk.addClass('Maglev', smalltalk.Object, ['objectSpace', 'windows'], 'Maglev-Core');
+smalltalk.addClass('Maglev', smalltalk.Object, ['objectSpace', 'windows', 'bottomNavHtml'], 'Maglev-Core');
 smalltalk.addMethod(
 unescape('_addWindow_'),
 smalltalk.method({
 selector: unescape('addWindow%3A'),
 fn: function (aWindow){
 var self=this;
+smalltalk.send(self, "_renderNavigationItemFor_", [aWindow]);
 smalltalk.send(self['@windows'], "_add_", [aWindow]);
 smalltalk.send(self, "_showConnectionsFor_", [aWindow]);
 return self;}
@@ -69,6 +70,7 @@ selector: unescape('initialize'),
 fn: function (){
 var self=this;
 (self['@windows']=smalltalk.send((smalltalk.OrderedCollection || OrderedCollection), "_new", []));
+(self['@bottomNavHtml']=smalltalk.send((smalltalk.HTMLCanvas || HTMLCanvas), "_onJQuery_", [smalltalk.send(unescape("%23windows-navigation"), "_asJQuery", [])]));
 return self;}
 }),
 smalltalk.Maglev);
@@ -91,7 +93,21 @@ smalltalk.method({
 selector: unescape('removeWindow%3A'),
 fn: function (aWindow){
 var self=this;
+smalltalk.send(smalltalk.send(smalltalk.send(aWindow, "_navigationItem", []), "_asJQuery", []), "_remove", []);
 smalltalk.send(self['@windows'], "_remove_", [aWindow]);
+return self;}
+}),
+smalltalk.Maglev);
+
+smalltalk.addMethod(
+unescape('_renderNavigationItemFor_'),
+smalltalk.method({
+selector: unescape('renderNavigationItemFor%3A'),
+fn: function (aWindow){
+var self=this;
+var navItem=nil;
+(navItem=smalltalk.send(smalltalk.send(self['@bottomNavHtml'], "_li", []), "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_class_", [unescape("btn%20btn-info%20window-navigation-item")]);smalltalk.send($rec, "_style_", [unescape("padding%3A%204px%202px%202px%204px%3B%20margin-top%3A%205px%3B")]);smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(aWindow, "_moveToFront", []);})]);return smalltalk.send($rec, "_with_", [(function(){return smalltalk.send(aWindow, "_renderNavigationOn_", [self['@bottomNavHtml']]);})]);})(smalltalk.send(self['@bottomNavHtml'], "_a", []));})]));
+smalltalk.send(aWindow, "_navigationItem_", [navItem]);
 return self;}
 }),
 smalltalk.Maglev);
@@ -432,6 +448,17 @@ selector: unescape('inlineViewComponentFull'),
 fn: function (){
 var self=this;
 return (function($rec){smalltalk.send($rec, "_fullInspection_", [true]);smalltalk.send($rec, "_object_", [self]);smalltalk.send($rec, "_initialize", []);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send(smalltalk.send(smalltalk.send(self, "_class", []), "_inlineViewClass", []), "_basicNew", []));
+return self;}
+}),
+smalltalk.MaglevObject);
+
+smalltalk.addMethod(
+unescape('_inlineViewComponentNavItem'),
+smalltalk.method({
+selector: unescape('inlineViewComponentNavItem'),
+fn: function (){
+var self=this;
+return (function($rec){smalltalk.send($rec, "_object_", [self]);smalltalk.send($rec, "_isShort_", [true]);smalltalk.send($rec, "_hasDropDown_", [false]);smalltalk.send($rec, "_isDraggable_", [false]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send(smalltalk.send(smalltalk.send(self, "_class", []), "_inlineViewClass", []), "_basicNew", []));
 return self;}
 }),
 smalltalk.MaglevObject);

@@ -601,7 +601,8 @@ style: aString
 
 bindEvents
 	< self['@list']._asJQuery().selectable({
-		stop: function() {self._selectionChanged();}}); >
+		stop: function() {self._selectionChanged();},
+		tolerance: 'fit'}); >
 !
 
 clear
@@ -1117,16 +1118,19 @@ renderOn: html
 
 renderText: text withDropDownOn: html
 	|dropdownContainer|
-	dropdownContainer := html span
-		class: 'dropdown';
-		with: [
-			html a
-				class: 'dropdown-toggle btn object-dropdown-toggle';
-				data: 'toggle' with: 'dropdown';
-				onClick: [self showDropdownFor: dropdownContainer];
+	self hasDropDown
+		ifTrue: [
+			dropdownContainer := html span
+				class: 'dropdown';
 				with: [
-					html with: text.
-					html b class: 'caret']].
+					html a
+					class: 'dropdown-toggle btn object-dropdown-toggle';
+					data: 'toggle' with: 'dropdown';
+					onClick: [self showDropdownFor: dropdownContainer];
+						with: [
+							html with: text.
+							html b class: 'caret']]]
+		ifFalse: [html with: text].
 !
 
 renderUnloadedObjectOn: html
@@ -1587,13 +1591,21 @@ newFor: anObject with: aString
 ! !
 
 Widget subclass: #MaglevWindow
-	instanceVariableNames: 'container'
+	instanceVariableNames: 'container navigationItem'
 	package: 'Maglev-Database-Explorer'!
 
 !MaglevWindow methodsFor: 'accessing'!
 
 container
 	^ container
+!
+
+navigationItem
+	^ navigationItem
+!
+
+navigationItem: anObject
+	navigationItem := anObject.
 ! !
 
 !MaglevWindow methodsFor: 'attributes'!
@@ -1623,6 +1635,10 @@ connectTo: aWindow as: type with: caption
 
 connectTo: aWindow with: parameters
 	MaglevJsPlumb connectWindow: self to: aWindow with: parameters.
+!
+
+moveToFront
+	container asJQuery css: 'z-index' data: self class highestZIndex + 1.
 !
 
 prepareWindow
@@ -1666,6 +1682,10 @@ renderHorziontalLineOn: html
 	html hr style: 'margin: 10px;'.
 !
 
+renderNavigationOn: html
+	html with: 'New window'.
+!
+
 renderOn: html
 	container ifNil: [
 		container := html div.
@@ -1678,9 +1698,8 @@ renderOn: html
 				with: [
 					self renderWindowTitleOn: html.
 					self renderWindowContentOn: html]].
-	container onMouseDown: [
-		container asJQuery css: 'z-index' data: self class highestZIndex + 1].
-	container asJQuery css: 'z-index' data: self class highestZIndex + 1.
+	container onMouseDown: [self moveToFront].
+	self moveToFront.
 !
 
 renderReplace
@@ -1767,6 +1786,10 @@ closeWindow
 	super closeWindow.
 !
 
+defaultTab
+	^ nil
+!
+
 prepareWindow
 	super prepareWindow
 	MaglevObjectSpace registerWindow: self.
@@ -1825,6 +1848,10 @@ renderInstanceVariablesOn: html
 	html with: (MaglevTable newAssociationDictFor: self object with: #instVars).
 !
 
+renderNavigationOn: html
+	html with: object inlineViewComponentNavItem.
+!
+
 renderVirtualClassAndClassOn: html
 	classObject = object virtualClassObject ifFalse: [
 		html
@@ -1836,7 +1863,7 @@ renderVirtualClassAndClassOn: html
 !
 
 renderWindowContentOn: html
-	|allTabs firstCaption|
+	|allTabs firstCaption defaultTab|
 	allTabs := self contentTabs.
 	allTabs size > 0 ifTrue: [
 		html ul
@@ -1852,7 +1879,10 @@ renderWindowContentOn: html
 						with: caption].
 				self captions at: caption put: capEl]]].
 	tabsContainer := html div.
-	firstCaption ifNotNil: [self showTab: firstCaption].
+	defaultTab := self defaultTab.
+	defaultTab 
+		ifNil: [firstCaption ifNotNil: [self showTab: firstCaption]]
+		ifNotNil: [self showTab: defaultTab].
 !
 
 renderWindowTitleContentOn: html
@@ -1877,6 +1907,12 @@ newReplace: aWindow with: anObject
 MaglevObjectWindow subclass: #MaglevArrayWindow
 	instanceVariableNames: ''
 	package: 'Maglev-Database-Explorer'!
+
+!MaglevArrayWindow methodsFor: 'interactions'!
+
+defaultTab
+	^ 'Elements'
+! !
 
 !MaglevArrayWindow methodsFor: 'rendering'!
 
@@ -1913,6 +1949,12 @@ MaglevObjectWindow subclass: #MaglevFloatWindow
 MaglevObjectWindow subclass: #MaglevHashWindow
 	instanceVariableNames: ''
 	package: 'Maglev-Database-Explorer'!
+
+!MaglevHashWindow methodsFor: 'interactions'!
+
+defaultTab
+	^ 'Associations'
+! !
 
 !MaglevHashWindow methodsFor: 'rendering'!
 
@@ -1957,6 +1999,10 @@ initializeTree: container
 ! !
 
 !MaglevModuleWindow methodsFor: 'interactions'!
+
+defaultTab
+	^ 'Code'
+!
 
 renderHierarchySubclass: cls for: oop
 	< var ownerLi = self['@hierarchyContainer']._asJQuery().find("[data-oop='" + oop + "']");
@@ -2216,6 +2262,10 @@ continueTransaction
 				ifTrue: [transactionResultBox addClass: 'alert-success']
 				ifFalse: [transactionResultBox addClass: 'alert-error'].
 			transactionResultBox with: resultObj inlineViewComponent].
+!
+
+defaultTab
+	^ 'Control Panel'
 ! !
 
 !MaglevSystemClassWindow methodsFor: 'rendering'!
@@ -2287,6 +2337,10 @@ MaglevObjectWindow subclass: #MaglevRubyWorkspaceWindow
 	package: 'Maglev-Database-Explorer'!
 
 !MaglevRubyWorkspaceWindow methodsFor: 'interactions'!
+
+defaultTab
+	^ 'Workspace'
+!
 
 handleEnter
 	|command html|
@@ -2365,6 +2419,10 @@ frameIndex
 ! !
 
 !MaglevThreadWindow methodsFor: 'interactions'!
+
+defaultTab
+	^ 'Stack Trace'
+!
 
 isMethodUnimportant: aString
 	|unimportant|

@@ -1,6 +1,6 @@
 Smalltalk current createPackage: 'Maglev-Core' properties: #{}!
 Object subclass: #Maglev
-	instanceVariableNames: 'objectSpace windows'
+	instanceVariableNames: 'objectSpace windows bottomNavHtml'
 	package: 'Maglev-Core'!
 
 !Maglev methodsFor: 'accessing'!
@@ -14,11 +14,13 @@ objectSpace
 
 initialize
 	windows := OrderedCollection new.
+	bottomNavHtml := HTMLCanvas onJQuery: '#windows-navigation' asJQuery.
 ! !
 
 !Maglev methodsFor: 'interactions'!
 
 addWindow: aWindow
+	self renderNavigationItemFor: aWindow.
 	windows add: aWindow.
 	self showConnectionsFor: aWindow.
 !
@@ -69,10 +71,23 @@ implementersOf: aSelector withCallback: aBlock
 !
 
 removeWindow: aWindow
+	aWindow navigationItem asJQuery remove.
 	windows remove: aWindow.
 ! !
 
 !Maglev methodsFor: 'rendering'!
+
+renderNavigationItemFor: aWindow
+	|navItem|
+	navItem := bottomNavHtml li
+		with: [
+			bottomNavHtml a
+				class: 'btn btn-info window-navigation-item';
+				style: 'padding: 4px 2px 2px 4px; margin-top: 5px;';
+				onClick: [aWindow moveToFront];
+				with: [aWindow renderNavigationOn: bottomNavHtml]].
+	aWindow navigationItem: navItem.
+!
 
 showConnectionsFor: aWindow
 	windows do: [:window | 
@@ -384,6 +399,15 @@ inlineViewComponentFull
 		fullInspection: true;
 		object: self;
 		initialize;
+		yourself
+!
+
+inlineViewComponentNavItem
+	^ self class inlineViewClass basicNew
+		object: self;
+		isShort: true;
+		hasDropDown: false;
+		isDraggable: false;
 		yourself
 !
 

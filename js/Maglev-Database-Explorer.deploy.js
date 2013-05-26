@@ -845,7 +845,8 @@ selector: unescape('bindEvents'),
 fn: function (){
 var self=this;
  self['@list']._asJQuery().selectable({
-		stop: function() {self._selectionChanged();}}); ;
+		stop: function() {self._selectionChanged();},
+		tolerance: 'fit'}); ;
 return self;}
 }),
 smalltalk.MaglevListBox);
@@ -1699,7 +1700,7 @@ selector: unescape('renderText%3AwithDropDownOn%3A'),
 fn: function (text, html){
 var self=this;
 var dropdownContainer=nil;
-(dropdownContainer=(function($rec){smalltalk.send($rec, "_class_", ["dropdown"]);return smalltalk.send($rec, "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_class_", [unescape("dropdown-toggle%20btn%20object-dropdown-toggle")]);smalltalk.send($rec, "_data_with_", ["toggle", "dropdown"]);smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_showDropdownFor_", [dropdownContainer]);})]);return smalltalk.send($rec, "_with_", [(function(){smalltalk.send(html, "_with_", [text]);return smalltalk.send(smalltalk.send(html, "_b", []), "_class_", ["caret"]);})]);})(smalltalk.send(html, "_a", []));})]);})(smalltalk.send(html, "_span", [])));
+((($receiver = smalltalk.send(self, "_hasDropDown", [])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (dropdownContainer=(function($rec){smalltalk.send($rec, "_class_", ["dropdown"]);return smalltalk.send($rec, "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_class_", [unescape("dropdown-toggle%20btn%20object-dropdown-toggle")]);smalltalk.send($rec, "_data_with_", ["toggle", "dropdown"]);smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_showDropdownFor_", [dropdownContainer]);})]);return smalltalk.send($rec, "_with_", [(function(){smalltalk.send(html, "_with_", [text]);return smalltalk.send(smalltalk.send(html, "_b", []), "_class_", ["caret"]);})]);})(smalltalk.send(html, "_a", []));})]);})(smalltalk.send(html, "_span", [])));})() : (function(){return smalltalk.send(html, "_with_", [text]);})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return (dropdownContainer=(function($rec){smalltalk.send($rec, "_class_", ["dropdown"]);return smalltalk.send($rec, "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_class_", [unescape("dropdown-toggle%20btn%20object-dropdown-toggle")]);smalltalk.send($rec, "_data_with_", ["toggle", "dropdown"]);smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_showDropdownFor_", [dropdownContainer]);})]);return smalltalk.send($rec, "_with_", [(function(){smalltalk.send(html, "_with_", [text]);return smalltalk.send(smalltalk.send(html, "_b", []), "_class_", ["caret"]);})]);})(smalltalk.send(html, "_a", []));})]);})(smalltalk.send(html, "_span", [])));}), (function(){return smalltalk.send(html, "_with_", [text]);})]));
 return self;}
 }),
 smalltalk.MaglevObjectInline);
@@ -2423,7 +2424,7 @@ return self;}
 smalltalk.MaglevTable.klass);
 
 
-smalltalk.addClass('MaglevWindow', smalltalk.Widget, ['container'], 'Maglev-Database-Explorer');
+smalltalk.addClass('MaglevWindow', smalltalk.Widget, ['container', 'navigationItem'], 'Maglev-Database-Explorer');
 smalltalk.addMethod(
 unescape('_appendToWorkspace'),
 smalltalk.method({
@@ -2514,6 +2515,39 @@ return self;}
 smalltalk.MaglevWindow);
 
 smalltalk.addMethod(
+unescape('_moveToFront'),
+smalltalk.method({
+selector: unescape('moveToFront'),
+fn: function (){
+var self=this;
+smalltalk.send(smalltalk.send(self['@container'], "_asJQuery", []), "_css_data_", [unescape("z-index"), ((($receiver = smalltalk.send(smalltalk.send(self, "_class", []), "_highestZIndex", [])).klass === smalltalk.Number) ? $receiver +(1) : smalltalk.send($receiver, "__plus", [(1)]))]);
+return self;}
+}),
+smalltalk.MaglevWindow);
+
+smalltalk.addMethod(
+unescape('_navigationItem'),
+smalltalk.method({
+selector: unescape('navigationItem'),
+fn: function (){
+var self=this;
+return self['@navigationItem'];
+return self;}
+}),
+smalltalk.MaglevWindow);
+
+smalltalk.addMethod(
+unescape('_navigationItem_'),
+smalltalk.method({
+selector: unescape('navigationItem%3A'),
+fn: function (anObject){
+var self=this;
+(self['@navigationItem']=anObject);
+return self;}
+}),
+smalltalk.MaglevWindow);
+
+smalltalk.addMethod(
 unescape('_prepareWindow'),
 smalltalk.method({
 selector: unescape('prepareWindow'),
@@ -2559,6 +2593,17 @@ return self;}
 smalltalk.MaglevWindow);
 
 smalltalk.addMethod(
+unescape('_renderNavigationOn_'),
+smalltalk.method({
+selector: unescape('renderNavigationOn%3A'),
+fn: function (html){
+var self=this;
+smalltalk.send(html, "_with_", ["New window"]);
+return self;}
+}),
+smalltalk.MaglevWindow);
+
+smalltalk.addMethod(
 unescape('_renderOn_'),
 smalltalk.method({
 selector: unescape('renderOn%3A'),
@@ -2566,8 +2611,8 @@ fn: function (html){
 var self=this;
 (($receiver = self['@container']) == nil || $receiver == undefined) ? (function(){(self['@container']=smalltalk.send(html, "_div", []));return smalltalk.send(self, "_prepareWindow", []);})() : $receiver;
 (function($rec){smalltalk.send($rec, "_class_", ["component window"]);return smalltalk.send($rec, "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_class_", ["nowrap"]);return smalltalk.send($rec, "_with_", [(function(){smalltalk.send(self, "_renderWindowTitleOn_", [html]);return smalltalk.send(self, "_renderWindowContentOn_", [html]);})]);})(smalltalk.send(html, "_div", []));})]);})(self['@container']);
-smalltalk.send(self['@container'], "_onMouseDown_", [(function(){return smalltalk.send(smalltalk.send(self['@container'], "_asJQuery", []), "_css_data_", [unescape("z-index"), ((($receiver = smalltalk.send(smalltalk.send(self, "_class", []), "_highestZIndex", [])).klass === smalltalk.Number) ? $receiver +(1) : smalltalk.send($receiver, "__plus", [(1)]))]);})]);
-smalltalk.send(smalltalk.send(self['@container'], "_asJQuery", []), "_css_data_", [unescape("z-index"), ((($receiver = smalltalk.send(smalltalk.send(self, "_class", []), "_highestZIndex", [])).klass === smalltalk.Number) ? $receiver +(1) : smalltalk.send($receiver, "__plus", [(1)]))]);
+smalltalk.send(self['@container'], "_onMouseDown_", [(function(){return smalltalk.send(self, "_moveToFront", []);})]);
+smalltalk.send(self, "_moveToFront", []);
 return self;}
 }),
 smalltalk.MaglevWindow);
@@ -2736,6 +2781,17 @@ return self;}
 smalltalk.MaglevObjectWindow);
 
 smalltalk.addMethod(
+unescape('_defaultTab'),
+smalltalk.method({
+selector: unescape('defaultTab'),
+fn: function (){
+var self=this;
+return nil;
+return self;}
+}),
+smalltalk.MaglevObjectWindow);
+
+smalltalk.addMethod(
 unescape('_object'),
 smalltalk.method({
 selector: unescape('object'),
@@ -2781,6 +2837,17 @@ return self;}
 smalltalk.MaglevObjectWindow);
 
 smalltalk.addMethod(
+unescape('_renderNavigationOn_'),
+smalltalk.method({
+selector: unescape('renderNavigationOn%3A'),
+fn: function (html){
+var self=this;
+smalltalk.send(html, "_with_", [smalltalk.send(self['@object'], "_inlineViewComponentNavItem", [])]);
+return self;}
+}),
+smalltalk.MaglevObjectWindow);
+
+smalltalk.addMethod(
 unescape('_renderVirtualClassAndClassOn_'),
 smalltalk.method({
 selector: unescape('renderVirtualClassAndClassOn%3A'),
@@ -2800,12 +2867,14 @@ fn: function (html){
 var self=this;
 var allTabs=nil;
 var firstCaption=nil;
+var defaultTab=nil;
 (allTabs=smalltalk.send(self, "_contentTabs", []));
 ((($receiver = ((($receiver = smalltalk.send(allTabs, "_size", [])).klass === smalltalk.Number) ? $receiver >(0) : smalltalk.send($receiver, "__gt", [(0)]))).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (function($rec){smalltalk.send($rec, "_class_", [unescape("nav%20nav-tabs")]);smalltalk.send($rec, "_style_", [unescape("display%3A%20inline-block%3B%20margin-bottom%3A%200px%3B%20margin-top%3A%205px%3B%20width%3A%20100%25%3B")]);return smalltalk.send($rec, "_with_", [(function(){return smalltalk.send(smalltalk.send(self, "_contentTabs", []), "_keysAndValuesDo_", [(function(caption, generator){var capEl=nil;
 (($receiver = firstCaption) == nil || $receiver == undefined) ? (function(){return (firstCaption=caption);})() : $receiver;(capEl=smalltalk.send(smalltalk.send(html, "_li", []), "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_href_", [unescape("%23")]);smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_showTab_", [caption]);})]);return smalltalk.send($rec, "_with_", [caption]);})(smalltalk.send(html, "_a", []));})]));return smalltalk.send(smalltalk.send(self, "_captions", []), "_at_put_", [caption, capEl]);})]);})]);})(smalltalk.send(html, "_ul", []));})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return (function($rec){smalltalk.send($rec, "_class_", [unescape("nav%20nav-tabs")]);smalltalk.send($rec, "_style_", [unescape("display%3A%20inline-block%3B%20margin-bottom%3A%200px%3B%20margin-top%3A%205px%3B%20width%3A%20100%25%3B")]);return smalltalk.send($rec, "_with_", [(function(){return smalltalk.send(smalltalk.send(self, "_contentTabs", []), "_keysAndValuesDo_", [(function(caption, generator){var capEl=nil;
 (($receiver = firstCaption) == nil || $receiver == undefined) ? (function(){return (firstCaption=caption);})() : $receiver;(capEl=smalltalk.send(smalltalk.send(html, "_li", []), "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_href_", [unescape("%23")]);smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_showTab_", [caption]);})]);return smalltalk.send($rec, "_with_", [caption]);})(smalltalk.send(html, "_a", []));})]));return smalltalk.send(smalltalk.send(self, "_captions", []), "_at_put_", [caption, capEl]);})]);})]);})(smalltalk.send(html, "_ul", []));})]));
 (self['@tabsContainer']=smalltalk.send(html, "_div", []));
-(($receiver = firstCaption) != nil && $receiver != undefined) ? (function(){return smalltalk.send(self, "_showTab_", [firstCaption]);})() : nil;
+(defaultTab=smalltalk.send(self, "_defaultTab", []));
+(($receiver = defaultTab) == nil || $receiver == undefined) ? (function(){return (($receiver = firstCaption) != nil && $receiver != undefined) ? (function(){return smalltalk.send(self, "_showTab_", [firstCaption]);})() : nil;})() : (function(){return smalltalk.send(self, "_showTab_", [defaultTab]);})();
 return self;}
 }),
 smalltalk.MaglevObjectWindow);
@@ -2909,6 +2978,17 @@ return self;}
 smalltalk.MaglevArrayWindow);
 
 smalltalk.addMethod(
+unescape('_defaultTab'),
+smalltalk.method({
+selector: unescape('defaultTab'),
+fn: function (){
+var self=this;
+return "Elements";
+return self;}
+}),
+smalltalk.MaglevArrayWindow);
+
+smalltalk.addMethod(
 unescape('_renderArrayElementsOn_'),
 smalltalk.method({
 selector: unescape('renderArrayElementsOn%3A'),
@@ -2958,6 +3038,17 @@ return self;}
 smalltalk.MaglevHashWindow);
 
 smalltalk.addMethod(
+unescape('_defaultTab'),
+smalltalk.method({
+selector: unescape('defaultTab'),
+fn: function (){
+var self=this;
+return "Associations";
+return self;}
+}),
+smalltalk.MaglevHashWindow);
+
+smalltalk.addMethod(
 unescape('_renderHashElementsOn_'),
 smalltalk.method({
 selector: unescape('renderHashElementsOn%3A'),
@@ -2984,6 +3075,17 @@ var result=nil;
 smalltalk.send(result, "_at_put_", ["Code", smalltalk.symbolFor("renderCodeTabOn:")]);
 smalltalk.send(result, "_at_put_", ["Hierarchy", smalltalk.symbolFor("renderHierarchyOn:")]);
 return result;
+return self;}
+}),
+smalltalk.MaglevModuleWindow);
+
+smalltalk.addMethod(
+unescape('_defaultTab'),
+smalltalk.method({
+selector: unescape('defaultTab'),
+fn: function (){
+var self=this;
+return "Code";
 return self;}
 }),
 smalltalk.MaglevModuleWindow);
@@ -3325,6 +3427,17 @@ return self;}
 smalltalk.MaglevSystemClassWindow);
 
 smalltalk.addMethod(
+unescape('_defaultTab'),
+smalltalk.method({
+selector: unescape('defaultTab'),
+fn: function (){
+var self=this;
+return "Control Panel";
+return self;}
+}),
+smalltalk.MaglevSystemClassWindow);
+
+smalltalk.addMethod(
 unescape('_renderControlPanelOn_'),
 smalltalk.method({
 selector: unescape('renderControlPanelOn%3A'),
@@ -3386,6 +3499,17 @@ var result=nil;
 (result=smalltalk.send(self, "_contentTabs", [], smalltalk.MaglevObjectWindow));
 smalltalk.send(result, "_at_put_", ["Workspace", smalltalk.symbolFor("renderWorkspaceOn:")]);
 return result;
+return self;}
+}),
+smalltalk.MaglevRubyWorkspaceWindow);
+
+smalltalk.addMethod(
+unescape('_defaultTab'),
+smalltalk.method({
+selector: unescape('defaultTab'),
+fn: function (){
+var self=this;
+return "Workspace";
 return self;}
 }),
 smalltalk.MaglevRubyWorkspaceWindow);
@@ -3468,6 +3592,17 @@ var result=nil;
 smalltalk.send(result, "_at_put_", ["Stack Trace", smalltalk.symbolFor("renderStackTraceOn:")]);
 smalltalk.send(result, "_at_put_", ["Thread Local Storage", smalltalk.symbolFor("renderLocalStorageOn:")]);
 return result;
+return self;}
+}),
+smalltalk.MaglevThreadWindow);
+
+smalltalk.addMethod(
+unescape('_defaultTab'),
+smalltalk.method({
+selector: unescape('defaultTab'),
+fn: function (){
+var self=this;
+return "Stack Trace";
 return self;}
 }),
 smalltalk.MaglevThreadWindow);

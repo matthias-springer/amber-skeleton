@@ -1,5 +1,5 @@
 smalltalk.addPackage('Maglev-Core', {});
-smalltalk.addClass('Maglev', smalltalk.Object, ['objectSpace', 'windows'], 'Maglev-Core');
+smalltalk.addClass('Maglev', smalltalk.Object, ['objectSpace', 'windows', 'bottomNavHtml'], 'Maglev-Core');
 smalltalk.addMethod(
 unescape('_addWindow_'),
 smalltalk.method({
@@ -7,12 +7,13 @@ selector: unescape('addWindow%3A'),
 category: 'interactions',
 fn: function (aWindow){
 var self=this;
+smalltalk.send(self, "_renderNavigationItemFor_", [aWindow]);
 smalltalk.send(self['@windows'], "_add_", [aWindow]);
 smalltalk.send(self, "_showConnectionsFor_", [aWindow]);
 return self;},
 args: ["aWindow"],
-source: unescape('addWindow%3A%20aWindow%0A%09windows%20add%3A%20aWindow.%0A%09self%20showConnectionsFor%3A%20aWindow.'),
-messageSends: ["add:", "showConnectionsFor:"],
+source: unescape('addWindow%3A%20aWindow%0A%09self%20renderNavigationItemFor%3A%20aWindow.%0A%09windows%20add%3A%20aWindow.%0A%09self%20showConnectionsFor%3A%20aWindow.'),
+messageSends: ["renderNavigationItemFor:", "add:", "showConnectionsFor:"],
 referencedClasses: []
 }),
 smalltalk.Maglev);
@@ -95,11 +96,12 @@ category: 'initializing',
 fn: function (){
 var self=this;
 (self['@windows']=smalltalk.send((smalltalk.OrderedCollection || OrderedCollection), "_new", []));
+(self['@bottomNavHtml']=smalltalk.send((smalltalk.HTMLCanvas || HTMLCanvas), "_onJQuery_", [smalltalk.send(unescape("%23windows-navigation"), "_asJQuery", [])]));
 return self;},
 args: [],
-source: unescape('initialize%0A%09windows%20%3A%3D%20OrderedCollection%20new.'),
-messageSends: ["new"],
-referencedClasses: ["OrderedCollection"]
+source: unescape('initialize%0A%09windows%20%3A%3D%20OrderedCollection%20new.%0A%09bottomNavHtml%20%3A%3D%20HTMLCanvas%20onJQuery%3A%20%27%23windows-navigation%27%20asJQuery.'),
+messageSends: ["new", "onJQuery:", "asJQuery"],
+referencedClasses: ["OrderedCollection", "HTMLCanvas"]
 }),
 smalltalk.Maglev);
 
@@ -127,11 +129,30 @@ selector: unescape('removeWindow%3A'),
 category: 'interactions',
 fn: function (aWindow){
 var self=this;
+smalltalk.send(smalltalk.send(smalltalk.send(aWindow, "_navigationItem", []), "_asJQuery", []), "_remove", []);
 smalltalk.send(self['@windows'], "_remove_", [aWindow]);
 return self;},
 args: ["aWindow"],
-source: unescape('removeWindow%3A%20aWindow%0A%09windows%20remove%3A%20aWindow.'),
-messageSends: ["remove:"],
+source: unescape('removeWindow%3A%20aWindow%0A%09aWindow%20navigationItem%20asJQuery%20remove.%0A%09windows%20remove%3A%20aWindow.'),
+messageSends: ["remove", "asJQuery", "navigationItem", "remove:"],
+referencedClasses: []
+}),
+smalltalk.Maglev);
+
+smalltalk.addMethod(
+unescape('_renderNavigationItemFor_'),
+smalltalk.method({
+selector: unescape('renderNavigationItemFor%3A'),
+category: 'rendering',
+fn: function (aWindow){
+var self=this;
+var navItem=nil;
+(navItem=smalltalk.send(smalltalk.send(self['@bottomNavHtml'], "_li", []), "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_class_", [unescape("btn%20btn-info%20window-navigation-item")]);smalltalk.send($rec, "_style_", [unescape("padding%3A%204px%202px%202px%204px%3B%20margin-top%3A%205px%3B")]);smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(aWindow, "_moveToFront", []);})]);return smalltalk.send($rec, "_with_", [(function(){return smalltalk.send(aWindow, "_renderNavigationOn_", [self['@bottomNavHtml']]);})]);})(smalltalk.send(self['@bottomNavHtml'], "_a", []));})]));
+smalltalk.send(aWindow, "_navigationItem_", [navItem]);
+return self;},
+args: ["aWindow"],
+source: unescape('renderNavigationItemFor%3A%20aWindow%0A%09%7CnavItem%7C%0A%09navItem%20%3A%3D%20bottomNavHtml%20li%0A%09%09with%3A%20%5B%0A%09%09%09bottomNavHtml%20a%0A%09%09%09%09class%3A%20%27btn%20btn-info%20window-navigation-item%27%3B%0A%09%09%09%09style%3A%20%27padding%3A%204px%202px%202px%204px%3B%20margin-top%3A%205px%3B%27%3B%0A%09%09%09%09onClick%3A%20%5BaWindow%20moveToFront%5D%3B%0A%09%09%09%09with%3A%20%5BaWindow%20renderNavigationOn%3A%20bottomNavHtml%5D%5D.%0A%09aWindow%20navigationItem%3A%20navItem.'),
+messageSends: ["with:", "li", "class:", "style:", "onClick:", "moveToFront", "renderNavigationOn:", "a", "navigationItem:"],
 referencedClasses: []
 }),
 smalltalk.Maglev);
@@ -607,6 +628,22 @@ return self;},
 args: [],
 source: unescape('inlineViewComponentFull%0A%09%5E%20self%20class%20inlineViewClass%20basicNew%0A%09%09fullInspection%3A%20true%3B%0A%09%09object%3A%20self%3B%0A%09%09initialize%3B%0A%09%09yourself'),
 messageSends: ["fullInspection:", "object:", "initialize", "yourself", "basicNew", "inlineViewClass", "class"],
+referencedClasses: []
+}),
+smalltalk.MaglevObject);
+
+smalltalk.addMethod(
+unescape('_inlineViewComponentNavItem'),
+smalltalk.method({
+selector: unescape('inlineViewComponentNavItem'),
+category: 'rendering',
+fn: function (){
+var self=this;
+return (function($rec){smalltalk.send($rec, "_object_", [self]);smalltalk.send($rec, "_isShort_", [true]);smalltalk.send($rec, "_hasDropDown_", [false]);smalltalk.send($rec, "_isDraggable_", [false]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send(smalltalk.send(smalltalk.send(self, "_class", []), "_inlineViewClass", []), "_basicNew", []));
+return self;},
+args: [],
+source: unescape('inlineViewComponentNavItem%0A%09%5E%20self%20class%20inlineViewClass%20basicNew%0A%09%09object%3A%20self%3B%0A%09%09isShort%3A%20true%3B%0A%09%09hasDropDown%3A%20false%3B%0A%09%09isDraggable%3A%20false%3B%0A%09%09yourself'),
+messageSends: ["object:", "isShort:", "hasDropDown:", "isDraggable:", "yourself", "basicNew", "inlineViewClass", "class"],
 referencedClasses: []
 }),
 smalltalk.MaglevObject);
