@@ -1418,6 +1418,74 @@ renderObjectActionsOn: html
 			caption: 'Thread status: aborting')].
 ! !
 
+Widget subclass: #MaglevObjectInstancesView
+	instanceVariableNames: 'object rangeFrom rangeTo'
+	package: 'Maglev-Database-Explorer'!
+
+!MaglevObjectInstancesView methodsFor: 'accessing'!
+
+currentInstVarNames
+	|ivNames|
+	ivNames := Set new.
+	(self rangeFrom to: self rangeTo) do: [:idx | |obj|
+		obj := self objectAt: idx.
+		obj instVarsDo: [:key :value | ivNames add: key]].
+	^ ivNames
+!
+
+object
+	^ object
+!
+
+object: anObject
+	object := anObject.
+!
+
+objectAt: anIndex
+	^ object instances at: anIndex
+!
+
+rangeFrom
+	rangeFrom ifNil: [rangeFrom := 1].
+	^ rangeFrom
+!
+
+rangeTo
+	rangeTo ifNil: [rangeTo := 10].
+	^ rangeTo
+! !
+
+!MaglevObjectInstancesView methodsFor: 'rendering'!
+
+renderInstVarTableOn: html
+	object 
+		loadInstancesFrom: self rangeFrom 
+		to: self rangeTo 
+		withCallback: [:obj | |ivNames|
+			object := obj.
+			ivNames := self currentInstVarNames.
+			html table
+				class: 'table table-bordered';
+				style: 'margin-bottom: 0px;';
+				with: [html thead with: [
+					html tr with: [
+						html th with: 'oop'.
+						html th with: 'Object'.
+						ivNames do: [:ivName | 
+							html th with: ivName]]].
+					html tbody with: [
+						object instances do: [:obj |
+							html tr with: [
+								html td with: obj oop.
+								html td with: obj inlineViewComponent.
+								ivNames do: [:ivName |
+									html td with: (obj instVarAt: ivName ifAbsent: MaglevInvalidObject instance) inlineViewComponent]]]]]].
+!
+
+renderOn: html
+	self renderInstVarTableOn: html.
+! !
+
 Widget subclass: #MaglevTable
 	instanceVariableNames: 'object collectionName rangeFrom rangeTo isAssociationDictionary tableBody currentPage pageListItems pagination'
 	package: 'Maglev-Database-Explorer'!
@@ -2201,6 +2269,17 @@ MaglevModuleWindow subclass: #MaglevClassWindow
 checkAddConnectionTo: aWindow
 	super checkAddConnectionTo: aWindow.
 	object superclassObject == aWindow object ifTrue: [self connectTo: aWindow as: #superclass with: nil].
+!
+
+contentTabs
+	|result|
+	result := super contentTabs.
+	result at: 'Instances' put: #renderInstancesOn:.
+	^ result
+!
+
+renderInstancesOn: html
+	html with: object instancesViewComponent.
 !
 
 renderWindowTitleContentOn: html

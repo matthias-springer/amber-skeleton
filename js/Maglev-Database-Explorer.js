@@ -3007,6 +3007,144 @@ smalltalk.MaglevThreadInline);
 
 
 
+smalltalk.addClass('MaglevObjectInstancesView', smalltalk.Widget, ['object', 'rangeFrom', 'rangeTo'], 'Maglev-Database-Explorer');
+smalltalk.addMethod(
+unescape('_currentInstVarNames'),
+smalltalk.method({
+selector: unescape('currentInstVarNames'),
+category: 'accessing',
+fn: function (){
+var self=this;
+var ivNames=nil;
+(ivNames=smalltalk.send((smalltalk.Set || Set), "_new", []));
+smalltalk.send(smalltalk.send(smalltalk.send(self, "_rangeFrom", []), "_to_", [smalltalk.send(self, "_rangeTo", [])]), "_do_", [(function(idx){var obj=nil;
+(obj=smalltalk.send(self, "_objectAt_", [idx]));return smalltalk.send(obj, "_instVarsDo_", [(function(key, value){return smalltalk.send(ivNames, "_add_", [key]);})]);})]);
+return ivNames;
+return self;},
+args: [],
+source: unescape('currentInstVarNames%0A%09%7CivNames%7C%0A%09ivNames%20%3A%3D%20Set%20new.%0A%09%28self%20rangeFrom%20to%3A%20self%20rangeTo%29%20do%3A%20%5B%3Aidx%20%7C%20%7Cobj%7C%0A%09%09obj%20%3A%3D%20self%20objectAt%3A%20idx.%0A%09%09obj%20instVarsDo%3A%20%5B%3Akey%20%3Avalue%20%7C%20ivNames%20add%3A%20key%5D%5D.%0A%09%5E%20ivNames'),
+messageSends: ["new", "do:", "to:", "rangeFrom", "rangeTo", "objectAt:", "instVarsDo:", "add:"],
+referencedClasses: ["Set"]
+}),
+smalltalk.MaglevObjectInstancesView);
+
+smalltalk.addMethod(
+unescape('_object'),
+smalltalk.method({
+selector: unescape('object'),
+category: 'accessing',
+fn: function (){
+var self=this;
+return self['@object'];
+return self;},
+args: [],
+source: unescape('object%0A%09%5E%20object'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.MaglevObjectInstancesView);
+
+smalltalk.addMethod(
+unescape('_object_'),
+smalltalk.method({
+selector: unescape('object%3A'),
+category: 'accessing',
+fn: function (anObject){
+var self=this;
+(self['@object']=anObject);
+return self;},
+args: ["anObject"],
+source: unescape('object%3A%20anObject%0A%09object%20%3A%3D%20anObject.'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.MaglevObjectInstancesView);
+
+smalltalk.addMethod(
+unescape('_objectAt_'),
+smalltalk.method({
+selector: unescape('objectAt%3A'),
+category: 'accessing',
+fn: function (anIndex){
+var self=this;
+return smalltalk.send(smalltalk.send(self['@object'], "_instances", []), "_at_", [anIndex]);
+return self;},
+args: ["anIndex"],
+source: unescape('objectAt%3A%20anIndex%0A%09%5E%20object%20instances%20at%3A%20anIndex'),
+messageSends: ["at:", "instances"],
+referencedClasses: []
+}),
+smalltalk.MaglevObjectInstancesView);
+
+smalltalk.addMethod(
+unescape('_rangeFrom'),
+smalltalk.method({
+selector: unescape('rangeFrom'),
+category: 'accessing',
+fn: function (){
+var self=this;
+(($receiver = self['@rangeFrom']) == nil || $receiver == undefined) ? (function(){return (self['@rangeFrom']=(1));})() : $receiver;
+return self['@rangeFrom'];
+return self;},
+args: [],
+source: unescape('rangeFrom%0A%09rangeFrom%20ifNil%3A%20%5BrangeFrom%20%3A%3D%201%5D.%0A%09%5E%20rangeFrom'),
+messageSends: ["ifNil:"],
+referencedClasses: []
+}),
+smalltalk.MaglevObjectInstancesView);
+
+smalltalk.addMethod(
+unescape('_rangeTo'),
+smalltalk.method({
+selector: unescape('rangeTo'),
+category: 'accessing',
+fn: function (){
+var self=this;
+(($receiver = self['@rangeTo']) == nil || $receiver == undefined) ? (function(){return (self['@rangeTo']=(10));})() : $receiver;
+return self['@rangeTo'];
+return self;},
+args: [],
+source: unescape('rangeTo%0A%09rangeTo%20ifNil%3A%20%5BrangeTo%20%3A%3D%2010%5D.%0A%09%5E%20rangeTo'),
+messageSends: ["ifNil:"],
+referencedClasses: []
+}),
+smalltalk.MaglevObjectInstancesView);
+
+smalltalk.addMethod(
+unescape('_renderInstVarTableOn_'),
+smalltalk.method({
+selector: unescape('renderInstVarTableOn%3A'),
+category: 'rendering',
+fn: function (html){
+var self=this;
+smalltalk.send(self['@object'], "_loadInstancesFrom_to_withCallback_", [smalltalk.send(self, "_rangeFrom", []), smalltalk.send(self, "_rangeTo", []), (function(obj){var ivNames=nil;
+(self['@object']=obj);(ivNames=smalltalk.send(self, "_currentInstVarNames", []));return (function($rec){smalltalk.send($rec, "_class_", [unescape("table%20table-bordered")]);smalltalk.send($rec, "_style_", [unescape("margin-bottom%3A%200px%3B")]);return smalltalk.send($rec, "_with_", [(function(){smalltalk.send(smalltalk.send(html, "_thead", []), "_with_", [(function(){return smalltalk.send(smalltalk.send(html, "_tr", []), "_with_", [(function(){smalltalk.send(smalltalk.send(html, "_th", []), "_with_", ["oop"]);smalltalk.send(smalltalk.send(html, "_th", []), "_with_", ["Object"]);return smalltalk.send(ivNames, "_do_", [(function(ivName){return smalltalk.send(smalltalk.send(html, "_th", []), "_with_", [ivName]);})]);})]);})]);return smalltalk.send(smalltalk.send(html, "_tbody", []), "_with_", [(function(){return smalltalk.send(smalltalk.send(self['@object'], "_instances", []), "_do_", [(function(obj){return smalltalk.send(smalltalk.send(html, "_tr", []), "_with_", [(function(){smalltalk.send(smalltalk.send(html, "_td", []), "_with_", [smalltalk.send(obj, "_oop", [])]);smalltalk.send(smalltalk.send(html, "_td", []), "_with_", [smalltalk.send(obj, "_inlineViewComponent", [])]);return smalltalk.send(ivNames, "_do_", [(function(ivName){return smalltalk.send(smalltalk.send(html, "_td", []), "_with_", [smalltalk.send(smalltalk.send(obj, "_instVarAt_ifAbsent_", [ivName, smalltalk.send((smalltalk.MaglevInvalidObject || MaglevInvalidObject), "_instance", [])]), "_inlineViewComponent", [])]);})]);})]);})]);})]);})]);})(smalltalk.send(html, "_table", []));})]);
+return self;},
+args: ["html"],
+source: unescape('renderInstVarTableOn%3A%20html%0A%09object%20%0A%09%09loadInstancesFrom%3A%20self%20rangeFrom%20%0A%09%09to%3A%20self%20rangeTo%20%0A%09%09withCallback%3A%20%5B%3Aobj%20%7C%20%7CivNames%7C%0A%09%09%09object%20%3A%3D%20obj.%0A%09%09%09ivNames%20%3A%3D%20self%20currentInstVarNames.%0A%09%09%09html%20table%0A%09%09%09%09class%3A%20%27table%20table-bordered%27%3B%0A%09%09%09%09style%3A%20%27margin-bottom%3A%200px%3B%27%3B%0A%09%09%09%09with%3A%20%5Bhtml%20thead%20with%3A%20%5B%0A%09%09%09%09%09html%20tr%20with%3A%20%5B%0A%09%09%09%09%09%09html%20th%20with%3A%20%27oop%27.%0A%09%09%09%09%09%09html%20th%20with%3A%20%27Object%27.%0A%09%09%09%09%09%09ivNames%20do%3A%20%5B%3AivName%20%7C%20%0A%09%09%09%09%09%09%09html%20th%20with%3A%20ivName%5D%5D%5D.%0A%09%09%09%09%09html%20tbody%20with%3A%20%5B%0A%09%09%09%09%09%09object%20instances%20do%3A%20%5B%3Aobj%20%7C%0A%09%09%09%09%09%09%09html%20tr%20with%3A%20%5B%0A%09%09%09%09%09%09%09%09html%20td%20with%3A%20obj%20oop.%0A%09%09%09%09%09%09%09%09html%20td%20with%3A%20obj%20inlineViewComponent.%0A%09%09%09%09%09%09%09%09ivNames%20do%3A%20%5B%3AivName%20%7C%0A%09%09%09%09%09%09%09%09%09html%20td%20with%3A%20%28obj%20instVarAt%3A%20ivName%20ifAbsent%3A%20MaglevInvalidObject%20instance%29%20inlineViewComponent%5D%5D%5D%5D%5D%5D.'),
+messageSends: ["loadInstancesFrom:to:withCallback:", "rangeFrom", "rangeTo", "currentInstVarNames", "class:", "style:", "with:", "thead", "tr", "th", "do:", "tbody", "instances", "td", "oop", "inlineViewComponent", "instVarAt:ifAbsent:", "instance", "table"],
+referencedClasses: ["MaglevInvalidObject"]
+}),
+smalltalk.MaglevObjectInstancesView);
+
+smalltalk.addMethod(
+unescape('_renderOn_'),
+smalltalk.method({
+selector: unescape('renderOn%3A'),
+category: 'rendering',
+fn: function (html){
+var self=this;
+smalltalk.send(self, "_renderInstVarTableOn_", [html]);
+return self;},
+args: ["html"],
+source: unescape('renderOn%3A%20html%0A%09self%20renderInstVarTableOn%3A%20html.'),
+messageSends: ["renderInstVarTableOn:"],
+referencedClasses: []
+}),
+smalltalk.MaglevObjectInstancesView);
+
+
+
 smalltalk.addClass('MaglevTable', smalltalk.Widget, ['object', 'collectionName', 'rangeFrom', 'rangeTo', 'isAssociationDictionary', 'tableBody', 'currentPage', 'pageListItems', 'pagination'], 'Maglev-Database-Explorer');
 smalltalk.addMethod(
 unescape('_collection'),
@@ -4690,6 +4828,41 @@ return self;},
 args: ["aWindow"],
 source: unescape('checkAddConnectionTo%3A%20aWindow%0A%09super%20checkAddConnectionTo%3A%20aWindow.%0A%09object%20superclassObject%20%3D%3D%20aWindow%20object%20ifTrue%3A%20%5Bself%20connectTo%3A%20aWindow%20as%3A%20%23superclass%20with%3A%20nil%5D.'),
 messageSends: ["checkAddConnectionTo:", "ifTrue:", unescape("%3D%3D"), "superclassObject", "object", "connectTo:as:with:"],
+referencedClasses: []
+}),
+smalltalk.MaglevClassWindow);
+
+smalltalk.addMethod(
+unescape('_contentTabs'),
+smalltalk.method({
+selector: unescape('contentTabs'),
+category: 'rendering',
+fn: function (){
+var self=this;
+var result=nil;
+(result=smalltalk.send(self, "_contentTabs", [], smalltalk.MaglevModuleWindow));
+smalltalk.send(result, "_at_put_", ["Instances", smalltalk.symbolFor("renderInstancesOn:")]);
+return result;
+return self;},
+args: [],
+source: unescape('contentTabs%0A%09%7Cresult%7C%0A%09result%20%3A%3D%20super%20contentTabs.%0A%09result%20at%3A%20%27Instances%27%20put%3A%20%23renderInstancesOn%3A.%0A%09%5E%20result'),
+messageSends: ["contentTabs", "at:put:"],
+referencedClasses: []
+}),
+smalltalk.MaglevClassWindow);
+
+smalltalk.addMethod(
+unescape('_renderInstancesOn_'),
+smalltalk.method({
+selector: unescape('renderInstancesOn%3A'),
+category: 'rendering',
+fn: function (html){
+var self=this;
+smalltalk.send(html, "_with_", [smalltalk.send(self['@object'], "_instancesViewComponent", [])]);
+return self;},
+args: ["html"],
+source: unescape('renderInstancesOn%3A%20html%0A%09html%20with%3A%20object%20instancesViewComponent.'),
+messageSends: ["with:", "instancesViewComponent"],
 referencedClasses: []
 }),
 smalltalk.MaglevClassWindow);

@@ -2141,6 +2141,104 @@ smalltalk.MaglevThreadInline);
 
 
 
+smalltalk.addClass('MaglevObjectInstancesView', smalltalk.Widget, ['object', 'rangeFrom', 'rangeTo'], 'Maglev-Database-Explorer');
+smalltalk.addMethod(
+unescape('_currentInstVarNames'),
+smalltalk.method({
+selector: unescape('currentInstVarNames'),
+fn: function (){
+var self=this;
+var ivNames=nil;
+(ivNames=smalltalk.send((smalltalk.Set || Set), "_new", []));
+smalltalk.send(smalltalk.send(smalltalk.send(self, "_rangeFrom", []), "_to_", [smalltalk.send(self, "_rangeTo", [])]), "_do_", [(function(idx){var obj=nil;
+(obj=smalltalk.send(self, "_objectAt_", [idx]));return smalltalk.send(obj, "_instVarsDo_", [(function(key, value){return smalltalk.send(ivNames, "_add_", [key]);})]);})]);
+return ivNames;
+return self;}
+}),
+smalltalk.MaglevObjectInstancesView);
+
+smalltalk.addMethod(
+unescape('_object'),
+smalltalk.method({
+selector: unescape('object'),
+fn: function (){
+var self=this;
+return self['@object'];
+return self;}
+}),
+smalltalk.MaglevObjectInstancesView);
+
+smalltalk.addMethod(
+unescape('_object_'),
+smalltalk.method({
+selector: unescape('object%3A'),
+fn: function (anObject){
+var self=this;
+(self['@object']=anObject);
+return self;}
+}),
+smalltalk.MaglevObjectInstancesView);
+
+smalltalk.addMethod(
+unescape('_objectAt_'),
+smalltalk.method({
+selector: unescape('objectAt%3A'),
+fn: function (anIndex){
+var self=this;
+return smalltalk.send(smalltalk.send(self['@object'], "_instances", []), "_at_", [anIndex]);
+return self;}
+}),
+smalltalk.MaglevObjectInstancesView);
+
+smalltalk.addMethod(
+unescape('_rangeFrom'),
+smalltalk.method({
+selector: unescape('rangeFrom'),
+fn: function (){
+var self=this;
+(($receiver = self['@rangeFrom']) == nil || $receiver == undefined) ? (function(){return (self['@rangeFrom']=(1));})() : $receiver;
+return self['@rangeFrom'];
+return self;}
+}),
+smalltalk.MaglevObjectInstancesView);
+
+smalltalk.addMethod(
+unescape('_rangeTo'),
+smalltalk.method({
+selector: unescape('rangeTo'),
+fn: function (){
+var self=this;
+(($receiver = self['@rangeTo']) == nil || $receiver == undefined) ? (function(){return (self['@rangeTo']=(10));})() : $receiver;
+return self['@rangeTo'];
+return self;}
+}),
+smalltalk.MaglevObjectInstancesView);
+
+smalltalk.addMethod(
+unescape('_renderInstVarTableOn_'),
+smalltalk.method({
+selector: unescape('renderInstVarTableOn%3A'),
+fn: function (html){
+var self=this;
+smalltalk.send(self['@object'], "_loadInstancesFrom_to_withCallback_", [smalltalk.send(self, "_rangeFrom", []), smalltalk.send(self, "_rangeTo", []), (function(obj){var ivNames=nil;
+(self['@object']=obj);(ivNames=smalltalk.send(self, "_currentInstVarNames", []));return (function($rec){smalltalk.send($rec, "_class_", [unescape("table%20table-bordered")]);smalltalk.send($rec, "_style_", [unescape("margin-bottom%3A%200px%3B")]);return smalltalk.send($rec, "_with_", [(function(){smalltalk.send(smalltalk.send(html, "_thead", []), "_with_", [(function(){return smalltalk.send(smalltalk.send(html, "_tr", []), "_with_", [(function(){smalltalk.send(smalltalk.send(html, "_th", []), "_with_", ["oop"]);smalltalk.send(smalltalk.send(html, "_th", []), "_with_", ["Object"]);return smalltalk.send(ivNames, "_do_", [(function(ivName){return smalltalk.send(smalltalk.send(html, "_th", []), "_with_", [ivName]);})]);})]);})]);return smalltalk.send(smalltalk.send(html, "_tbody", []), "_with_", [(function(){return smalltalk.send(smalltalk.send(self['@object'], "_instances", []), "_do_", [(function(obj){return smalltalk.send(smalltalk.send(html, "_tr", []), "_with_", [(function(){smalltalk.send(smalltalk.send(html, "_td", []), "_with_", [smalltalk.send(obj, "_oop", [])]);smalltalk.send(smalltalk.send(html, "_td", []), "_with_", [smalltalk.send(obj, "_inlineViewComponent", [])]);return smalltalk.send(ivNames, "_do_", [(function(ivName){return smalltalk.send(smalltalk.send(html, "_td", []), "_with_", [smalltalk.send(smalltalk.send(obj, "_instVarAt_ifAbsent_", [ivName, smalltalk.send((smalltalk.MaglevInvalidObject || MaglevInvalidObject), "_instance", [])]), "_inlineViewComponent", [])]);})]);})]);})]);})]);})]);})(smalltalk.send(html, "_table", []));})]);
+return self;}
+}),
+smalltalk.MaglevObjectInstancesView);
+
+smalltalk.addMethod(
+unescape('_renderOn_'),
+smalltalk.method({
+selector: unescape('renderOn%3A'),
+fn: function (html){
+var self=this;
+smalltalk.send(self, "_renderInstVarTableOn_", [html]);
+return self;}
+}),
+smalltalk.MaglevObjectInstancesView);
+
+
+
 smalltalk.addClass('MaglevTable', smalltalk.Widget, ['object', 'collectionName', 'rangeFrom', 'rangeTo', 'isAssociationDictionary', 'tableBody', 'currentPage', 'pageListItems', 'pagination'], 'Maglev-Database-Explorer');
 smalltalk.addMethod(
 unescape('_collection'),
@@ -3354,6 +3452,31 @@ fn: function (aWindow){
 var self=this;
 smalltalk.send(self, "_checkAddConnectionTo_", [aWindow], smalltalk.MaglevModuleWindow);
 ((($receiver = smalltalk.send(smalltalk.send(self['@object'], "_superclassObject", []), "__eq_eq", [smalltalk.send(aWindow, "_object", [])])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(self, "_connectTo_as_with_", [aWindow, smalltalk.symbolFor("superclass"), nil]);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return smalltalk.send(self, "_connectTo_as_with_", [aWindow, smalltalk.symbolFor("superclass"), nil]);})]));
+return self;}
+}),
+smalltalk.MaglevClassWindow);
+
+smalltalk.addMethod(
+unescape('_contentTabs'),
+smalltalk.method({
+selector: unescape('contentTabs'),
+fn: function (){
+var self=this;
+var result=nil;
+(result=smalltalk.send(self, "_contentTabs", [], smalltalk.MaglevModuleWindow));
+smalltalk.send(result, "_at_put_", ["Instances", smalltalk.symbolFor("renderInstancesOn:")]);
+return result;
+return self;}
+}),
+smalltalk.MaglevClassWindow);
+
+smalltalk.addMethod(
+unescape('_renderInstancesOn_'),
+smalltalk.method({
+selector: unescape('renderInstancesOn%3A'),
+fn: function (html){
+var self=this;
+smalltalk.send(html, "_with_", [smalltalk.send(self['@object'], "_instancesViewComponent", [])]);
 return self;}
 }),
 smalltalk.MaglevClassWindow);

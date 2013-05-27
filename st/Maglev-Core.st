@@ -189,6 +189,13 @@ instVarAt: aString
 	self error: 'instVar not found in forwarder object: ', aString.
 !
 
+instVarAt: aString ifAbsent: anObject
+	instVars keysAndValuesDo: [:index :iv | 
+		iv key string = aString asString
+			ifTrue: [^ iv value]].
+	^ anObject
+!
+
 instVars
 	^ instVars
 !
@@ -421,6 +428,13 @@ inlineViewComponentWithDepth: anInteger
 		yourself
 !
 
+instancesViewComponent
+	^ self class instancesViewClass basicNew
+		object: self;
+		initialize;
+		yourself
+!
+
 windowViewComponent
 	^ self class windowViewClass basicNew
 		object: self;
@@ -487,6 +501,10 @@ basetype
 
 inlineViewClass
 	^ MaglevObjectInline
+!
+
+instancesViewClass
+	^ MaglevObjectInstancesView
 !
 
 windowViewClass
@@ -954,6 +972,19 @@ basetype
 	^ #gsnmethod
 ! !
 
+MaglevObject subclass: #MaglevInvalidObject
+	instanceVariableNames: ''
+	package: 'Maglev-Core'!
+
+MaglevInvalidObject class instanceVariableNames: 'instance'!
+
+!MaglevInvalidObject class methodsFor: 'singleton'!
+
+instance
+	instance ifNil: [instance := self new].
+	^ instance
+! !
+
 MaglevObject subclass: #MaglevModule
 	instanceVariableNames: 'includedModules includedModulesSize constants constantsSize rubyFullName smalltalkFullName superList'
 	package: 'Maglev-Core'!
@@ -1078,10 +1109,18 @@ windowViewClass
 ! !
 
 MaglevModule subclass: #MaglevClass
-	instanceVariableNames: 'superclassObject size subclasses'
+	instanceVariableNames: 'superclassObject size subclasses instances instancesSize'
 	package: 'Maglev-Core'!
 
 !MaglevClass methodsFor: 'accessing'!
+
+instances
+	^ instances
+!
+
+instancesSize
+	^ instancesSize
+!
 
 subclasses
 	^ subclasses
@@ -1099,6 +1138,11 @@ parseJSON: obj
 		superclassObject := MaglevObject newObject: obj superclassObject].
 	(obj at: 'subclasses') ifNotNil: [
 		subclasses := MaglevObject newObject: obj subclasses].
+	(obj at: 'instancesSize') ifNotNil: [
+		instances ifNil: [instances := Dictionary new].
+		instancesSize := obj instancesSize.
+		obj instances keysAndValuesDo: [:index :element |
+			instances at: index asNumber put: (MaglevObject newObject: element)]].
 ! !
 
 !MaglevClass methodsFor: 'interactions'!
@@ -1112,6 +1156,23 @@ ensureSubclassesLoadedWithCallback: aBlock
 					self parseJSON: obj.
 					aBlock value]]
 		ifNotNil: [aBlock value].
+!
+
+loadInstancesFrom: from to: to withCallback: aBlock
+	|params|
+	params := Dictionary new
+		at: 'range_instances_from' put: from;
+		at: 'range_instances_to' put: to;
+		at: 'instances' put: true;
+		yourself.
+	MaglevAjax 
+		ajax: '/object/index/', self oop
+		data: params
+		withCallback: [:obj |
+			"Create new object instead of merging results to self. This way 
+			we can separate instances with different filters and don't
+			pollute MaglevObjectSpace with masses of objects."
+			aBlock value: (MaglevObject newObjectWithoutUpdate: obj)].
 !
 
 paramsSubclasses
