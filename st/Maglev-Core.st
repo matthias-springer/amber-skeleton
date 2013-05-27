@@ -33,7 +33,7 @@ evaluateWithoutUpdate: code language: aString with: additionalParams withCallbac
 		addAll: additionalParams;
 		yourself.
 	MaglevAjax 
-		ajax: '/object/evaluate/72193'
+		ajax: '/object/evaluate/20'
 		data: params
 		withCallback: [:obj | |parsedObj|
 			parsedObj := MaglevObject newObjectWithoutUpdate: obj.
@@ -43,30 +43,26 @@ evaluateWithoutUpdate: code language: aString with: additionalParams withCallbac
 findClassNamesMatching: aSelector with: aBlock
 	aSelector isString ifFalse:[self error: 'The selector should be a string'].
 
-	self 
+	MaglevNilClass instance 
 		evaluateWithoutUpdate: '|organizer| organizer := ClassOrganizer new. organizer findClassNamesMatching:''', aSelector, '''.' 
 		language: 'smalltalk'
-		with: Dictionary new
 		withCallback: aBlock.
 !
 
 findMethodNamesMatching: aSelector with: aBlock
 	aSelector isString ifFalse:[self error: 'The selector should be a string'].
 
-	self 
+	MaglevNilClass instance 
 		evaluateWithoutUpdate: '|organizer| organizer := ClassOrganizer new. organizer findMethodNamesMatching:''', aSelector, '''.' 
 		language: 'smalltalk'
-		with: Dictionary new
 		withCallback: aBlock.
 !
 
 implementersOf: aSelector withCallback: aBlock
 	aSelector isString ifFalse:[self error: 'The selector should be a string'].
-
-	self 
+	MaglevNilClass instance
 		evaluateWithoutUpdate: '|organizer dict ruby smalltalk| organizer := ClassOrganizer new. dict := Array new. smalltalk := organizer implementorsOf:''', aSelector, ''' asSymbol. smalltalk do:[:cls| dict addLast:{cls. 0.}]. ruby := organizer rubyImplementorsOf:''', aSelector, ''' asSymbol. ruby do:[:cls| dict addLast:{cls. 1.}]. 1 to: dict size do:[:i||cls| cls:= (dict at: i) at:1. (cls class == GsNMethod) ifTrue:[(dict at:i) at:1 put: cls inClass]]. dict' 
 		language: 'smalltalk'
-		with: Dictionary new
 		withCallback: aBlock.
 !
 
@@ -1200,6 +1196,8 @@ isMaglevNil
 	^ true
 ! !
 
+MaglevNilClass class instanceVariableNames: 'instance'!
+
 !MaglevNilClass class methodsFor: 'constants'!
 
 basetype
@@ -1212,6 +1210,13 @@ inlineViewClass
 
 windowViewClass
 	^ MaglevNilClassWindow
+! !
+
+!MaglevNilClass class methodsFor: 'singleton'!
+
+instance
+	instance ifNil: [instance := MaglevObjectSpace instance reloadObject: 20].
+	^ instance
 ! !
 
 MaglevObject subclass: #MaglevRubyWorkspace
