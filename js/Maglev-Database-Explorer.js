@@ -936,6 +936,22 @@ referencedClasses: []
 smalltalk.MaglevIcon.klass);
 
 smalltalk.addMethod(
+unescape('_resizeSmall'),
+smalltalk.method({
+selector: unescape('resizeSmall'),
+category: 'instance creation',
+fn: function (){
+var self=this;
+return (function($rec){smalltalk.send($rec, "_icon_", [unescape("resize-small")]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send(self, "_new", []));
+return self;},
+args: [],
+source: unescape('resizeSmall%0A%09%5E%20self%20new%0A%09%09icon%3A%20%27resize-small%27%3B%0A%09%09yourself'),
+messageSends: ["icon:", "yourself", "new"],
+referencedClasses: []
+}),
+smalltalk.MaglevIcon.klass);
+
+smalltalk.addMethod(
 unescape('_search'),
 smalltalk.method({
 selector: unescape('search'),
@@ -3961,7 +3977,7 @@ referencedClasses: []
 smalltalk.MaglevWindow.klass);
 
 
-smalltalk.addClass('MaglevObjectWindow', smalltalk.MaglevWindow, ['container', 'object', 'classObject', 'tabs', 'captions', 'tabsContainer'], 'Maglev-Database-Explorer');
+smalltalk.addClass('MaglevObjectWindow', smalltalk.MaglevWindow, ['container', 'object', 'classObject', 'tabs', 'captions', 'tabsContainer', 'currentTab'], 'Maglev-Database-Explorer');
 smalltalk.addMethod(
 unescape('_captions'),
 smalltalk.method({
@@ -4061,6 +4077,24 @@ return self;},
 args: [],
 source: unescape('defaultTab%0A%09%5E%20nil'),
 messageSends: [],
+referencedClasses: []
+}),
+smalltalk.MaglevObjectWindow);
+
+smalltalk.addMethod(
+unescape('_makeCurrentTabResizable'),
+smalltalk.method({
+selector: unescape('makeCurrentTabResizable'),
+category: 'interactions',
+fn: function (){
+var self=this;
+smalltalk.send(self['@currentTab'], "_style_", [unescape("overflow%3A%20hidden%3B")]);
+smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(self['@currentTab'], "_asJQuery", []), "_children", []), "_first", []), "_attr_with_", ["style", unescape("width%3A%20100%25%3B%20height%3A%20100%25%3B%20overflow%3A%20auto%3B")]);
+smalltalk.send(smalltalk.send(self['@currentTab'], "_asJQuery", []), "_resizable", []);
+return self;},
+args: [],
+source: unescape('makeCurrentTabResizable%0A%09currentTab%0A%09%09style%3A%20%27overflow%3A%20hidden%3B%27.%0A%09currentTab%20asJQuery%20children%20first%20%0A%09%09attr%3A%20%27style%27%20with%3A%20%27width%3A%20100%25%3B%20height%3A%20100%25%3B%20overflow%3A%20auto%3B%27.%0A%09currentTab%20asJQuery%20resizable.'),
+messageSends: ["style:", "attr:with:", "first", "children", "asJQuery", "resizable"],
 referencedClasses: []
 }),
 smalltalk.MaglevObjectWindow);
@@ -4174,17 +4208,17 @@ var allTabs=nil;
 var firstCaption=nil;
 var defaultTab=nil;
 (allTabs=smalltalk.send(self, "_contentTabs", []));
-((($receiver = ((($receiver = smalltalk.send(allTabs, "_size", [])).klass === smalltalk.Number) ? $receiver >(0) : smalltalk.send($receiver, "__gt", [(0)]))).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (function($rec){smalltalk.send($rec, "_class_", [unescape("nav%20nav-tabs")]);smalltalk.send($rec, "_style_", [unescape("display%3A%20inline-block%3B%20margin-bottom%3A%200px%3B%20margin-top%3A%205px%3B%20width%3A%20100%25%3B")]);return smalltalk.send($rec, "_with_", [(function(){return smalltalk.send(smalltalk.send(self, "_contentTabs", []), "_keysAndValuesDo_", [(function(caption, generator){var capEl=nil;
-(($receiver = firstCaption) == nil || $receiver == undefined) ? (function(){return (firstCaption=caption);})() : $receiver;(capEl=smalltalk.send(smalltalk.send(html, "_li", []), "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_href_", [unescape("%23")]);smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_showTab_", [caption]);})]);return smalltalk.send($rec, "_with_", [caption]);})(smalltalk.send(html, "_a", []));})]));return smalltalk.send(smalltalk.send(self, "_captions", []), "_at_put_", [caption, capEl]);})]);})]);})(smalltalk.send(html, "_ul", []));})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return (function($rec){smalltalk.send($rec, "_class_", [unescape("nav%20nav-tabs")]);smalltalk.send($rec, "_style_", [unescape("display%3A%20inline-block%3B%20margin-bottom%3A%200px%3B%20margin-top%3A%205px%3B%20width%3A%20100%25%3B")]);return smalltalk.send($rec, "_with_", [(function(){return smalltalk.send(smalltalk.send(self, "_contentTabs", []), "_keysAndValuesDo_", [(function(caption, generator){var capEl=nil;
+((($receiver = ((($receiver = smalltalk.send(allTabs, "_size", [])).klass === smalltalk.Number) ? $receiver >(0) : smalltalk.send($receiver, "__gt", [(0)]))).klass === smalltalk.Boolean) ? ($receiver ? (function(){return (function($rec){smalltalk.send($rec, "_class_", [unescape("nav%20nav-tabs")]);smalltalk.send($rec, "_style_", [unescape("display%3A%20inline-block%3B%20margin-bottom%3A%200px%3B%20margin-top%3A%205px%3B%20width%3A%20100%25%3B")]);return smalltalk.send($rec, "_with_", [(function(){(function($rec){smalltalk.send($rec, "_style_", [unescape("float%3A%20right%3B")]);smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_makeCurrentTabResizable", []);})]);return smalltalk.send($rec, "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_href_", [unescape("%23")]);smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_makeCurrentTabResizable", []);})]);return smalltalk.send($rec, "_with_", [smalltalk.send((smalltalk.MaglevIcon || MaglevIcon), "_resizeSmall", [])]);})(smalltalk.send(html, "_a", []));})]);})(smalltalk.send(html, "_li", []));return smalltalk.send(smalltalk.send(self, "_contentTabs", []), "_keysAndValuesDo_", [(function(caption, generator){var capEl=nil;
+(($receiver = firstCaption) == nil || $receiver == undefined) ? (function(){return (firstCaption=caption);})() : $receiver;(capEl=smalltalk.send(smalltalk.send(html, "_li", []), "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_href_", [unescape("%23")]);smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_showTab_", [caption]);})]);return smalltalk.send($rec, "_with_", [caption]);})(smalltalk.send(html, "_a", []));})]));return smalltalk.send(smalltalk.send(self, "_captions", []), "_at_put_", [caption, capEl]);})]);})]);})(smalltalk.send(html, "_ul", []));})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){return (function($rec){smalltalk.send($rec, "_class_", [unescape("nav%20nav-tabs")]);smalltalk.send($rec, "_style_", [unescape("display%3A%20inline-block%3B%20margin-bottom%3A%200px%3B%20margin-top%3A%205px%3B%20width%3A%20100%25%3B")]);return smalltalk.send($rec, "_with_", [(function(){(function($rec){smalltalk.send($rec, "_style_", [unescape("float%3A%20right%3B")]);smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_makeCurrentTabResizable", []);})]);return smalltalk.send($rec, "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_href_", [unescape("%23")]);smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_makeCurrentTabResizable", []);})]);return smalltalk.send($rec, "_with_", [smalltalk.send((smalltalk.MaglevIcon || MaglevIcon), "_resizeSmall", [])]);})(smalltalk.send(html, "_a", []));})]);})(smalltalk.send(html, "_li", []));return smalltalk.send(smalltalk.send(self, "_contentTabs", []), "_keysAndValuesDo_", [(function(caption, generator){var capEl=nil;
 (($receiver = firstCaption) == nil || $receiver == undefined) ? (function(){return (firstCaption=caption);})() : $receiver;(capEl=smalltalk.send(smalltalk.send(html, "_li", []), "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_href_", [unescape("%23")]);smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(self, "_showTab_", [caption]);})]);return smalltalk.send($rec, "_with_", [caption]);})(smalltalk.send(html, "_a", []));})]));return smalltalk.send(smalltalk.send(self, "_captions", []), "_at_put_", [caption, capEl]);})]);})]);})(smalltalk.send(html, "_ul", []));})]));
 (self['@tabsContainer']=smalltalk.send(html, "_div", []));
 (defaultTab=smalltalk.send(self, "_defaultTab", []));
 (($receiver = defaultTab) == nil || $receiver == undefined) ? (function(){return (($receiver = firstCaption) != nil && $receiver != undefined) ? (function(){return smalltalk.send(self, "_showTab_", [firstCaption]);})() : nil;})() : (function(){return smalltalk.send(self, "_showTab_", [defaultTab]);})();
 return self;},
 args: ["html"],
-source: unescape('renderWindowContentOn%3A%20html%0A%09%7CallTabs%20firstCaption%20defaultTab%7C%0A%09allTabs%20%3A%3D%20self%20contentTabs.%0A%09allTabs%20size%20%3E%200%20ifTrue%3A%20%5B%0A%09%09html%20ul%0A%09%09%09class%3A%20%27nav%20nav-tabs%27%3B%0A%09%09%09style%3A%20%27display%3A%20inline-block%3B%20margin-bottom%3A%200px%3B%20margin-top%3A%205px%3B%20width%3A%20100%25%3B%27%3B%0A%09%09%09with%3A%20%5B%0A%09%09%09self%20contentTabs%20keysAndValuesDo%3A%20%5B%3Acaption%20%3Agenerator%20%7C%20%7CcapEl%7C%0A%09%09%09%09firstCaption%20ifNil%3A%20%5BfirstCaption%20%3A%3D%20caption%5D.%0A%09%09%09%09capEl%20%3A%3D%20html%20li%20with%3A%20%5B%0A%09%09%09%09%09html%20a%0A%09%09%09%09%09%09href%3A%20%27%23%27%3B%0A%09%09%09%09%09%09onClick%3A%20%5Bself%20showTab%3A%20caption%5D%3B%0A%09%09%09%09%09%09with%3A%20caption%5D.%0A%09%09%09%09self%20captions%20at%3A%20caption%20put%3A%20capEl%5D%5D%5D.%0A%09tabsContainer%20%3A%3D%20html%20div.%0A%09defaultTab%20%3A%3D%20self%20defaultTab.%0A%09defaultTab%20%0A%09%09ifNil%3A%20%5BfirstCaption%20ifNotNil%3A%20%5Bself%20showTab%3A%20firstCaption%5D%5D%0A%09%09ifNotNil%3A%20%5Bself%20showTab%3A%20defaultTab%5D.'),
-messageSends: ["contentTabs", "ifTrue:", unescape("%3E"), "size", "class:", "style:", "with:", "keysAndValuesDo:", "ifNil:", "li", "href:", "onClick:", "showTab:", "a", "at:put:", "captions", "ul", "div", "defaultTab", "ifNil:ifNotNil:", "ifNotNil:"],
-referencedClasses: []
+source: unescape('renderWindowContentOn%3A%20html%0A%09%7CallTabs%20firstCaption%20defaultTab%7C%0A%09allTabs%20%3A%3D%20self%20contentTabs.%0A%09allTabs%20size%20%3E%200%20ifTrue%3A%20%5B%0A%09%09html%20ul%0A%09%09%09class%3A%20%27nav%20nav-tabs%27%3B%0A%09%09%09style%3A%20%27display%3A%20inline-block%3B%20margin-bottom%3A%200px%3B%20margin-top%3A%205px%3B%20width%3A%20100%25%3B%27%3B%0A%09%09%09with%3A%20%5B%0A%09%09%09%09html%20li%0A%09%09%09%09%09style%3A%20%27float%3A%20right%3B%27%3B%0A%09%09%09%09%09onClick%3A%20%5Bself%20makeCurrentTabResizable%5D%3B%0A%09%09%09%09%09with%3A%20%5B%0A%09%09%09%09%09%09html%20a%0A%09%09%09%09%09%09%09href%3A%20%27%23%27%3B%0A%09%09%09%09%09%09%09onClick%3A%20%5Bself%20makeCurrentTabResizable%5D%3B%0A%09%09%09%09%09%09%09with%3A%20MaglevIcon%20resizeSmall%5D.%0A%09%09%09%09self%20contentTabs%20keysAndValuesDo%3A%20%5B%3Acaption%20%3Agenerator%20%7C%20%7CcapEl%7C%0A%09%09%09%09%09firstCaption%20ifNil%3A%20%5BfirstCaption%20%3A%3D%20caption%5D.%0A%09%09%09%09%09capEl%20%3A%3D%20html%20li%20with%3A%20%5B%0A%09%09%09%09%09%09html%20a%0A%09%09%09%09%09%09%09href%3A%20%27%23%27%3B%0A%09%09%09%09%09%09%09onClick%3A%20%5Bself%20showTab%3A%20caption%5D%3B%0A%09%09%09%09%09%09%09with%3A%20caption%5D.%0A%09%09%09%09self%20captions%20at%3A%20caption%20put%3A%20capEl%5D%5D%5D.%0A%09tabsContainer%20%3A%3D%20html%20div.%0A%09defaultTab%20%3A%3D%20self%20defaultTab.%0A%09defaultTab%20%0A%09%09ifNil%3A%20%5BfirstCaption%20ifNotNil%3A%20%5Bself%20showTab%3A%20firstCaption%5D%5D%0A%09%09ifNotNil%3A%20%5Bself%20showTab%3A%20defaultTab%5D.'),
+messageSends: ["contentTabs", "ifTrue:", unescape("%3E"), "size", "class:", "style:", "with:", "onClick:", "makeCurrentTabResizable", "href:", "resizeSmall", "a", "li", "keysAndValuesDo:", "ifNil:", "showTab:", "at:put:", "captions", "ul", "div", "defaultTab", "ifNil:ifNotNil:", "ifNotNil:"],
+referencedClasses: ["MaglevIcon"]
 }),
 smalltalk.MaglevObjectWindow);
 
@@ -4235,15 +4269,15 @@ var allTabs=nil;
 (allTabs=smalltalk.send(self, "_contentTabs", []));
 ((($receiver = smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(self, "_tabs", []), "_includesKey_", [caption]), "_not", []), "_and_", [(function(){return smalltalk.send(allTabs, "_includesKey_", [caption]);})])).klass === smalltalk.Boolean) ? ($receiver ? (function(){var tab=nil;
 var html=nil;
-(html=smalltalk.send((smalltalk.HTMLCanvas || HTMLCanvas), "_onJQuery_", [smalltalk.send(self['@tabsContainer'], "_asJQuery", [])]));(tab=smalltalk.send(smalltalk.send(html, "_div", []), "_with_", [(function(){return smalltalk.send(self, "_perform_withArguments_", [smalltalk.send(allTabs, "_at_", [caption]), [html]]);})]));return smalltalk.send(smalltalk.send(self, "_tabs", []), "_at_put_", [caption, tab]);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){var tab=nil;
+(html=smalltalk.send((smalltalk.HTMLCanvas || HTMLCanvas), "_onJQuery_", [smalltalk.send(self['@tabsContainer'], "_asJQuery", [])]));(tab=smalltalk.send(smalltalk.send(html, "_div", []), "_with_", [(function(){return smalltalk.send(smalltalk.send(html, "_div", []), "_with_", [(function(){return smalltalk.send(self, "_perform_withArguments_", [smalltalk.send(allTabs, "_at_", [caption]), [html]]);})]);})]));return smalltalk.send(smalltalk.send(self, "_tabs", []), "_at_put_", [caption, tab]);})() : nil) : smalltalk.send($receiver, "_ifTrue_", [(function(){var tab=nil;
 var html=nil;
-(html=smalltalk.send((smalltalk.HTMLCanvas || HTMLCanvas), "_onJQuery_", [smalltalk.send(self['@tabsContainer'], "_asJQuery", [])]));(tab=smalltalk.send(smalltalk.send(html, "_div", []), "_with_", [(function(){return smalltalk.send(self, "_perform_withArguments_", [smalltalk.send(allTabs, "_at_", [caption]), [html]]);})]));return smalltalk.send(smalltalk.send(self, "_tabs", []), "_at_put_", [caption, tab]);})]));
+(html=smalltalk.send((smalltalk.HTMLCanvas || HTMLCanvas), "_onJQuery_", [smalltalk.send(self['@tabsContainer'], "_asJQuery", [])]));(tab=smalltalk.send(smalltalk.send(html, "_div", []), "_with_", [(function(){return smalltalk.send(smalltalk.send(html, "_div", []), "_with_", [(function(){return smalltalk.send(self, "_perform_withArguments_", [smalltalk.send(allTabs, "_at_", [caption]), [html]]);})]);})]));return smalltalk.send(smalltalk.send(self, "_tabs", []), "_at_put_", [caption, tab]);})]));
 smalltalk.send(smalltalk.send(self, "_tabs", []), "_keysAndValuesDo_", [(function(tabCaption, tab){var capEl=nil;
-(capEl=smalltalk.send(smalltalk.send(self, "_captions", []), "_at_", [tabCaption]));return ((($receiver = smalltalk.send(caption, "__eq", [tabCaption])).klass === smalltalk.Boolean) ? ($receiver ? (function(){smalltalk.send(tab, "_show", []);return smalltalk.send(capEl, "_addClass_", ["active"]);})() : (function(){smalltalk.send(tab, "_hide", []);return smalltalk.send(capEl, "_removeClass_", ["active"]);})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){smalltalk.send(tab, "_show", []);return smalltalk.send(capEl, "_addClass_", ["active"]);}), (function(){smalltalk.send(tab, "_hide", []);return smalltalk.send(capEl, "_removeClass_", ["active"]);})]));})]);
+(capEl=smalltalk.send(smalltalk.send(self, "_captions", []), "_at_", [tabCaption]));return ((($receiver = smalltalk.send(caption, "__eq", [tabCaption])).klass === smalltalk.Boolean) ? ($receiver ? (function(){(self['@currentTab']=tab);smalltalk.send(tab, "_show", []);return smalltalk.send(capEl, "_addClass_", ["active"]);})() : (function(){smalltalk.send(tab, "_hide", []);return smalltalk.send(capEl, "_removeClass_", ["active"]);})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){(self['@currentTab']=tab);smalltalk.send(tab, "_show", []);return smalltalk.send(capEl, "_addClass_", ["active"]);}), (function(){smalltalk.send(tab, "_hide", []);return smalltalk.send(capEl, "_removeClass_", ["active"]);})]));})]);
 return false;
 return self;},
 args: ["caption"],
-source: unescape('showTab%3A%20caption%0A%09%7CallTabs%7C%0A%09allTabs%20%3A%3D%20self%20contentTabs.%0A%09%22Lazy%20generate%20new%20tabs.%22%0A%09%28%28self%20tabs%20includesKey%3A%20caption%29%20not%20and%3A%20%5BallTabs%20includesKey%3A%20caption%5D%29%0A%09%09ifTrue%3A%20%5B%20%7Ctab%20html%7C%0A%09%09%09html%20%3A%3D%20HTMLCanvas%20onJQuery%3A%20tabsContainer%20asJQuery.%0A%09%09%09tab%20%3A%3D%20html%20div%0A%09%09%09%09with%3A%20%5Bself%20perform%3A%20%28allTabs%20at%3A%20caption%29%20withArguments%3A%20%7Bhtml%7D%5D.%0A%09%09%09self%20tabs%20at%3A%20caption%20put%3A%20tab%5D.%0A%09self%20tabs%20keysAndValuesDo%3A%20%5B%3AtabCaption%20%3Atab%20%7C%20%7CcapEl%7C%0A%09%09capEl%20%3A%3D%20self%20captions%20at%3A%20tabCaption.%0A%09%09caption%20%3D%20tabCaption%0A%09%09%09ifTrue%3A%20%5B%0A%09%09%09%09tab%20show.%0A%09%09%09%09capEl%20addClass%3A%20%27active%27%5D%0A%09%09%09ifFalse%3A%20%5B%0A%09%09%09%09tab%20hide.%0A%09%09%09%09capEl%20removeClass%3A%20%27active%27%5D%5D.%0A%09%22return%20false%20to%20avoid%20scrolling%20to%20the%20top%22%0A%09%5E%20false'),
+source: unescape('showTab%3A%20caption%0A%09%7CallTabs%7C%0A%09allTabs%20%3A%3D%20self%20contentTabs.%0A%09%22Lazy%20generate%20new%20tabs.%22%0A%09%28%28self%20tabs%20includesKey%3A%20caption%29%20not%20and%3A%20%5BallTabs%20includesKey%3A%20caption%5D%29%0A%09%09ifTrue%3A%20%5B%20%7Ctab%20html%7C%0A%09%09%09html%20%3A%3D%20HTMLCanvas%20onJQuery%3A%20tabsContainer%20asJQuery.%0A%09%09%09tab%20%3A%3D%20html%20div%0A%09%09%09%09with%3A%20%5B%0A%09%09%09%09%09html%20div%0A%09%09%09%09%09%09with%3A%20%5Bself%20perform%3A%20%28allTabs%20at%3A%20caption%29%20withArguments%3A%20%7Bhtml%7D%5D%5D.%0A%09%09%09self%20tabs%20at%3A%20caption%20put%3A%20tab%5D.%0A%09self%20tabs%20keysAndValuesDo%3A%20%5B%3AtabCaption%20%3Atab%20%7C%20%7CcapEl%7C%0A%09%09capEl%20%3A%3D%20self%20captions%20at%3A%20tabCaption.%0A%09%09caption%20%3D%20tabCaption%0A%09%09%09ifTrue%3A%20%5B%0A%09%09%09%09currentTab%20%3A%3D%20tab.%0A%09%09%09%09tab%20show.%0A%09%09%09%09capEl%20addClass%3A%20%27active%27%5D%0A%09%09%09ifFalse%3A%20%5B%0A%09%09%09%09tab%20hide.%0A%09%09%09%09capEl%20removeClass%3A%20%27active%27%5D%5D.%0A%09%22return%20false%20to%20avoid%20scrolling%20to%20the%20top%22%0A%09%5E%20false'),
 messageSends: ["contentTabs", "ifTrue:", "and:", "not", "includesKey:", "tabs", "onJQuery:", "asJQuery", "with:", "div", "perform:withArguments:", "at:", "at:put:", "keysAndValuesDo:", "captions", "ifTrue:ifFalse:", unescape("%3D"), "show", "addClass:", "hide", "removeClass:"],
 referencedClasses: ["HTMLCanvas"]
 }),

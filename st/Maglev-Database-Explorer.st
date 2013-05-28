@@ -449,6 +449,12 @@ remove
 		yourself
 !
 
+resizeSmall
+	^ self new
+		icon: 'resize-small';
+		yourself
+!
+
 search
 	^ self new
 		icon: 'search';
@@ -1819,7 +1825,7 @@ highestZIndex
 ! !
 
 MaglevWindow subclass: #MaglevObjectWindow
-	instanceVariableNames: 'container object classObject tabs captions tabsContainer'
+	instanceVariableNames: 'container object classObject tabs captions tabsContainer currentTab'
 	package: 'Maglev-Database-Explorer'!
 
 !MaglevObjectWindow methodsFor: 'accessing'!
@@ -1858,6 +1864,14 @@ defaultTab
 	^ nil
 !
 
+makeCurrentTabResizable
+	currentTab
+		style: 'overflow: hidden;'.
+	currentTab asJQuery children first 
+		attr: 'style' with: 'width: 100%; height: 100%; overflow: auto;'.
+	currentTab asJQuery resizable.
+!
+
 prepareWindow
 	super prepareWindow
 	MaglevObjectSpace registerWindow: self.
@@ -1878,12 +1892,15 @@ showTab: caption
 		ifTrue: [ |tab html|
 			html := HTMLCanvas onJQuery: tabsContainer asJQuery.
 			tab := html div
-				with: [self perform: (allTabs at: caption) withArguments: {html}].
+				with: [
+					html div
+						with: [self perform: (allTabs at: caption) withArguments: {html}]].
 			self tabs at: caption put: tab].
 	self tabs keysAndValuesDo: [:tabCaption :tab | |capEl|
 		capEl := self captions at: tabCaption.
 		caption = tabCaption
 			ifTrue: [
+				currentTab := tab.
 				tab show.
 				capEl addClass: 'active']
 			ifFalse: [
@@ -1938,13 +1955,21 @@ renderWindowContentOn: html
 			class: 'nav nav-tabs';
 			style: 'display: inline-block; margin-bottom: 0px; margin-top: 5px; width: 100%;';
 			with: [
-			self contentTabs keysAndValuesDo: [:caption :generator | |capEl|
-				firstCaption ifNil: [firstCaption := caption].
-				capEl := html li with: [
-					html a
-						href: '#';
-						onClick: [self showTab: caption];
-						with: caption].
+				html li
+					style: 'float: right;';
+					onClick: [self makeCurrentTabResizable];
+					with: [
+						html a
+							href: '#';
+							onClick: [self makeCurrentTabResizable];
+							with: MaglevIcon resizeSmall].
+				self contentTabs keysAndValuesDo: [:caption :generator | |capEl|
+					firstCaption ifNil: [firstCaption := caption].
+					capEl := html li with: [
+						html a
+							href: '#';
+							onClick: [self showTab: caption];
+							with: caption].
 				self captions at: caption put: capEl]]].
 	tabsContainer := html div.
 	defaultTab := self defaultTab.
