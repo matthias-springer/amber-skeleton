@@ -202,7 +202,7 @@ renderStatusBarOn: html
 					html with: rubyIcon.
 					html with: stIcon.
 					envIdContainer := html span with: 'Environment ID'];
-					style: 'width: 1px;'.
+					style: 'width: 32px;'.
 				html td with: [
 					sourceLocationContainer := html span with: 'Source location']]]].
 ! !
@@ -601,6 +601,12 @@ sizeVisible
 
 style: aString
 	divContainer style: aString.
+! !
+
+!MaglevListBox methodsFor: 'converting'!
+
+asJQuery
+	^divContainer asJQuery
 ! !
 
 !MaglevListBox methodsFor: 'interactions'!
@@ -2681,24 +2687,58 @@ renderStackTraceOn: html
 ! !
 
 MaglevWindow subclass: #MaglevSearchWindow
-	instanceVariableNames: 'maglev selectBox waitForResult listContents methodContainer waitingScreen'
+	instanceVariableNames: 'maglev selectBox waitForResult listContents methodContainer waitingScreen selectContainer'
 	package: 'Maglev-Database-Explorer'!
 
 !MaglevSearchWindow methodsFor: 'not yet classified'!
-
-listIndex
-	^ (selectBox asJQuery at: 0) selectedIndex + 1
-!
 
 maglev
 	maglev ifNil: [maglev := Maglev instance].
 	^maglev
 !
 
-renderClass
+renderContentsOn: html
+	selectBox := MaglevListBox new.
+	
+	html div with:[
+		html with: selectBox.
+                        selectBox
+                                changedCallback: [:sel :index | self renderMethodAt: index];
+                                height: 150;
+                                style: 'max-width: 250px; max-height: 400px;margin-right: 10px; margin-left: 0px; display: inline-block;';
+                                hide.
+
+		methodContainer := html div
+			style: ' display: inline-block; float: right; max-height: 400px;max-width: 800px; min-width: 600px;'.
+		];
+		style: 'width: 100%;display: -moz-box; display:-webkit-box; display:-ms-flexbox; display:box;'.
+!
+
+renderListOf: selectors
+	selectBox clear.
+	listContents := Array new.
+	selectors do:[:selector| 
+		self maglev implementersOf: selector withCallback:[:success :obj|
+			obj do:[:cls|
+				listContents add: {cls. selector}.
+				selectBox
+					with: [:html| 
+						(cls at: 2) inspection asNumber = 0 
+							ifTrue:[html with: MaglevIconImage smalltalk]
+							ifFalse:[html with: MaglevIconImage ruby].
+						html with: (cls at:1) inspection, '>>' , selector]
+					data: (cls at:1) inspection, '>>' , selector
+			].
+			selectBox show.
+			waitForResult hide.
+		]
+	].
+!
+
+renderMethodAt: anIndex
 	|listElement cls selector envId|
 	waitingScreen show.
-	listElement := listContents at: self listIndex.
+	listElement := listContents at: anIndex ifAbsent:[^self].
 	cls := (listElement at: 1) at:1.
 	envId :=  ((listElement at: 1) at:2) inspection asNumber.
 	selector := listElement at: 2.
@@ -2712,62 +2752,51 @@ renderClass
 	]
 !
 
-renderListOf: selectors
-	|html|
-	html := HTMLCanvas onJQuery: selectBox asJQuery.
-	selectBox asJQuery empty.
-	listContents := Array new.
-	selectors do:[:selector| 
-		self maglev implementersOf: selector withCallback:[:success :obj|
-			obj hasElements ifTrue:[
-				selectBox
-				with: [obj do: [:cls |
-					listContents add: {cls. selector}.
-					html option with: (cls at:1) inspection, '>>' , selector]];
-				size: 10;
-				style: 'width: 100%;';
-				show
-				"onChange: [self renderClass]"
-			].
-			waitForResult hide.
-		]
-	]
-!
-
 renderMethodObject: obj
 	methodContainer asJQuery empty.
+	(container asJQuery find:'table') remove.
 	methodContainer with: (MaglevGsNMethodEditor for: obj).
 	waitingScreen hide.
+	self updateLayout
 !
 
-renderWindowContentOn: html
+renderSearchBarOn: html
 	html div
 		class: 'maglev-search'; 
 		with: [
 		html form
 			class: 'search-form';
-			onSubmit: [:e|e preventDefault. self searchSelectorsAndClasses.]; 
+			onSubmit: [:e|e preventDefault. self searchSelectorsAndClasses.];
+			style: 'width: 100%; padding-top: 5px;';
 			with:[
 			html input
 				class: 'search-input'
 			]
 		].
-	selectBox := html select
-			size: 10;
-			style: 'width: 100%;';
-			onChange: [self renderClass];
-			hide.
+!
+
+renderWindowContentOn: html
+	self renderSearchBarOn: html.
 	waitForResult := html div
 		with: [html
 				with: MaglevIcon wait;
 				with: ' loading...'];
 		hide.
+
+	self renderContentsOn: html.
+
 	waitingScreen := html div
 			with: [html
 				with: MaglevIcon wait;
 				with: ' loading...'];
+			style: 'clear:both;';
 			hide.
-	methodContainer := html div.
+!
+
+renderWindowTitleContentOn: html
+	html with: 'Search Implementors'.
+	self renderHeightPlaceholderOn: html.
+	self renderCloseButtonOn: html.
 !
 
 searchSelectorsAndClasses
@@ -2780,6 +2809,10 @@ searchSelectorsAndClasses
 		self renderListOf: selectors]. 
 		
 	].
+!
+
+updateLayout
+	((methodContainer asJQuery find:'table')eq:0) appendTo: container asJQuery
 ! !
 
 MaglevWindow subclass: #MaglevWaitingWindow
