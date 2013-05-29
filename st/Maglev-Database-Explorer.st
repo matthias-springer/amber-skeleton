@@ -2705,7 +2705,7 @@ renderContentsOn: html
                         selectBox
                                 changedCallback: [:sel :index | self renderMethodAt: index];
                                 height: 150;
-                                style: 'max-width: 250px; max-height: 400px;margin-right: 10px; margin-left: 0px; display: inline-block;';
+                                style: 'max-width: 300px; max-height: 400px;margin-right: 10px; margin-left: 0px; display: inline-block;';
                                 hide.
 
 		methodContainer := html div
