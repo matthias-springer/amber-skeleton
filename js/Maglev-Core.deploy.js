@@ -14,20 +14,6 @@ return self;}
 smalltalk.Maglev);
 
 smalltalk.addMethod(
-unescape('_evaluateWithoutUpdate_language_with_withCallback_'),
-smalltalk.method({
-selector: unescape('evaluateWithoutUpdate%3Alanguage%3Awith%3AwithCallback%3A'),
-fn: function (code, aString, additionalParams, aBlock){
-var self=this;
-var params=nil;
-(params=(function($rec){smalltalk.send($rec, "_at_put_", ["language", aString]);smalltalk.send($rec, "_at_put_", ["code", code]);smalltalk.send($rec, "_addAll_", [additionalParams]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", [])));
-smalltalk.send((smalltalk.MaglevAjax || MaglevAjax), "_ajax_data_withCallback_", [unescape("/object/evaluate/20"), params, (function(obj){var parsedObj=nil;
-(parsedObj=smalltalk.send((smalltalk.MaglevObject || MaglevObject), "_newObjectWithoutUpdate_", [obj]));return smalltalk.send(aBlock, "_value_value_", [smalltalk.send(smalltalk.send(parsedObj, "_isException", []), "_not", []), parsedObj]);})]);
-return self;}
-}),
-smalltalk.Maglev);
-
-smalltalk.addMethod(
 unescape('_findClassNamesMatching_with_'),
 smalltalk.method({
 selector: unescape('findClassNamesMatching%3Awith%3A'),
@@ -52,13 +38,13 @@ return self;}
 smalltalk.Maglev);
 
 smalltalk.addMethod(
-unescape('_implementersOf_withCallback_'),
+unescape('_implementorsOf_withCallback_'),
 smalltalk.method({
-selector: unescape('implementersOf%3AwithCallback%3A'),
+selector: unescape('implementorsOf%3AwithCallback%3A'),
 fn: function (aSelector, aBlock){
 var self=this;
 ((($receiver = smalltalk.send(aSelector, "_isString", [])).klass === smalltalk.Boolean) ? (! $receiver ? (function(){return smalltalk.send(self, "_error_", ["The selector should be a string"]);})() : nil) : smalltalk.send($receiver, "_ifFalse_", [(function(){return smalltalk.send(self, "_error_", ["The selector should be a string"]);})]));
-smalltalk.send(smalltalk.send((smalltalk.MaglevNilClass || MaglevNilClass), "_instance", []), "_evaluateWithoutUpdate_language_withCallback_", [smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(unescape("%7Corganizer%20dict%20ruby%20smalltalk%7C%20organizer%20%3A%3D%20ClassOrganizer%20new.%20dict%20%3A%3D%20Array%20new.%20smalltalk%20%3A%3D%20organizer%20implementorsOf%3A%27"), "__comma", [aSelector]), "__comma", [unescape("%27%20asSymbol.%20smalltalk%20do%3A%5B%3Acls%7C%20dict%20addLast%3A%7Bcls.%200.%7D%5D.%20ruby%20%3A%3D%20organizer%20rubyImplementorsOf%3A%27")]), "__comma", [aSelector]), "__comma", [unescape("%27%20asSymbol.%20ruby%20do%3A%5B%3Acls%7C%20dict%20addLast%3A%7Bcls.%201.%7D%5D.%201%20to%3A%20dict%20size%20do%3A%5B%3Ai%7C%7Ccls%7C%20cls%3A%3D%20%28dict%20at%3A%20i%29%20at%3A1.%20%28cls%20class%20%3D%3D%20GsNMethod%29%20ifTrue%3A%5B%28dict%20at%3Ai%29%20at%3A1%20put%3A%20cls%20inClass%5D%5D.%20dict")]), "smalltalk", aBlock]);
+smalltalk.send(smalltalk.send((smalltalk.MaglevNilClass || MaglevNilClass), "_instance", []), "_evaluateWithoutUpdate_language_with_withCallback_", [smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(unescape("%7Corganizer%20dict%20ruby%20smalltalk%7C%20%0A%09%09%09%09%09%09%09organizer%20%3A%3D%20ClassOrganizer%20new.%20%0A%09%09%09%09%09%09%09dict%20%3A%3D%20Array%20new.%20%0A%09%09%09%09%09%09%09smalltalk%20%3A%3D%20organizer%20implementorsOf%3A%20%27"), "__comma", [aSelector]), "__comma", [unescape("%27%20asSymbol.%20%20%0A%09%09%09%09%09%09%09smalltalk%20do%3A%5B%3Acls%7C%20dict%20addLast%3A%7Bcls%20inClass%20name.%200.%20cls%20selector.%20%20cls%20inClass%20asOop.%7D%5D.%20%0A%09%09%09%09%09%09%09ruby%20%3A%3D%20organizer%20rubyImplementorsOf%3A%20%27")]), "__comma", [aSelector]), "__comma", [unescape("%27%20asSymbol.%20%0A%09%09%09%09%09%09%09ruby%20do%3A%5B%3Acls%7C%20dict%20addLast%3A%7Bcls%20name%20.%201.%20%27")]), "__comma", [aSelector]), "__comma", [unescape("%27.%20cls%20asOop.%7D%5D.%20%0A%09%09%09%09%09%09%09dict")]), "smalltalk", (function($rec){smalltalk.send($rec, "_at_put_", ["allElements", true]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", [])), aBlock]);
 return self;}
 }),
 smalltalk.Maglev);
@@ -108,6 +94,18 @@ var self=this;
 var navItem=nil;
 (navItem=smalltalk.send(smalltalk.send(self['@bottomNavHtml'], "_li", []), "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_class_", [unescape("btn%20btn-info%20window-navigation-item")]);smalltalk.send($rec, "_style_", [unescape("padding%3A%204px%202px%202px%204px%3B%20margin-top%3A%205px%3B")]);smalltalk.send($rec, "_onClick_", [(function(){return smalltalk.send(aWindow, "_moveToFront", []);})]);return smalltalk.send($rec, "_with_", [(function(){return smalltalk.send(aWindow, "_renderNavigationOn_", [self['@bottomNavHtml']]);})]);})(smalltalk.send(self['@bottomNavHtml'], "_a", []));})]));
 smalltalk.send(aWindow, "_navigationItem_", [navItem]);
+return self;}
+}),
+smalltalk.Maglev);
+
+smalltalk.addMethod(
+unescape('_sendersOf_withCallback_'),
+smalltalk.method({
+selector: unescape('sendersOf%3AwithCallback%3A'),
+fn: function (aSelector, aBlock){
+var self=this;
+((($receiver = smalltalk.send(aSelector, "_isString", [])).klass === smalltalk.Boolean) ? (! $receiver ? (function(){return smalltalk.send(self, "_error_", ["The selector should be a string"]);})() : nil) : smalltalk.send($receiver, "_ifFalse_", [(function(){return smalltalk.send(self, "_error_", ["The selector should be a string"]);})]));
+smalltalk.send(smalltalk.send((smalltalk.MaglevNilClass || MaglevNilClass), "_instance", []), "_evaluateWithoutUpdate_language_with_withCallback_", [smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(unescape("%7Corganizer%20dict%20ruby%20smalltalk%7C%20%0A%09%09%09%09%09%09%09organizer%20%3A%3D%20ClassOrganizer%20new.%20%0A%09%09%09%09%09%09%09dict%20%3A%3D%20Array%20new.%20%0A%09%09%09%09%09%09%09smalltalk%20%3A%3D%20%28organizer%20sendersOf%3A%27"), "__comma", [aSelector]), "__comma", [unescape("%27%20asSymbol%29%20at%3A1.%20%20%0A%09%09%09%09%09%09%09smalltalk%20do%3A%5B%3Acls%7C%20dict%20addLast%3A%7Bcls%20inClass%20name.%200.%20cls%20selector.%20%20cls%20inClass%20asOop.%7D%5D.%20%0A%09%09%09%09%09%09%09ruby%20%3A%3D%20organizer%20rubySendersOf%3A%27")]), "__comma", [aSelector]), "__comma", [unescape("%27%20asSymbol.%20%0A%09%09%09%09%09%09%09ruby%20do%3A%5B%3Acls%7C%20dict%20addLast%3A%7Bcls%20inClass%20name%20.%201.%20cls%20_rubyName.%20cls%20inClass%20asOop.%7D%5D.%20%0A%09%09%09%09%09%09%09dict")]), "smalltalk", (function($rec){smalltalk.send($rec, "_at_put_", ["allElements", true]);return smalltalk.send($rec, "_yourself", []);})(smalltalk.send((smalltalk.Dictionary || Dictionary), "_new", [])), aBlock]);
 return self;}
 }),
 smalltalk.Maglev);

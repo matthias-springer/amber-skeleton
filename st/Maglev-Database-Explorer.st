@@ -2715,40 +2715,24 @@ renderContentsOn: html
 !
 
 renderListOf: selectors
-	selectBox clear.
-	listContents := Array new.
-	selectors do:[:selector| 
-		self maglev implementersOf: selector withCallback:[:success :obj|
-			obj do:[:cls|
-				listContents add: {cls. selector}.
-				selectBox
-					with: [:html| 
-						(cls at: 2) inspection asNumber = 0 
-							ifTrue:[html with: MaglevIconImage smalltalk]
-							ifFalse:[html with: MaglevIconImage ruby].
-						html with: (cls at:1) inspection, '>>' , selector]
-					data: (cls at:1) inspection, '>>' , selector
-			].
-			selectBox show.
-			waitForResult hide.
-		]
-	].
 !
 
 renderMethodAt: anIndex
-	|listElement cls selector envId|
+	|listElement oop selector envId|
 	waitingScreen show.
 	listElement := listContents at: anIndex ifAbsent:[^self].
-	cls := (listElement at: 1) at:1.
-	envId :=  ((listElement at: 1) at:2) inspection asNumber.
-	selector := listElement at: 2.
-	envId = 0 ifTrue:[
-		cls sourceCodeFor: selector language: 'smalltalk' withCallback: [:obj| 
-			self renderMethodObject: obj.]			
-	]
-	ifFalse:[
-		cls sourceCodeFor: selector language: 'ruby' withCallback: [:obj|
-			self renderMethodObject: obj]
+	oop := (listElement at: 4) inspection.
+	envId :=  (listElement at: 2) number.
+	selector := (listElement at: 3) string.
+	self maglev objectSpace reloadObject: oop withCallback:[ :cls|
+		envId = 0 ifTrue:[
+			cls sourceCodeFor: selector language: 'smalltalk' withCallback: [:obj| 
+				self renderMethodObject: obj.]			
+		]
+		ifFalse:[
+			cls sourceCodeFor: selector language: 'ruby' withCallback: [:obj|
+				self renderMethodObject: obj]
+		]
 	]
 !
 
@@ -2770,7 +2754,8 @@ renderSearchBarOn: html
 			style: 'width: 100%; padding-top: 5px;';
 			with:[
 			html input
-				class: 'search-input'
+				class: 'search-input';
+				type: 'text'
 			]
 		].
 !
@@ -2794,7 +2779,7 @@ renderWindowContentOn: html
 !
 
 renderWindowTitleContentOn: html
-	html with: 'Search Implementors'.
+	html with: 'Search'.
 	self renderHeightPlaceholderOn: html.
 	self renderCloseButtonOn: html.
 !
@@ -2813,6 +2798,72 @@ searchSelectorsAndClasses
 
 updateLayout
 	((methodContainer asJQuery find:'table')eq:0) appendTo: container asJQuery
+! !
+
+MaglevSearchWindow subclass: #MaglevSearchImplementorsWindow
+	instanceVariableNames: 'maglev selectBox waitForResult listContents methodContainer waitingScreen selectContainer'
+	package: 'Maglev-Database-Explorer'!
+
+!MaglevSearchImplementorsWindow methodsFor: 'not yet classified'!
+
+renderListOf: selectors
+	selectBox clear.
+	listContents := Array new.
+	selectors do:[:selector| 
+		self maglev implementorsOf: selector withCallback:[:success :obj|
+			obj do:[:cls|
+				listContents add: cls.
+				selectBox
+					with: [:html|
+						(cls at: 2) inspection asNumber = 0 
+							ifTrue:[html with: MaglevIconImage smalltalk]
+							ifFalse:[html with: MaglevIconImage ruby].
+						html with: (cls at:1) string, '>>' , (cls at:3) string ]
+					data: (cls at:1) string, '>>' , (cls at:3) string
+			].
+			selectBox show.
+			waitForResult hide.
+		]
+	].
+!
+
+renderWindowTitleContentOn: html
+	html with: 'Search Implementors'.
+	self renderHeightPlaceholderOn: html.
+	self renderCloseButtonOn: html.
+! !
+
+MaglevSearchWindow subclass: #MaglevSearchSendersWindow
+	instanceVariableNames: 'maglev selectBox waitForResult listContents methodContainer waitingScreen selectContainer'
+	package: 'Maglev-Database-Explorer'!
+
+!MaglevSearchSendersWindow methodsFor: 'not yet classified'!
+
+renderListOf: selectors
+	selectBox clear.
+	listContents := Array new.
+	selectors do:[:selector| 
+		self maglev sendersOf: selector withCallback:[:success :obj|
+			obj do:[:cls|
+				listContents add: cls.
+				selectBox
+					with: [:html|
+						(cls at: 2) inspection asNumber = 0 
+							ifTrue:[html with: MaglevIconImage smalltalk]
+							ifFalse:[html with: MaglevIconImage ruby].
+						html with: selector,': ', (cls at:1) string, '>>' , (cls at:3) string ]
+					data: (cls at:1) inspection, '>>' , (cls at:3) string
+			].
+			selectBox show.
+			waitForResult hide.
+		]
+	].
+!
+
+renderWindowTitleContentOn: html
+	html with: 'Search Senders'.
+	self renderHeightPlaceholderOn: html.
+	self renderCloseButtonOn: html.
 ! !
 
 MaglevWindow subclass: #MaglevWaitingWindow

@@ -25,21 +25,6 @@ addWindow: aWindow
 	self showConnectionsFor: aWindow.
 !
 
-evaluateWithoutUpdate: code language: aString with: additionalParams withCallback: aBlock
-	|params|
-	params := Dictionary new
-		at: 'language' put: aString;
-		at: 'code' put: code;
-		addAll: additionalParams;
-		yourself.
-	MaglevAjax 
-		ajax: '/object/evaluate/20'
-		data: params
-		withCallback: [:obj | |parsedObj|
-			parsedObj := MaglevObject newObjectWithoutUpdate: obj.
-			aBlock value: parsedObj isException not value: parsedObj].
-!
-
 findClassNamesMatching: aSelector with: aBlock
 	aSelector isString ifFalse:[self error: 'The selector should be a string'].
 
@@ -58,17 +43,43 @@ findMethodNamesMatching: aSelector with: aBlock
 		withCallback: aBlock.
 !
 
-implementersOf: aSelector withCallback: aBlock
+implementorsOf: aSelector withCallback: aBlock
 	aSelector isString ifFalse:[self error: 'The selector should be a string'].
 	MaglevNilClass instance
-		evaluateWithoutUpdate: '|organizer dict ruby smalltalk| organizer := ClassOrganizer new. dict := Array new. smalltalk := organizer implementorsOf:''', aSelector, ''' asSymbol. smalltalk do:[:cls| dict addLast:{cls. 0.}]. ruby := organizer rubyImplementorsOf:''', aSelector, ''' asSymbol. ruby do:[:cls| dict addLast:{cls. 1.}]. 1 to: dict size do:[:i||cls| cls:= (dict at: i) at:1. (cls class == GsNMethod) ifTrue:[(dict at:i) at:1 put: cls inClass]]. dict' 
+		evaluateWithoutUpdate: '|organizer dict ruby smalltalk| 
+							organizer := ClassOrganizer new. 
+							dict := Array new. 
+							smalltalk := organizer implementorsOf: ''', aSelector, ''' asSymbol.  
+							smalltalk do:[:cls| dict addLast:{cls inClass name. 0. cls selector.  cls inClass asOop.}]. 
+							ruby := organizer rubyImplementorsOf: ''', aSelector, ''' asSymbol. 
+							ruby do:[:cls| dict addLast:{cls name . 1. ''', aSelector, '''. cls asOop.}]. 
+							dict'
 		language: 'smalltalk'
+		with: (Dictionary new at: 'allElements' put: true; yourself)
 		withCallback: aBlock.
 !
 
 removeWindow: aWindow
 	aWindow navigationItem asJQuery remove.
 	windows remove: aWindow.
+!
+
+sendersOf: aSelector withCallback: aBlock
+"Returns all the senders of a selector in the form: Class name, enviornmentID, selector, oop of Class"
+
+	aSelector isString ifFalse:[self error: 'The selector should be a string'].
+	MaglevNilClass instance
+		evaluateWithoutUpdate: '|organizer dict ruby smalltalk| 
+							organizer := ClassOrganizer new. 
+							dict := Array new. 
+							smalltalk := (organizer sendersOf:''', aSelector, ''' asSymbol) at:1.  
+							smalltalk do:[:cls| dict addLast:{cls inClass name. 0. cls selector.  cls inClass asOop.}]. 
+							ruby := organizer rubySendersOf:''', aSelector, ''' asSymbol. 
+							ruby do:[:cls| dict addLast:{cls inClass name . 1. cls _rubyName. cls inClass asOop.}]. 
+							dict' 
+		language: 'smalltalk'
+		with: (Dictionary new at: 'allElements' put: true; yourself)
+		withCallback: aBlock.
 ! !
 
 !Maglev methodsFor: 'rendering'!

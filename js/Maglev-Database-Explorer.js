@@ -5516,14 +5516,12 @@ selector: unescape('renderListOf%3A'),
 category: 'not yet classified',
 fn: function (selectors){
 var self=this;
-smalltalk.send(self['@selectBox'], "_clear", []);
-(self['@listContents']=smalltalk.send((smalltalk.Array || Array), "_new", []));
-smalltalk.send(selectors, "_do_", [(function(selector){return smalltalk.send(smalltalk.send(self, "_maglev", []), "_implementersOf_withCallback_", [selector, (function(success, obj){smalltalk.send(obj, "_do_", [(function(cls){smalltalk.send(self['@listContents'], "_add_", [[cls,selector]]);return smalltalk.send(self['@selectBox'], "_with_data_", [(function(html){((($receiver = smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(cls, "_at_", [(2)]), "_inspection", []), "_asNumber", []), "__eq", [(0)])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(html, "_with_", [smalltalk.send((smalltalk.MaglevIconImage || MaglevIconImage), "_smalltalk", [])]);})() : (function(){return smalltalk.send(html, "_with_", [smalltalk.send((smalltalk.MaglevIconImage || MaglevIconImage), "_ruby", [])]);})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return smalltalk.send(html, "_with_", [smalltalk.send((smalltalk.MaglevIconImage || MaglevIconImage), "_smalltalk", [])]);}), (function(){return smalltalk.send(html, "_with_", [smalltalk.send((smalltalk.MaglevIconImage || MaglevIconImage), "_ruby", [])]);})]));return smalltalk.send(html, "_with_", [smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(cls, "_at_", [(1)]), "_inspection", []), "__comma", [unescape("%3E%3E")]), "__comma", [selector])]);}), smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(cls, "_at_", [(1)]), "_inspection", []), "__comma", [unescape("%3E%3E")]), "__comma", [selector])]);})]);smalltalk.send(self['@selectBox'], "_show", []);return smalltalk.send(self['@waitForResult'], "_hide", []);})]);})]);
+
 return self;},
 args: ["selectors"],
-source: unescape('renderListOf%3A%20selectors%0A%09selectBox%20clear.%0A%09listContents%20%3A%3D%20Array%20new.%0A%09selectors%20do%3A%5B%3Aselector%7C%20%0A%09%09self%20maglev%20implementersOf%3A%20selector%20withCallback%3A%5B%3Asuccess%20%3Aobj%7C%0A%09%09%09obj%20do%3A%5B%3Acls%7C%0A%09%09%09%09listContents%20add%3A%20%7Bcls.%20selector%7D.%0A%09%09%09%09selectBox%0A%09%09%09%09%09with%3A%20%5B%3Ahtml%7C%20%0A%09%09%09%09%09%09%28cls%20at%3A%202%29%20inspection%20asNumber%20%3D%200%20%0A%09%09%09%09%09%09%09ifTrue%3A%5Bhtml%20with%3A%20MaglevIconImage%20smalltalk%5D%0A%09%09%09%09%09%09%09ifFalse%3A%5Bhtml%20with%3A%20MaglevIconImage%20ruby%5D.%0A%09%09%09%09%09%09html%20with%3A%20%28cls%20at%3A1%29%20inspection%2C%20%27%3E%3E%27%20%2C%20selector%5D%0A%09%09%09%09%09data%3A%20%28cls%20at%3A1%29%20inspection%2C%20%27%3E%3E%27%20%2C%20selector%0A%09%09%09%5D.%0A%09%09%09selectBox%20show.%0A%09%09%09waitForResult%20hide.%0A%09%09%5D%0A%09%5D.'),
-messageSends: ["clear", "new", "do:", "implementersOf:withCallback:", "maglev", "add:", "with:data:", "ifTrue:ifFalse:", unescape("%3D"), "asNumber", "inspection", "at:", "with:", "smalltalk", "ruby", unescape("%2C"), "show", "hide"],
-referencedClasses: ["Array", "MaglevIconImage"]
+source: unescape('renderListOf%3A%20selectors'),
+messageSends: [],
+referencedClasses: []
 }),
 smalltalk.MaglevSearchWindow);
 
@@ -5535,20 +5533,20 @@ category: 'not yet classified',
 fn: function (anIndex){
 var self=this;
 try{var listElement=nil;
-var cls=nil;
+var oop=nil;
 var selector=nil;
 var envId=nil;
 smalltalk.send(self['@waitingScreen'], "_show", []);
 (listElement=smalltalk.send(self['@listContents'], "_at_ifAbsent_", [anIndex, (function(){return (function(){throw({name: 'stReturn', selector: '_renderMethodAt_', fn: function(){return self}})})();})]));
-(cls=smalltalk.send(smalltalk.send(listElement, "_at_", [(1)]), "_at_", [(1)]));
-(envId=smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(listElement, "_at_", [(1)]), "_at_", [(2)]), "_inspection", []), "_asNumber", []));
-(selector=smalltalk.send(listElement, "_at_", [(2)]));
-((($receiver = smalltalk.send(envId, "__eq", [(0)])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(cls, "_sourceCodeFor_language_withCallback_", [selector, "smalltalk", (function(obj){return smalltalk.send(self, "_renderMethodObject_", [obj]);})]);})() : (function(){return smalltalk.send(cls, "_sourceCodeFor_language_withCallback_", [selector, "ruby", (function(obj){return smalltalk.send(self, "_renderMethodObject_", [obj]);})]);})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return smalltalk.send(cls, "_sourceCodeFor_language_withCallback_", [selector, "smalltalk", (function(obj){return smalltalk.send(self, "_renderMethodObject_", [obj]);})]);}), (function(){return smalltalk.send(cls, "_sourceCodeFor_language_withCallback_", [selector, "ruby", (function(obj){return smalltalk.send(self, "_renderMethodObject_", [obj]);})]);})]));
+(oop=smalltalk.send(smalltalk.send(listElement, "_at_", [(4)]), "_inspection", []));
+(envId=smalltalk.send(smalltalk.send(listElement, "_at_", [(2)]), "_number", []));
+(selector=smalltalk.send(smalltalk.send(listElement, "_at_", [(3)]), "_string", []));
+smalltalk.send(smalltalk.send(smalltalk.send(self, "_maglev", []), "_objectSpace", []), "_reloadObject_withCallback_", [oop, (function(cls){return ((($receiver = smalltalk.send(envId, "__eq", [(0)])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(cls, "_sourceCodeFor_language_withCallback_", [selector, "smalltalk", (function(obj){return smalltalk.send(self, "_renderMethodObject_", [obj]);})]);})() : (function(){return smalltalk.send(cls, "_sourceCodeFor_language_withCallback_", [selector, "ruby", (function(obj){return smalltalk.send(self, "_renderMethodObject_", [obj]);})]);})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return smalltalk.send(cls, "_sourceCodeFor_language_withCallback_", [selector, "smalltalk", (function(obj){return smalltalk.send(self, "_renderMethodObject_", [obj]);})]);}), (function(){return smalltalk.send(cls, "_sourceCodeFor_language_withCallback_", [selector, "ruby", (function(obj){return smalltalk.send(self, "_renderMethodObject_", [obj]);})]);})]));})]);
 return self;
 } catch(e) {if(e.name === 'stReturn' && e.selector === '_renderMethodAt_'){return e.fn()} throw(e)}},
 args: ["anIndex"],
-source: unescape('renderMethodAt%3A%20anIndex%0A%09%7ClistElement%20cls%20selector%20envId%7C%0A%09waitingScreen%20show.%0A%09listElement%20%3A%3D%20listContents%20at%3A%20anIndex%20ifAbsent%3A%5B%5Eself%5D.%0A%09cls%20%3A%3D%20%28listElement%20at%3A%201%29%20at%3A1.%0A%09envId%20%3A%3D%20%20%28%28listElement%20at%3A%201%29%20at%3A2%29%20inspection%20asNumber.%0A%09selector%20%3A%3D%20listElement%20at%3A%202.%0A%09envId%20%3D%200%20ifTrue%3A%5B%0A%09%09cls%20sourceCodeFor%3A%20selector%20language%3A%20%27smalltalk%27%20withCallback%3A%20%5B%3Aobj%7C%20%0A%09%09%09self%20renderMethodObject%3A%20obj.%5D%09%09%09%0A%09%5D%0A%09ifFalse%3A%5B%0A%09%09cls%20sourceCodeFor%3A%20selector%20language%3A%20%27ruby%27%20withCallback%3A%20%5B%3Aobj%7C%0A%09%09%09self%20renderMethodObject%3A%20obj%5D%0A%09%5D'),
-messageSends: ["show", "at:ifAbsent:", "at:", "asNumber", "inspection", "ifTrue:ifFalse:", unescape("%3D"), "sourceCodeFor:language:withCallback:", "renderMethodObject:"],
+source: unescape('renderMethodAt%3A%20anIndex%0A%09%7ClistElement%20oop%20selector%20envId%7C%0A%09waitingScreen%20show.%0A%09listElement%20%3A%3D%20listContents%20at%3A%20anIndex%20ifAbsent%3A%5B%5Eself%5D.%0A%09oop%20%3A%3D%20%28listElement%20at%3A%204%29%20inspection.%0A%09envId%20%3A%3D%20%20%28listElement%20at%3A%202%29%20number.%0A%09selector%20%3A%3D%20%28listElement%20at%3A%203%29%20string.%0A%09self%20maglev%20objectSpace%20reloadObject%3A%20oop%20withCallback%3A%5B%20%3Acls%7C%0A%09%09envId%20%3D%200%20ifTrue%3A%5B%0A%09%09%09cls%20sourceCodeFor%3A%20selector%20language%3A%20%27smalltalk%27%20withCallback%3A%20%5B%3Aobj%7C%20%0A%09%09%09%09self%20renderMethodObject%3A%20obj.%5D%09%09%09%0A%09%09%5D%0A%09%09ifFalse%3A%5B%0A%09%09%09cls%20sourceCodeFor%3A%20selector%20language%3A%20%27ruby%27%20withCallback%3A%20%5B%3Aobj%7C%0A%09%09%09%09self%20renderMethodObject%3A%20obj%5D%0A%09%09%5D%0A%09%5D'),
+messageSends: ["show", "at:ifAbsent:", "inspection", "at:", "number", "string", "reloadObject:withCallback:", "objectSpace", "maglev", "ifTrue:ifFalse:", unescape("%3D"), "sourceCodeFor:language:withCallback:", "renderMethodObject:"],
 referencedClasses: []
 }),
 smalltalk.MaglevSearchWindow);
@@ -5580,11 +5578,11 @@ selector: unescape('renderSearchBarOn%3A'),
 category: 'not yet classified',
 fn: function (html){
 var self=this;
-(function($rec){smalltalk.send($rec, "_class_", [unescape("maglev-search")]);return smalltalk.send($rec, "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_class_", [unescape("search-form")]);smalltalk.send($rec, "_onSubmit_", [(function(e){smalltalk.send(e, "_preventDefault", []);return smalltalk.send(self, "_searchSelectorsAndClasses", []);})]);smalltalk.send($rec, "_style_", [unescape("width%3A%20100%25%3B%20padding-top%3A%205px%3B")]);return smalltalk.send($rec, "_with_", [(function(){return smalltalk.send(smalltalk.send(html, "_input", []), "_class_", [unescape("search-input")]);})]);})(smalltalk.send(html, "_form", []));})]);})(smalltalk.send(html, "_div", []));
+(function($rec){smalltalk.send($rec, "_class_", [unescape("maglev-search")]);return smalltalk.send($rec, "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_class_", [unescape("search-form")]);smalltalk.send($rec, "_onSubmit_", [(function(e){smalltalk.send(e, "_preventDefault", []);return smalltalk.send(self, "_searchSelectorsAndClasses", []);})]);smalltalk.send($rec, "_style_", [unescape("width%3A%20100%25%3B%20padding-top%3A%205px%3B")]);return smalltalk.send($rec, "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_class_", [unescape("search-input")]);return smalltalk.send($rec, "_type_", ["text"]);})(smalltalk.send(html, "_input", []));})]);})(smalltalk.send(html, "_form", []));})]);})(smalltalk.send(html, "_div", []));
 return self;},
 args: ["html"],
-source: unescape('renderSearchBarOn%3A%20html%0A%09html%20div%0A%09%09class%3A%20%27maglev-search%27%3B%20%0A%09%09with%3A%20%5B%0A%09%09html%20form%0A%09%09%09class%3A%20%27search-form%27%3B%0A%09%09%09onSubmit%3A%20%5B%3Ae%7Ce%20preventDefault.%20self%20searchSelectorsAndClasses.%5D%3B%0A%09%09%09style%3A%20%27width%3A%20100%25%3B%20padding-top%3A%205px%3B%27%3B%0A%09%09%09with%3A%5B%0A%09%09%09html%20input%0A%09%09%09%09class%3A%20%27search-input%27%0A%09%09%09%5D%0A%09%09%5D.'),
-messageSends: ["class:", "with:", "onSubmit:", "preventDefault", "searchSelectorsAndClasses", "style:", "input", "form", "div"],
+source: unescape('renderSearchBarOn%3A%20html%0A%09html%20div%0A%09%09class%3A%20%27maglev-search%27%3B%20%0A%09%09with%3A%20%5B%0A%09%09html%20form%0A%09%09%09class%3A%20%27search-form%27%3B%0A%09%09%09onSubmit%3A%20%5B%3Ae%7Ce%20preventDefault.%20self%20searchSelectorsAndClasses.%5D%3B%0A%09%09%09style%3A%20%27width%3A%20100%25%3B%20padding-top%3A%205px%3B%27%3B%0A%09%09%09with%3A%5B%0A%09%09%09html%20input%0A%09%09%09%09class%3A%20%27search-input%27%3B%0A%09%09%09%09type%3A%20%27text%27%0A%09%09%09%5D%0A%09%09%5D.'),
+messageSends: ["class:", "with:", "onSubmit:", "preventDefault", "searchSelectorsAndClasses", "style:", "type:", "input", "form", "div"],
 referencedClasses: []
 }),
 smalltalk.MaglevSearchWindow);
@@ -5602,7 +5600,7 @@ smalltalk.send(self, "_renderContentsOn_", [html]);
 (self['@waitingScreen']=(function($rec){smalltalk.send($rec, "_with_", [(function(){return (function($rec){smalltalk.send($rec, "_with_", [smalltalk.send((smalltalk.MaglevIcon || MaglevIcon), "_wait", [])]);return smalltalk.send($rec, "_with_", [" loading..."]);})(html);})]);smalltalk.send($rec, "_style_", [unescape("clear%3Aboth%3B")]);return smalltalk.send($rec, "_hide", []);})(smalltalk.send(html, "_div", [])));
 return self;},
 args: ["html"],
-source: unescape('renderWindowContentOn%3A%20html%0A%09self%20renderSearchBarOn%3A%20html.%0A%09waitForResult%20%3A%3D%20html%20div%0A%09%09with%3A%20%5Bhtml%0A%09%09%09%09with%3A%20MaglevIcon%20wait%3B%0A%09%09%09%09with%3A%20%27%20loading...%27%5D%3B%0A%09%09hide.%0A%0A%09self%20renderContentsOn%3A%20html.%0A%0A%09waitingScreen%20%3A%3D%20html%20div%0A%09%09%09with%3A%20%5Bhtml%0A%09%09%09%09with%3A%20MaglevIcon%20wait%3B%0A%09%09%09%09with%3A%20%27%20loading...%27%5D%3B%0A%09%09%09style%3A%20%27clear%3Aboth%3B%27%3B%0A%09%09%09hide.%0A'),
+source: unescape('renderWindowContentOn%3A%20html%0A%09self%20renderSearchBarOn%3A%20html.%0A%09waitForResult%20%3A%3D%20html%20div%0A%09%09with%3A%20%5Bhtml%0A%09%09%09%09with%3A%20MaglevIcon%20wait%3B%0A%09%09%09%09with%3A%20%27%20loading...%27%5D%3B%0A%09%09hide.%0A%0A%09self%20renderContentsOn%3A%20html.%0A%0A%09waitingScreen%20%3A%3D%20html%20div%0A%09%09%09with%3A%20%5Bhtml%0A%09%09%09%09with%3A%20MaglevIcon%20wait%3B%0A%09%09%09%09with%3A%20%27%20loading...%27%5D%3B%0A%09%09%09style%3A%20%27clear%3Aboth%3B%27%3B%0A%09%09%09hide.'),
 messageSends: ["renderSearchBarOn:", "with:", "wait", "hide", "div", "renderContentsOn:", "style:"],
 referencedClasses: ["MaglevIcon"]
 }),
@@ -5615,12 +5613,12 @@ selector: unescape('renderWindowTitleContentOn%3A'),
 category: 'not yet classified',
 fn: function (html){
 var self=this;
-smalltalk.send(html, "_with_", ["Search Implementors"]);
+smalltalk.send(html, "_with_", ["Search"]);
 smalltalk.send(self, "_renderHeightPlaceholderOn_", [html]);
 smalltalk.send(self, "_renderCloseButtonOn_", [html]);
 return self;},
 args: ["html"],
-source: unescape('renderWindowTitleContentOn%3A%20html%0A%09html%20with%3A%20%27Search%20Implementors%27.%0A%09self%20renderHeightPlaceholderOn%3A%20html.%0A%09self%20renderCloseButtonOn%3A%20html.'),
+source: unescape('renderWindowTitleContentOn%3A%20html%0A%09html%20with%3A%20%27Search%27.%0A%09self%20renderHeightPlaceholderOn%3A%20html.%0A%09self%20renderCloseButtonOn%3A%20html.'),
 messageSends: ["with:", "renderHeightPlaceholderOn:", "renderCloseButtonOn:"],
 referencedClasses: []
 }),
@@ -5658,11 +5656,89 @@ var self=this;
 smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(self['@methodContainer'], "_asJQuery", []), "_find_", ["table"]), "_eq_", [(0)]), "_appendTo_", [smalltalk.send(self['@container'], "_asJQuery", [])]);
 return self;},
 args: [],
-source: unescape('updateLayout%0A%09%28%28methodContainer%20asJQuery%20find%3A%27table%27%29eq%3A0%29%20appendTo%3A%20container%20asJQuery%0A%09'),
+source: unescape('updateLayout%0A%09%28%28methodContainer%20asJQuery%20find%3A%27table%27%29eq%3A0%29%20appendTo%3A%20container%20asJQuery'),
 messageSends: ["appendTo:", "eq:", "find:", "asJQuery"],
 referencedClasses: []
 }),
 smalltalk.MaglevSearchWindow);
+
+
+
+smalltalk.addClass('MaglevSearchImplementorsWindow', smalltalk.MaglevSearchWindow, ['maglev', 'selectBox', 'waitForResult', 'listContents', 'methodContainer', 'waitingScreen', 'selectContainer'], 'Maglev-Database-Explorer');
+smalltalk.addMethod(
+unescape('_renderListOf_'),
+smalltalk.method({
+selector: unescape('renderListOf%3A'),
+category: 'not yet classified',
+fn: function (selectors){
+var self=this;
+smalltalk.send(self['@selectBox'], "_clear", []);
+(self['@listContents']=smalltalk.send((smalltalk.Array || Array), "_new", []));
+smalltalk.send(selectors, "_do_", [(function(selector){return smalltalk.send(smalltalk.send(self, "_maglev", []), "_implementorsOf_withCallback_", [selector, (function(success, obj){smalltalk.send(obj, "_do_", [(function(cls){smalltalk.send(self['@listContents'], "_add_", [cls]);return smalltalk.send(self['@selectBox'], "_with_data_", [(function(html){((($receiver = smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(cls, "_at_", [(2)]), "_inspection", []), "_asNumber", []), "__eq", [(0)])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(html, "_with_", [smalltalk.send((smalltalk.MaglevIconImage || MaglevIconImage), "_smalltalk", [])]);})() : (function(){return smalltalk.send(html, "_with_", [smalltalk.send((smalltalk.MaglevIconImage || MaglevIconImage), "_ruby", [])]);})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return smalltalk.send(html, "_with_", [smalltalk.send((smalltalk.MaglevIconImage || MaglevIconImage), "_smalltalk", [])]);}), (function(){return smalltalk.send(html, "_with_", [smalltalk.send((smalltalk.MaglevIconImage || MaglevIconImage), "_ruby", [])]);})]));return smalltalk.send(html, "_with_", [smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(cls, "_at_", [(1)]), "_string", []), "__comma", [unescape("%3E%3E")]), "__comma", [smalltalk.send(smalltalk.send(cls, "_at_", [(3)]), "_string", [])])]);}), smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(cls, "_at_", [(1)]), "_string", []), "__comma", [unescape("%3E%3E")]), "__comma", [smalltalk.send(smalltalk.send(cls, "_at_", [(3)]), "_string", [])])]);})]);smalltalk.send(self['@selectBox'], "_show", []);return smalltalk.send(self['@waitForResult'], "_hide", []);})]);})]);
+return self;},
+args: ["selectors"],
+source: unescape('renderListOf%3A%20selectors%0A%09selectBox%20clear.%0A%09listContents%20%3A%3D%20Array%20new.%0A%09selectors%20do%3A%5B%3Aselector%7C%20%0A%09%09self%20maglev%20implementorsOf%3A%20selector%20withCallback%3A%5B%3Asuccess%20%3Aobj%7C%0A%09%09%09obj%20do%3A%5B%3Acls%7C%0A%09%09%09%09listContents%20add%3A%20cls.%0A%09%09%09%09selectBox%0A%09%09%09%09%09with%3A%20%5B%3Ahtml%7C%0A%09%09%09%09%09%09%28cls%20at%3A%202%29%20inspection%20asNumber%20%3D%200%20%0A%09%09%09%09%09%09%09ifTrue%3A%5Bhtml%20with%3A%20MaglevIconImage%20smalltalk%5D%0A%09%09%09%09%09%09%09ifFalse%3A%5Bhtml%20with%3A%20MaglevIconImage%20ruby%5D.%0A%09%09%09%09%09%09html%20with%3A%20%28cls%20at%3A1%29%20string%2C%20%27%3E%3E%27%20%2C%20%28cls%20at%3A3%29%20string%20%5D%0A%09%09%09%09%09data%3A%20%28cls%20at%3A1%29%20string%2C%20%27%3E%3E%27%20%2C%20%28cls%20at%3A3%29%20string%0A%09%09%09%5D.%0A%09%09%09selectBox%20show.%0A%09%09%09waitForResult%20hide.%0A%09%09%5D%0A%09%5D.'),
+messageSends: ["clear", "new", "do:", "implementorsOf:withCallback:", "maglev", "add:", "with:data:", "ifTrue:ifFalse:", unescape("%3D"), "asNumber", "inspection", "at:", "with:", "smalltalk", "ruby", unescape("%2C"), "string", "show", "hide"],
+referencedClasses: ["Array", "MaglevIconImage"]
+}),
+smalltalk.MaglevSearchImplementorsWindow);
+
+smalltalk.addMethod(
+unescape('_renderWindowTitleContentOn_'),
+smalltalk.method({
+selector: unescape('renderWindowTitleContentOn%3A'),
+category: 'not yet classified',
+fn: function (html){
+var self=this;
+smalltalk.send(html, "_with_", ["Search Implementors"]);
+smalltalk.send(self, "_renderHeightPlaceholderOn_", [html]);
+smalltalk.send(self, "_renderCloseButtonOn_", [html]);
+return self;},
+args: ["html"],
+source: unescape('renderWindowTitleContentOn%3A%20html%0A%09html%20with%3A%20%27Search%20Implementors%27.%0A%09self%20renderHeightPlaceholderOn%3A%20html.%0A%09self%20renderCloseButtonOn%3A%20html.'),
+messageSends: ["with:", "renderHeightPlaceholderOn:", "renderCloseButtonOn:"],
+referencedClasses: []
+}),
+smalltalk.MaglevSearchImplementorsWindow);
+
+
+
+smalltalk.addClass('MaglevSearchSendersWindow', smalltalk.MaglevSearchWindow, ['maglev', 'selectBox', 'waitForResult', 'listContents', 'methodContainer', 'waitingScreen', 'selectContainer'], 'Maglev-Database-Explorer');
+smalltalk.addMethod(
+unescape('_renderListOf_'),
+smalltalk.method({
+selector: unescape('renderListOf%3A'),
+category: 'not yet classified',
+fn: function (selectors){
+var self=this;
+smalltalk.send(self['@selectBox'], "_clear", []);
+(self['@listContents']=smalltalk.send((smalltalk.Array || Array), "_new", []));
+smalltalk.send(selectors, "_do_", [(function(selector){return smalltalk.send(smalltalk.send(self, "_maglev", []), "_sendersOf_withCallback_", [selector, (function(success, obj){smalltalk.send(obj, "_do_", [(function(cls){smalltalk.send(self['@listContents'], "_add_", [cls]);return smalltalk.send(self['@selectBox'], "_with_data_", [(function(html){((($receiver = smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(cls, "_at_", [(2)]), "_inspection", []), "_asNumber", []), "__eq", [(0)])).klass === smalltalk.Boolean) ? ($receiver ? (function(){return smalltalk.send(html, "_with_", [smalltalk.send((smalltalk.MaglevIconImage || MaglevIconImage), "_smalltalk", [])]);})() : (function(){return smalltalk.send(html, "_with_", [smalltalk.send((smalltalk.MaglevIconImage || MaglevIconImage), "_ruby", [])]);})()) : smalltalk.send($receiver, "_ifTrue_ifFalse_", [(function(){return smalltalk.send(html, "_with_", [smalltalk.send((smalltalk.MaglevIconImage || MaglevIconImage), "_smalltalk", [])]);}), (function(){return smalltalk.send(html, "_with_", [smalltalk.send((smalltalk.MaglevIconImage || MaglevIconImage), "_ruby", [])]);})]));return smalltalk.send(html, "_with_", [smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(selector, "__comma", [": "]), "__comma", [smalltalk.send(smalltalk.send(cls, "_at_", [(1)]), "_string", [])]), "__comma", [unescape("%3E%3E")]), "__comma", [smalltalk.send(smalltalk.send(cls, "_at_", [(3)]), "_string", [])])]);}), smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(cls, "_at_", [(1)]), "_inspection", []), "__comma", [unescape("%3E%3E")]), "__comma", [smalltalk.send(smalltalk.send(cls, "_at_", [(3)]), "_string", [])])]);})]);smalltalk.send(self['@selectBox'], "_show", []);return smalltalk.send(self['@waitForResult'], "_hide", []);})]);})]);
+return self;},
+args: ["selectors"],
+source: unescape('renderListOf%3A%20selectors%0A%09selectBox%20clear.%0A%09listContents%20%3A%3D%20Array%20new.%0A%09selectors%20do%3A%5B%3Aselector%7C%20%0A%09%09self%20maglev%20sendersOf%3A%20selector%20withCallback%3A%5B%3Asuccess%20%3Aobj%7C%0A%09%09%09obj%20do%3A%5B%3Acls%7C%0A%09%09%09%09listContents%20add%3A%20cls.%0A%09%09%09%09selectBox%0A%09%09%09%09%09with%3A%20%5B%3Ahtml%7C%0A%09%09%09%09%09%09%28cls%20at%3A%202%29%20inspection%20asNumber%20%3D%200%20%0A%09%09%09%09%09%09%09ifTrue%3A%5Bhtml%20with%3A%20MaglevIconImage%20smalltalk%5D%0A%09%09%09%09%09%09%09ifFalse%3A%5Bhtml%20with%3A%20MaglevIconImage%20ruby%5D.%0A%09%09%09%09%09%09html%20with%3A%20selector%2C%27%3A%20%27%2C%20%28cls%20at%3A1%29%20string%2C%20%27%3E%3E%27%20%2C%20%28cls%20at%3A3%29%20string%20%5D%0A%09%09%09%09%09data%3A%20%28cls%20at%3A1%29%20inspection%2C%20%27%3E%3E%27%20%2C%20%28cls%20at%3A3%29%20string%0A%09%09%09%5D.%0A%09%09%09selectBox%20show.%0A%09%09%09waitForResult%20hide.%0A%09%09%5D%0A%09%5D.'),
+messageSends: ["clear", "new", "do:", "sendersOf:withCallback:", "maglev", "add:", "with:data:", "ifTrue:ifFalse:", unescape("%3D"), "asNumber", "inspection", "at:", "with:", "smalltalk", "ruby", unescape("%2C"), "string", "show", "hide"],
+referencedClasses: ["Array", "MaglevIconImage"]
+}),
+smalltalk.MaglevSearchSendersWindow);
+
+smalltalk.addMethod(
+unescape('_renderWindowTitleContentOn_'),
+smalltalk.method({
+selector: unescape('renderWindowTitleContentOn%3A'),
+category: 'not yet classified',
+fn: function (html){
+var self=this;
+smalltalk.send(html, "_with_", ["Search Senders"]);
+smalltalk.send(self, "_renderHeightPlaceholderOn_", [html]);
+smalltalk.send(self, "_renderCloseButtonOn_", [html]);
+return self;},
+args: ["html"],
+source: unescape('renderWindowTitleContentOn%3A%20html%0A%09html%20with%3A%20%27Search%20Senders%27.%0A%09self%20renderHeightPlaceholderOn%3A%20html.%0A%09self%20renderCloseButtonOn%3A%20html.'),
+messageSends: ["with:", "renderHeightPlaceholderOn:", "renderCloseButtonOn:"],
+referencedClasses: []
+}),
+smalltalk.MaglevSearchSendersWindow);
 
 
 
